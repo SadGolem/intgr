@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace integration.Controllers
 {
@@ -7,35 +9,82 @@ namespace integration.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _authService;
+
+        // public const string WebHostv1Path = "/rs/api/";
+        //public const string WebHostv2Path = "/rs2/api/";
         private readonly HttpClient _httpClient;
 
-        public AuthController(AuthService authService, IHttpClientFactory clientFactory)
+        public AuthController()
         {
-            _authService = authService;
-            _httpClient = clientFactory.CreateClient();
+            var httpClientHandler = new HttpClientHandler();
+            // Временно отключаем проверку сертификата, ТОЛЬКО ДЛЯ ОТЛАДКИ
+            //   httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
+
+            // Явно указываем поддерживаемые протоколы TLS
+            //  httpClientHandler.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; 
+
+            _httpClient = new HttpClient(httpClientHandler);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetDataFromApi()
+
+        [HttpPost("getToken")]
+        public async Task<IActionResult> GetToken()
         {
-            // 1. Получаем токен
-            string token = await _authService.GetAuthTokenAsync("zubcova_ma", "root");
-
-            if (string.IsNullOrEmpty(token))
+            try
             {
-                return BadRequest("Не удалось получить токен");
+                // var apiUrl = "https://test.asu2.big3.ru/api/token-auth/";
+                var apiUrl = "http://10.5.5.205:9002/auth";
+
+                // Создаем тело запроса в виде JSON
+                var requestBody = new
+                {
+                    username = "zubcova_ma",
+                    password = "root"
+                };
+                /*  var requestBody = new
+                  {
+                      username = "kemerovo_test_api",
+                      password = "D29CuAmR"
+                  };
+  
+                */
+                var jsonBody = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+
+                // Выполняем POST-запрос
+                var response = await _httpClient.PostAsync(apiUrl, content);
+
+                response.EnsureSuccessStatusCode(); // Проверяем, что статус код в диапазоне 200-299
+
+                // Читаем ответ
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                // Десериализуем JSON, чтобы получить токен
+                //  var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
+
+                if (responseContent == null || string.IsNullOrEmpty(responseContent))
+                {
+                    return BadRequest("Не удалось получить токен");
+                }
+                return Ok(responseContent);
+
             }
-
-            // 2. Используем токен в запросе к другому API (пример):
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            // Замените  "http://10.5.5.205:9003/api/data" на фактический адрес вашего API
-            HttpResponseMessage apiResponse = await _httpClient.GetAsync("http://10.5.5.205:9003/api/data");
-            apiResponse.EnsureSuccessStatusCode();
-            string apiData = await apiResponse.Content.ReadAsStringAsync();
-
-
-            return Ok(new { Message = "Данные получены успешно", Data = apiData });
+            catch (HttpRequestException ex)
+            {
+                // Обработка ошибок HTTP
+                return BadRequest($"Ошибка HTTP: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                // Ошибка разбора JSON
+                return BadRequest($"Ошибка JSON: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Любые другие ошибки
+                return BadRequest($"Непредвиденная ошибка: {ex.Message}");
+            }
         }
     }
 }

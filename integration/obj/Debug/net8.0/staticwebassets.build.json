@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "yEpQNu9FWA1gYxD16yboWEW3wLL0+6bwGUU7VfNVon8=",
+  "Hash": "GFUR4Suw1dXGq8jah0rDgqJM/FD2Qdrvm52hpGpN2Uo=",
   "Source": "integration",
   "BasePath": "_content/integration",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }
