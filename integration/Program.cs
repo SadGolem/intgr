@@ -2,7 +2,6 @@ using integration;
 using integration.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.Swagger;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +10,7 @@ builder.Services.AddMemoryCache(); // Добавьте MemoryCache
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<AuthController>();
 builder.Services.AddControllers();
-builder.Services.AddHostedService<TokenRefreshService>();
+//builder.Services.AddHostedService<TokenRefreshService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(setup =>

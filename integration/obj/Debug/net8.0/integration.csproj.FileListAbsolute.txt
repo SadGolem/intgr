@@ -69,3 +69,11 @@ C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\obj\Debug\net8.0\refint\i
 C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\obj\Debug\net8.0\integration.pdb
 C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\obj\Debug\net8.0\integration.genruntimeconfig.cache
 C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\obj\Debug\net8.0\ref\integration.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
