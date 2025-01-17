@@ -10,6 +10,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "integration.Controllers.DataController",
+    "Method": "EditEntry",
+    "RelativePath": "api/Data/edit_entry",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "integration.TokenController",
     "Method": "GetTokens",
     "RelativePath": "api/Token/getTokens",

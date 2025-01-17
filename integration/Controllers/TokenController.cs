@@ -67,8 +67,8 @@ namespace integration
                 var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
                 //var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
                 _logger.LogInformation($"Got new token: {token1}");
-                _memoryCache.Set(cacheKey, token1, TimeSpan.FromMinutes(60));
-                //_memoryCache.Set(cacheKey2, token2, TimeSpan.FromMinutes(60));
+                _memoryCache.Set(cacheKey, token1, TimeSpan.FromHours(24));
+                //_memoryCache.Set(cacheKey2, token2, TimeSpan.FromHours(24));
                 tokens.Add(token1, token2);
                 return Ok(new { Token1 = token1/*,Token2 = token2*/ });
             }

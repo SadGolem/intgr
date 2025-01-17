@@ -17,6 +17,18 @@
         }
       }
     },
+    "/api/Data/edit_entry": {
+      "patch": {
+        "tags": [
+          "Data"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Token/getTokens": {
       "post": {
         "tags": [

@@ -22,8 +22,10 @@ builder.Services.AddMemoryCache(); // Добавьте MemoryCache
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<TokenController>();
+
 //builder.Services.AddTransient<DataController>();
 builder.Services.AddControllers();
+
 //builder.Services.AddHostedService<TokenRefreshService>();
 // Добавляем Interceptor
 builder.Services.AddTransient<AuthHeaderHandler>();
