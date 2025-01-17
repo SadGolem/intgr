@@ -4,11 +4,8 @@ using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.Antiforgery;
 using System.Text.Json.Serialization;
-using Newtonsoft.Json.Linq;
 
 namespace integration
 {
@@ -26,19 +23,16 @@ namespace integration
         private readonly HttpClient _httpClient;
         private readonly ILogger<TokenController> _logger;
         private readonly IMemoryCache _memoryCache;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration; // Добавляем IConfiguration
         private AuthSettings _aproConnectSettings;
         private AuthSettings _mtConnectSettings;
         public static TokenController tokenController;
         public static Dictionary<string,string> tokens = new Dictionary<string, string>();
 
-        public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _memoryCache = memoryCache;
-            _httpClientFactory = httpClientFactory; // Сохраняем IHttpClientFactory
-            _configuration = configuration; // Сохраняем IConfiguration
             _configuration = configuration; // Сохраняем IConfiguration
             _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>();
             _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
@@ -62,7 +56,7 @@ namespace integration
             try
             {
                 var token1 = await GetTokenFromSecondSystem();
-                var token2 = "";
+                var token2 = ""; // Необходимо это позже удалить и заменить кодом ниже!!!!
                 //  var token2 = await GetTokenFromFirstSystem();
                 var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
                 //var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";

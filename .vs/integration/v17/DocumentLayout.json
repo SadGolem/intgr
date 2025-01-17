@@ -15,10 +15,6 @@
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\users\\zubcova_ma\\documents\\github\\intgr\\integration\\authheaderhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\authheaderhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\users\\zubcova_ma\\documents\\github\\intgr\\integration\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -42,7 +38,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "TokenDataHandler.cs",
               "DocumentMoniker": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\TokenDataHandler.cs",
               "RelativeDocumentMoniker": "integration\\TokenDataHandler.cs",
@@ -60,22 +56,9 @@
               "RelativeDocumentMoniker": "integration\\Controllers\\DataController.cs",
               "ToolTip": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\Controllers\\DataController.cs",
               "RelativeToolTip": "integration\\Controllers\\DataController.cs",
-              "ViewState": "AgIAAI8AAAAAAAAAAAAAwBYBAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAAALwAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-16T10:04:31.213Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AuthHeaderHandler.cs",
-              "DocumentMoniker": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\AuthHeaderHandler.cs",
-              "RelativeDocumentMoniker": "integration\\AuthHeaderHandler.cs",
-              "ToolTip": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\AuthHeaderHandler.cs",
-              "RelativeToolTip": "integration\\AuthHeaderHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-16T09:40:24.884Z",
               "EditorCaption": ""
             },
             {
@@ -86,14 +69,14 @@
               "RelativeDocumentMoniker": "integration\\Controllers\\TokenController.cs",
               "ToolTip": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\Controllers\\TokenController.cs",
               "RelativeToolTip": "integration\\Controllers\\TokenController.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAAEwAAABKAAAAAAAAAA==",
+              "ViewState": "AgIAAJMAAAAAAAAAAAAAADoAAABaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-16T09:03:29.904Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\appsettings.json",
               "RelativeDocumentMoniker": "integration\\appsettings.json",
@@ -111,14 +94,14 @@
               "RelativeDocumentMoniker": "integration\\Program.cs",
               "ToolTip": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\Program.cs",
               "RelativeToolTip": "integration\\Program.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-15T01:46:25.633Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "integration.http",
               "DocumentMoniker": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\integration.http",
               "RelativeDocumentMoniker": "integration\\integration.http",

@@ -1,20 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using System.Xml.Linq;
 namespace integration.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class DataController : ControllerBase
     {
+        private AuthSettings _mtConnectSettings;
         private readonly ILogger<DataController> _logger;
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -28,26 +22,16 @@ namespace integration.Controllers
             public string Password { get; set; }
             public string CallbackUrl { get; set; }
         }
-
-        private AuthSettings _mtConnectSettings;
-
-
+   
         public DataController(ILogger<DataController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            try
-            {
                 _logger = logger;
                 _memoryCache = memoryCache;
                 _httpClientFactory = httpClientFactory;
                 _configuration = configuration;
+                _tokenController = TokenController.tokenController;
                 _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
                 _logger.LogInformation("DataController initialized.");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error in DataController constructor");
-            }
-
         }
 
         [HttpPost("create_entry")]
@@ -70,7 +54,6 @@ namespace integration.Controllers
                 var token = await GetCachedToken();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
-                //client.DefaultRequestHeaders.Add("Authorization: ", $"Bearer {token}");
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
                 var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/create_from_bt");
@@ -90,6 +73,7 @@ namespace integration.Controllers
                     type = type,
                     idContainerType = idContainerType*/
 
+                    /*ДЛЯ ТЕСТА ИСПОЛЬУЕТСЯ КОД НИЖЕ ПОСЛЕ ТЕСТОВ НЕОБХОДИМО ЕГО УБРАТЬ*/
                     consumerName = "name",
                     idBT = 125,
                     creator = "creator",
@@ -111,7 +95,6 @@ namespace integration.Controllers
                 response.EnsureSuccessStatusCode();
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                //var result = JsonSerializer.Deserialize<Response>(responseContent);
 
                 return Ok(responseContent);
             }
@@ -182,7 +165,6 @@ namespace integration.Controllers
                 var token = await GetCachedToken();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
-                //client.DefaultRequestHeaders.Add("Authorization: ", $"Bearer {token}");
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
                 var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/update_from_bt");
@@ -195,6 +177,8 @@ namespace integration.Controllers
                     status = status,
                     idLocation = idLocation,
                     commentByRO = commentByRO*/
+
+                    /*ДЛЯ ТЕСТА ИСПОЛЬУЕТСЯ КОД НИЖЕ ПОСЛЕ ТЕСТОВ НЕОБХОДИМО ЕГО УБРАТЬ*/
 
                     consumerName = "name",
                     idBT = 127,
@@ -211,7 +195,6 @@ namespace integration.Controllers
                 response.EnsureSuccessStatusCode();
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                //var result = JsonSerializer.Deserialize<Response>(responseContent);
 
                 return Ok(responseContent);
             }
@@ -272,7 +255,7 @@ namespace integration.Controllers
             }
 
             _logger.LogInformation("Getting new token.");
-            await TokenController.tokenController.GetTokens();
+            await _tokenController.GetTokens();
             var token = TokenController.tokens.First().Key;
             _logger.LogInformation($"Got new token: {token}");
             return token;
@@ -283,7 +266,6 @@ namespace integration.Controllers
             public TokenRequestException(string message) : base(message) { }
             public TokenRequestException(string message, Exception innerException) : base(message, innerException) { }
         }
-
     }
 }
 
