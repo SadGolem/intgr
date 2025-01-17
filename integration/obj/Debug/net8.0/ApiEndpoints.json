@@ -1,8 +1,79 @@
 [
   {
-    "ContainingType": "integration.Controllers.AuthController",
-    "Method": "GetToken",
-    "RelativePath": "Auth/getToken",
+    "ContainingType": "integration.Controllers.DataController",
+    "Method": "CreateEntry",
+    "RelativePath": "api/Data/create_entry",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "consumerName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "btNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "creator",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "idLocation",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "amount",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "volume",
+        "Type": "System.Single",
+        "IsRequired": false
+      },
+      {
+        "Name": "creationDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "planDateRO",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "commentByRO",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "idContainerType",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "integration.TokenController",
+    "Method": "GetTokens",
+    "RelativePath": "api/Token/getTokens",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
