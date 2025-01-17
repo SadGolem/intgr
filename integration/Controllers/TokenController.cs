@@ -6,6 +6,9 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Antiforgery;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace integration
 {
@@ -13,20 +16,38 @@ namespace integration
     [Route("api/[controller]")]
     public class TokenController : ControllerBase
     {
+        private class AuthSettings
+        {
+            public string Login { get; set; }
+            public string Password { get; set; }
+            public string CallbackUrl { get; set; }
+        }
+
         private readonly HttpClient _httpClient;
         private readonly ILogger<TokenController> _logger;
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration; // Добавляем IConfiguration
+        private AuthSettings _aproConnectSettings;
+        private AuthSettings _mtConnectSettings;
+        public static TokenController tokenController;
+        public static Dictionary<string,string> tokens = new Dictionary<string, string>();
 
-        public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory)
+        public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _memoryCache = memoryCache;
+            _httpClientFactory = httpClientFactory; // Сохраняем IHttpClientFactory
+            _configuration = configuration; // Сохраняем IConfiguration
+            _configuration = configuration; // Сохраняем IConfiguration
+            _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>();
+            _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
+            tokenController = this;
 
             var httpClientHandler = new HttpClientHandler
             {
                 // Временно отключаем проверку сертификата, ТОЛЬКО ДЛЯ ОТЛАДКИ
-            //  ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
+                // ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true,
 
                 // Явно указываем поддерживаемые протоколы TLS
                 SslProtocols = SslProtocols.Tls13
@@ -41,9 +62,14 @@ namespace integration
             try
             {
                 var token1 = await GetTokenFromSecondSystem();
-              //  var token2 = await GetTokenFromFirstSystem();
-                
-
+                var token2 = "";
+                //  var token2 = await GetTokenFromFirstSystem();
+                var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
+                //var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
+                _logger.LogInformation($"Got new token: {token1}");
+                _memoryCache.Set(cacheKey, token1, TimeSpan.FromMinutes(60));
+                //_memoryCache.Set(cacheKey2, token2, TimeSpan.FromMinutes(60));
+                tokens.Add(token1, token2);
                 return Ok(new { Token1 = token1/*,Token2 = token2*/ });
             }
             catch (HttpRequestException ex)
@@ -83,13 +109,14 @@ namespace integration
 
         private async Task<string> GetTokenFromFirstSystem()
         {
-            var apiUrl = "https://test.asu2.big3.ru/api";
+            // var apiUrl = "https://test.asu2.big3.ru/api";
 
             var requestBody = new
             {
-                username = "kemerovo_test_api",
-                password = "D29CuAmR"
+                username = _aproConnectSettings.Login,
+                password = _aproConnectSettings.Password
             };
+            var apiUrl = _aproConnectSettings.CallbackUrl;
 
             var jsonBody = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -110,25 +137,26 @@ namespace integration
                 {
                     throw new Exception("Не удалось получить токен от первой системы");
                 }
-
-                return responseContent;
+                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent).Token;
+                return token;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex, "Ошибка при запросе к первой системе");
-                throw;
+                _logger.LogError(e, "Не удалось получить токен от первой системы");
+                return null;
             }
         }
 
+
         private async Task<string> GetTokenFromSecondSystem()
         {
-            var apiUrl = "http://10.5.5.205:9002/auth";
 
             var requestBody = new
             {
-                username = "zubcova_ma",
-                password = "root"
+                username = _mtConnectSettings.Login,
+                password = _mtConnectSettings.Password
             };
+            var apiUrl = _mtConnectSettings.CallbackUrl;
 
             var jsonBody = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -144,108 +172,26 @@ namespace integration
                 }
 
                 var responseContent = await response.Content.ReadAsStringAsync();
+
                 if (string.IsNullOrEmpty(responseContent))
                 {
                     throw new Exception("Не удалось получить токен от второй системы");
                 }
-                // Сохраняем токен в кэше
-                if (response.Headers.TryGetValues("Authorization", out var values))
-                {
-                    var token = values.FirstOrDefault();
-                    _logger.LogInformation($"Received token for host {new Uri(apiUrl).Host}: {token}");
-                    _memoryCache.Set($"Token_{new Uri(apiUrl).Host}", token, TimeSpan.FromMinutes(60));
-                    return token;
-                }
-                _logger.LogWarning($"No Authorization header found in response from host {new Uri(apiUrl).Host}.");
-                return responseContent;
 
+                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent).Token;
+                return token;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex, "Ошибка при запросе ко второй системе");
-                throw;
+                _logger.LogError(e, "Не удалось получить токен от второй системы");
+                return null;
             }
         }
+
+        private class TokenResponse
+        {
+            [JsonPropertyName("token")]
+            public string Token { get; set; }
+    }
     }
 }
-
-
-
-// public const string WebHostv1Path = "/rs/api/";
-//public const string WebHostv2Path = "/rs2/api/";
-/*        private readonly HttpClient _httpClient;
-
-        public TokenController()
-        {
-            var httpClientHandler = new HttpClientHandler();
-            // Временно отключаем проверку сертификата, ТОЛЬКО ДЛЯ ОТЛАДКИ
-            //   httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
-
-            // Явно указываем поддерживаемые протоколы TLS
-            //  httpClientHandler.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; 
-
-            _httpClient = new HttpClient(httpClientHandler);
-        }*/
-
-
-/*    [HttpPost("getToken")]
-    public async Task<IActionResult> GetToken()
-    {
-        try
-        {
-            // var apiUrl = "https://test.asu2.big3.ru/api/token-auth/";
-            var apiUrl = "http://10.5.5.205:9002/auth";
-
-            // Создаем тело запроса в виде JSON
-            var requestBody = new
-            {
-                username = "zubcova_ma",
-                password = "root"
-            };
-            *//*  var requestBody = new
-              {
-                  username = "kemerovo_test_api",
-                  password = "D29CuAmR"
-              };
-
-            *//*
-            var jsonBody = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-
-            // Выполняем POST-запрос
-            var response = await _httpClient.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode(); // Проверяем, что статус код в диапазоне 200-299
-
-            // Читаем ответ
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            // Десериализуем JSON, чтобы получить токен
-            //  var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
-
-            if (responseContent == null || string.IsNullOrEmpty(responseContent))
-            {
-                return BadRequest("Не удалось получить токен");
-            }
-            return Ok(responseContent);
-
-        }
-        catch (HttpRequestException ex)
-        {
-            // Обработка ошибок HTTP
-            return BadRequest($"Ошибка HTTP: {ex.Message}");
-        }
-        catch (JsonException ex)
-        {
-            // Ошибка разбора JSON
-            return BadRequest($"Ошибка JSON: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            // Любые другие ошибки
-            return BadRequest($"Непредвиденная ошибка: {ex.Message}");
-        }
-    }*/
-
-

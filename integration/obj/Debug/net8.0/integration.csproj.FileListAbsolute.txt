@@ -77,3 +77,5 @@ C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsof
 C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Serilog.dll
+C:\Users\zubcova_ma\Documents\GitHub\intgr\integration\bin\Debug\net8.0\Serilog.Sinks.File.dll
