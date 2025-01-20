@@ -2,14 +2,14 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
-namespace integration.Controllers
+namespace integration.Controllers.MT
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DataController : ControllerBase
+    public class EntryController : ControllerBase
     {
         private AuthSettings _mtConnectSettings;
-        private readonly ILogger<DataController> _logger;
+        private readonly ILogger<EntryController> _logger;
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
@@ -17,37 +17,36 @@ namespace integration.Controllers
 
         private class AuthSettings
         {
-            public string Token { get; set; }
             public string Login { get; set; }
             public string Password { get; set; }
             public string CallbackUrl { get; set; }
         }
-   
-        public DataController(ILogger<DataController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+
+        public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-                _logger = logger;
-                _memoryCache = memoryCache;
-                _httpClientFactory = httpClientFactory;
-                _configuration = configuration;
-                _tokenController = TokenController.tokenController;
-                _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
-                _logger.LogInformation("DataController initialized.");
+            _logger = logger;
+            _memoryCache = memoryCache;
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
+            _tokenController = TokenController.tokenController;
+            _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
+            _logger.LogInformation("DataController initialized.");
         }
 
         [HttpPost("create_entry")]
         public async Task<IActionResult> CreateEntry(
-             /* [FromQuery] string consumerName,
-              [FromQuery] int idBT,
-              [FromQuery] string creator,
-              [FromQuery] string status,
-              [FromQuery] int idLocation,
-              [FromQuery] int amount,
-              [FromQuery] float volume,
-              [FromQuery] DateTime creationDate,
-              [FromQuery] DateTime planDateRO,
-              [FromQuery] string commentByRO,
-              [FromQuery] string type,
-              [FromQuery] int idContainerType*/)
+              /* [FromQuery] string consumerName,
+               [FromQuery] int idBT,
+               [FromQuery] string creator,
+               [FromQuery] string status,
+               [FromQuery] int idLocation,
+               [FromQuery] int amount,
+               [FromQuery] float volume,
+               [FromQuery] DateTime creationDate,
+               [FromQuery] DateTime planDateRO,
+               [FromQuery] string commentByRO,
+               [FromQuery] string type,
+               [FromQuery] int idContainerType*/)
         {
             try
             {
@@ -105,7 +104,7 @@ namespace integration.Controllers
                 {
                     Error = "Ошибка получения токена",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
 
@@ -117,7 +116,7 @@ namespace integration.Controllers
                 {
                     Error = "Ошибка HTTP",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
             }
@@ -128,7 +127,7 @@ namespace integration.Controllers
                 {
                     Error = "Ошибка JSON",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
             }
@@ -139,7 +138,7 @@ namespace integration.Controllers
                 {
                     Error = "Непредвиденная ошибка",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
             }
@@ -147,18 +146,18 @@ namespace integration.Controllers
 
         [HttpPatch("edit_entry")]
         public async Task<IActionResult> EditEntry(
-              /* [FromQuery] string consumerName,
-               [FromQuery] int idBT,
-               [FromQuery] string creator,
-               [FromQuery] string status,
-               [FromQuery] int idLocation,
-               [FromQuery] int amount,
-               [FromQuery] float volume,
-               [FromQuery] DateTime creationDate,
-               [FromQuery] DateTime planDateRO,
-               [FromQuery] string commentByRO,
-               [FromQuery] string type,
-               [FromQuery] int idContainerType*/)
+               /* [FromQuery] string consumerName,
+                [FromQuery] int idBT,
+                [FromQuery] string creator,
+                [FromQuery] string status,
+                [FromQuery] int idLocation,
+                [FromQuery] int amount,
+                [FromQuery] float volume,
+                [FromQuery] DateTime creationDate,
+                [FromQuery] DateTime planDateRO,
+                [FromQuery] string commentByRO,
+                [FromQuery] string type,
+                [FromQuery] int idContainerType*/)
         {
             try
             {
@@ -205,7 +204,7 @@ namespace integration.Controllers
                 {
                     Error = "Ошибка получения токена",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
 
@@ -217,7 +216,7 @@ namespace integration.Controllers
                 {
                     Error = "Ошибка HTTP",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
             }
@@ -228,7 +227,7 @@ namespace integration.Controllers
                 {
                     Error = "Ошибка JSON",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
             }
@@ -239,7 +238,7 @@ namespace integration.Controllers
                 {
                     Error = "Непредвиденная ошибка",
                     Details = ex.Message,
-                    StackTrace = ex.StackTrace,
+                    ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
             }

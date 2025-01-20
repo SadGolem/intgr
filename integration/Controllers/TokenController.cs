@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
@@ -27,7 +25,7 @@ namespace integration
         private AuthSettings _aproConnectSettings;
         private AuthSettings _mtConnectSettings;
         public static TokenController tokenController;
-        public static Dictionary<string,string> tokens = new Dictionary<string, string>();
+        public static Dictionary<string, string> tokens = new Dictionary<string, string>();
 
         public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -51,12 +49,11 @@ namespace integration
         {
             try
             {
-               var token1 = await GetTokenFromSecondSystem();
-                //var token2 = ""; // Необходимо это позже удалить и заменить кодом ниже!!!!
-                  var token2 = await GetTokenFromFirstSystem();
+                var token1 = await GetTokenFromSecondSystem();
+                var token2 = await GetTokenFromFirstSystem();
                 var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
                 var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
-               _logger.LogInformation($"Got new token: {token1}");
+                _logger.LogInformation($"Got new token: {token1}");
                 _memoryCache.Set(cacheKey, token1, TimeSpan.FromHours(24));
                 _memoryCache.Set(cacheKey2, token2, TimeSpan.FromHours(24));
                 tokens.Add(token1, token2);
@@ -180,6 +177,6 @@ namespace integration
         {
             [JsonPropertyName("token")]
             public string Token { get; set; }
-    }
+        }
     }
 }
