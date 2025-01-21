@@ -1,19 +1,31 @@
 [
   {
     "ContainingType": "integration.Controllers.MT.EntryController",
-    "Method": "CreateEntry",
-    "RelativePath": "api/Entry/create_entry",
-    "HttpMethod": "POST",
+    "Method": "ProcessEntryData",
+    "RelativePath": "api/Entry",
+    "HttpMethod": "",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
+    "Parameters": [
+      {
+        "Name": "wasteData",
+        "Type": "integration.Context.WasteData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
   },
   {
-    "ContainingType": "integration.Controllers.MT.EntryController",
-    "Method": "EditEntry",
-    "RelativePath": "api/Entry/edit_entry",
-    "HttpMethod": "PATCH",
+    "ContainingType": "integration.Controllers.LocationController",
+    "Method": "SyncLocations",
+    "RelativePath": "api/Location/syncLocations",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
@@ -39,7 +51,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[integration.Controllers.Apro.WasteSiteEntryController\u002BWasteData, integration, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[integration.Context.WasteData, integration, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

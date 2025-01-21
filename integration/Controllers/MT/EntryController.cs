@@ -2,6 +2,8 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
+using integration.Controllers.Apro;
+using integration.Context;
 namespace integration.Controllers.MT
 {
     [ApiController]
@@ -13,258 +15,77 @@ namespace integration.Controllers.MT
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private TokenController _tokenController;
+        private readonly TokenController _tokenController;
 
-        private class AuthSettings
-        {
-            public string Login { get; set; }
-            public string Password { get; set; }
-            public string CallbackUrl { get; set; }
-        }
-
-        public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
         {
             _logger = logger;
             _memoryCache = memoryCache;
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
-            _tokenController = TokenController.tokenController;
+            _tokenController = tokenController;
             _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
             _logger.LogInformation("DataController initialized.");
         }
 
-        [HttpPost("create_entry")]
-        public async Task<IActionResult> CreateEntry(
-              /* [FromQuery] string consumerName,
-               [FromQuery] int idBT,
-               [FromQuery] string creator,
-               [FromQuery] string status,
-               [FromQuery] int idLocation,
-               [FromQuery] int amount,
-               [FromQuery] float volume,
-               [FromQuery] DateTime creationDate,
-               [FromQuery] DateTime planDateRO,
-               [FromQuery] string commentByRO,
-               [FromQuery] string type,
-               [FromQuery] int idContainerType*/)
+        public async Task ProcessEntryData(WasteData wasteData)
         {
             try
             {
-                var token = await GetCachedToken();
+                var token = await TokenController._authorizer.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                 var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/create_from_bt");
-
-                var requestBody = new
+                HttpResponseMessage response;
+                if (wasteData.idBT > 0)
                 {
-                    /*consumerName = consumerName,
-                    idBT = btNumber,
-                    creator = creator,
-                    status = status,
-                    idLocation = idLocation,
-                    amount = amount,
-                    volume = volume,
-                    creationDate = creationDate.ToString("yyyy-MM-dd"),
-                    planDateRO = planDateRO.ToString("yyyy-MM-dd"),
-                    commentByRO = commentByRO,
-                    type = type,
-                    idContainerType = idContainerType*/
+                    apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/update_from_bt");
+                    response = await client.PatchAsJsonAsync(apiUrl, MapWasteDataToRequest(wasteData));
+                }
+                else
+                {
+                    response = await client.PostAsJsonAsync(apiUrl, MapWasteDataToRequest(wasteData));
+                }
 
-                    /*ДЛЯ ТЕСТА ИСПОЛЬУЕТСЯ КОД НИЖЕ ПОСЛЕ ТЕСТОВ НЕОБХОДИМО ЕГО УБРАТЬ*/
-                    consumerName = "name",
-                    idBT = 125,
-                    creator = "creator",
-                    status = "Новая",
-                    idLocation = 45678,
-                    amount = 1,
-                    volume = 0.77,
-                    creationDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
-                    planDateRO = DateTime.UtcNow.AddDays(4).ToString("yyyy-MM-dd"),
-                    commentByRO = "новая",
-                    type = "Заявка",
-                    idContainerType = 5
-                };
-
-                var jsonBody = JsonSerializer.Serialize(requestBody);
-                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-                using var response = await client.PostAsync(apiUrl, content);
                 response.EnsureSuccessStatusCode();
-
                 var responseContent = await response.Content.ReadAsStringAsync();
-
-                return Ok(responseContent);
-            }
-            catch (TokenRequestException ex)
-            {
-                _logger.LogError(ex, "Ошибка получения токена");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка получения токена",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
-
+                _logger.LogInformation($"Successfully sent data for ID: {wasteData.idBT}. Response: {responseContent}");
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "Ошибка HTTP при отправке данных");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка HTTP",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
+                _logger.LogError(ex, $"HTTP error while sending data with ID: {wasteData.idBT}");
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "Ошибка JSON при обработке ответа");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка JSON",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
+                _logger.LogError(ex, $"Json Exception while sending data with ID: {wasteData.idBT}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Непредвиденная ошибка");
-                return StatusCode(500, new
-                {
-                    Error = "Непредвиденная ошибка",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
+                _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.idBT}");
             }
         }
 
-        [HttpPatch("edit_entry")]
-        public async Task<IActionResult> EditEntry(
-               /* [FromQuery] string consumerName,
-                [FromQuery] int idBT,
-                [FromQuery] string creator,
-                [FromQuery] string status,
-                [FromQuery] int idLocation,
-                [FromQuery] int amount,
-                [FromQuery] float volume,
-                [FromQuery] DateTime creationDate,
-                [FromQuery] DateTime planDateRO,
-                [FromQuery] string commentByRO,
-                [FromQuery] string type,
-                [FromQuery] int idContainerType*/)
+        private object MapWasteDataToRequest(WasteData wasteData)
         {
-            try
+            return new
             {
-                var token = await GetCachedToken();
-                var client = _httpClientFactory.CreateClient();
-                _logger.LogInformation($"Using token for request: {token}");
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-                var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/update_from_bt");
-
-                var requestBody = new
-                {
-                    /*consumerName = consumerName,
-                    idBT = btNumber,
-                    creator = creator,
-                    status = status,
-                    idLocation = idLocation,
-                    commentByRO = commentByRO*/
-
-                    /*ДЛЯ ТЕСТА ИСПОЛЬУЕТСЯ КОД НИЖЕ ПОСЛЕ ТЕСТОВ НЕОБХОДИМО ЕГО УБРАТЬ*/
-
-                    consumerName = "name",
-                    idBT = 127,
-                    creator = "creator",
-                    status = "Выполнена",
-                    idLocation = 45678,
-                    commentByRO = "изменена"
-                };
-
-                var jsonBody = JsonSerializer.Serialize(requestBody);
-                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-                using var response = await client.PatchAsync(apiUrl, content);
-                response.EnsureSuccessStatusCode();
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                return Ok(responseContent);
-            }
-            catch (TokenRequestException ex)
-            {
-                _logger.LogError(ex, "Ошибка получения токена");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка получения токена",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
-
-            }
-            catch (HttpRequestException ex)
-            {
-                _logger.LogError(ex, "Ошибка HTTP при отправке данных");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка HTTP",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, "Ошибка JSON при обработке ответа");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка JSON",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Непредвиденная ошибка");
-                return StatusCode(500, new
-                {
-                    Error = "Непредвиденная ошибка",
-                    Details = ex.Message,
-                    ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
-            }
-        }
-
-        private async Task<string> GetCachedToken()
-        {
-            var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
-            if (_memoryCache.TryGetValue(cacheKey, out string cachedToken))
-            {
-                _logger.LogInformation($"Returning cached token: {cachedToken}");
-                return cachedToken;
-            }
-
-            _logger.LogInformation("Getting new token.");
-            await _tokenController.GetTokens();
-            var token = TokenController.tokens.First().Key;
-            _logger.LogInformation($"Got new token: {token}");
-            return token;
-        }
-
-        public class TokenRequestException : Exception
-        {
-            public TokenRequestException(string message) : base(message) { }
-            public TokenRequestException(string message, Exception innerException) : base(message, innerException) { }
+                consumerName = "name",  // Replace with actual mapping
+                idBT = wasteData.idBT,
+                creator = wasteData.creator,
+                status = wasteData.statusID,
+                idLocation = wasteData.idLocation,
+                amount = wasteData.amount,
+                volume = wasteData.volume,
+                creationDate = wasteData.datetime_create.ToString("yyyy-MM-dd"),
+                planDateRO = wasteData.date.ToString("yyyy-MM-dd"),
+                commentByRO = wasteData.commentByRO,
+                type = "Заявка", // Replace with actual mapping
+                idContainerType = wasteData.idContainerType
+            };
         }
     }
+
 }
 

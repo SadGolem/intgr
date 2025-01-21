@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json.Serialization;
+using integration.Context;
 
 namespace integration
 {
@@ -11,36 +12,30 @@ namespace integration
     [Route("api/[controller]")]
     public class TokenController : ControllerBase
     {
-        private class AuthSettings
-        {
-            public string Login { get; set; }
-            public string Password { get; set; }
-            public string CallbackUrl { get; set; }
-        }
-
         private readonly HttpClient _httpClient;
         private readonly ILogger<TokenController> _logger;
         private readonly IMemoryCache _memoryCache;
-        private readonly IConfiguration _configuration; // Добавляем IConfiguration
+        private readonly IConfiguration _configuration;
         private AuthSettings _aproConnectSettings;
         private AuthSettings _mtConnectSettings;
         public static TokenController tokenController;
+        public static Authorizer _authorizer;
         public static Dictionary<string, string> tokens = new Dictionary<string, string>();
 
         public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _logger = logger;
             _memoryCache = memoryCache;
-            _configuration = configuration; // Сохраняем IConfiguration
+            _configuration = configuration;
             _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>();
             _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
             tokenController = this;
+            _authorizer = new Authorizer(_logger, _memoryCache, _configuration, tokenController);
 
             var httpClientHandler = new HttpClientHandler
             {
                 SslProtocols = SslProtocols.Tls13
             };
-
             _httpClient = new HttpClient(httpClientHandler);
         }
 
@@ -56,6 +51,7 @@ namespace integration
                 _logger.LogInformation($"Got new token: {token1}");
                 _memoryCache.Set(cacheKey, token1, TimeSpan.FromHours(24));
                 _memoryCache.Set(cacheKey2, token2, TimeSpan.FromHours(24));
+                tokens.Clear();
                 tokens.Add(token1, token2);
                 return Ok(new { Token1 = token1, Token2 = token2 });
             }
@@ -102,10 +98,8 @@ namespace integration
                 password = _aproConnectSettings.Password
             };
             var apiUrl = _aproConnectSettings.CallbackUrl;
-
             var jsonBody = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
             try
             {
                 using var response = await _httpClient.PostAsync(apiUrl, content);
@@ -117,12 +111,12 @@ namespace integration
                 }
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-
                 if (string.IsNullOrEmpty(responseContent))
                 {
                     throw new Exception("Не удалось получить токен от первой системы");
                 }
-                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent).Token;
+
+                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent)?.Token;
                 return token;
             }
             catch (Exception e)
@@ -135,35 +129,29 @@ namespace integration
 
         private async Task<string> GetTokenFromSecondSystem()
         {
-
             var requestBody = new
             {
                 username = _mtConnectSettings.Login,
                 password = _mtConnectSettings.Password
             };
             var apiUrl = _mtConnectSettings.CallbackUrl;
-
             var jsonBody = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
             try
             {
                 using var response = await _httpClient.PostAsync(apiUrl, content);
-
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
                     throw new HttpRequestException($"Ошибка при запросе ко второй системе: {response.StatusCode}, {errorContent}");
                 }
-
                 var responseContent = await response.Content.ReadAsStringAsync();
-
                 if (string.IsNullOrEmpty(responseContent))
                 {
                     throw new Exception("Не удалось получить токен от второй системы");
                 }
-
-                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent).Token;
+                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent)?.Token;
                 return token;
             }
             catch (Exception e)
