@@ -13,17 +13,24 @@ namespace integration.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<LocationController> _logger;
-        private readonly string _sourceApiUrl;
-        private readonly string _destinationApiUrl;
+        private readonly AuthSettings _sourceApiUrl;
+        private readonly AuthSettings _destinationApiUrl;
+        private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _mtConnect;
+        private readonly string _aproConnect;
 
-        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IHttpClientFactory httpClientFactory)
+        public LocationController(HttpClient httpClient, ILogger<LocationController> logger,IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _configuration = configuration;
             _httpClientFactory = httpClientFactory;
-            _sourceApiUrl = "https://test.asu2.big3.ru/api/wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address}"; // можно вынести в конфигурацию
-            _destinationApiUrl = "http://10.5.5.205:9002/api/v2/location/create"; // можно вынести в конфигурацию
+            _sourceApiUrl = _configuration.GetSection("APROconnect").Get<AuthSettings>();/*"https://test.asu2.big3.ru/api/wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address}"; */// можно вынести в конфигурацию
+            _destinationApiUrl = _configuration.GetSection("MTconnect").Get<AuthSettings>();
+            _mtConnect = _destinationApiUrl.CallbackUrl.Replace("auth", "api/v2/location/create");
+            _aproConnect = _sourceApiUrl.CallbackUrl.Replace("token-auth/", "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address}");
+
         }
 
         [HttpGet("syncLocations")] // This endpoint can be used for manual triggers
@@ -78,7 +85,7 @@ namespace integration.Controllers
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             try
             {
-                var response = await _httpClient.GetAsync(_sourceApiUrl);
+                var response = await _httpClient.GetAsync(_aproConnect);
 
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
@@ -93,17 +100,17 @@ namespace integration.Controllers
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"Error during GET request to {_sourceApiUrl}");
+                _logger.LogError(ex, $"Error during GET request to {_aproConnect}");
                 throw;
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, $"Error during JSON deserialization of response from {_sourceApiUrl}");
+                _logger.LogError(ex, $"Error during JSON deserialization of response from {_aproConnect}");
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unexpected error while fetching data from {_sourceApiUrl}");
+                _logger.LogError(ex, $"Unexpected error while fetching data from {_aproConnect}");
                 throw;
             }
 
@@ -119,7 +126,7 @@ namespace integration.Controllers
                 var mappedLocation = MapLocationData(location);
                 var jsonBody = JsonSerializer.Serialize(mappedLocation);
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-                using var response = await client.PostAsync(_destinationApiUrl, content);
+                using var response = await client.PostAsync(_mtConnect, content);
 
 
                 response.EnsureSuccessStatusCode();
