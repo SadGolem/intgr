@@ -11,6 +11,6 @@ namespace integration.Context
         [JsonPropertyName("previous")]
         public string Previous { get; set; }
         [JsonPropertyName("results")]
-        public List<WasteData> Results { get; set; }
+        public List<EntryData> Results { get; set; }
     }
 }

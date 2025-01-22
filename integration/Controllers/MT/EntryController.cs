@@ -28,7 +28,7 @@ namespace integration.Controllers.MT
             _logger.LogInformation("DataController initialized.");
         }
 
-        public async Task ProcessEntryData(WasteData wasteData)
+        public async Task ProcessEntryData(EntryData wasteData)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace integration.Controllers.MT
 
                 var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/create_from_bt");
                 HttpResponseMessage response;
-                if (wasteData.idBT > 0)
+                if (wasteData.BtNumber > 0)
                 {
                     apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/update_from_bt");
                     response = await client.PatchAsJsonAsync(apiUrl, MapWasteDataToRequest(wasteData));
@@ -51,38 +51,38 @@ namespace integration.Controllers.MT
 
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
-                _logger.LogInformation($"Successfully sent data for ID: {wasteData.idBT}. Response: {responseContent}");
+                _logger.LogInformation($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"HTTP error while sending data with ID: {wasteData.idBT}");
+                _logger.LogError(ex, $"HTTP error while sending data with ID: {wasteData.BtNumber}");
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, $"Json Exception while sending data with ID: {wasteData.idBT}");
+                _logger.LogError(ex, $"Json Exception while sending data with ID: {wasteData.BtNumber}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.idBT}");
+                _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
             }
         }
 
-        private object MapWasteDataToRequest(WasteData wasteData)
+        private object MapWasteDataToRequest(EntryData wasteData)
         {
             return new
             {
-                consumerName = "name",  // Replace with actual mapping
-                idBT = wasteData.idBT,
-                creator = wasteData.creator,
-                status = wasteData.statusID,
-                idLocation = wasteData.idLocation,
-                amount = wasteData.amount,
-                volume = wasteData.volume,
-                creationDate = wasteData.datetime_create.ToString("yyyy-MM-dd"),
-                planDateRO = wasteData.date.ToString("yyyy-MM-dd"),
-                commentByRO = wasteData.commentByRO,
-                type = "Заявка", // Replace with actual mapping
-                idContainerType = wasteData.idContainerType
+                consumerName = wasteData.ConsumerName,
+                btNumber = wasteData.BtNumber,
+                creator = wasteData.AuthorName,
+                status = wasteData.Status,
+/*                idLocation = wasteData.idLocation,*/
+                amount = 1,
+                volume = wasteData.Volume,
+                creationDate = wasteData.DateTimeCreate.ToString("yyyy-MM-dd"),
+                planDateRO = wasteData.PlanDateRO,
+                commentByRO = wasteData.CommentByRO,
+                type = wasteData.Type, 
+                idContainerType = wasteData.IdContainerType
             };
         }
     }

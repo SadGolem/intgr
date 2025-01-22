@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "wasteData",
-        "Type": "integration.Context.WasteData",
+        "Type": "EntryData",
         "IsRequired": true
       }
     ],
@@ -43,22 +43,12 @@
   },
   {
     "ContainingType": "integration.Controllers.Apro.WasteSiteEntryController",
-    "Method": "GetNewWasteData",
+    "Method": "GetEntriesData",
     "RelativePath": "api/WasteSiteEntry",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.List\u00601[[integration.Context.WasteData, integration, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   }
 ]
