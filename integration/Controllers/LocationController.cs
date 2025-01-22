@@ -20,7 +20,7 @@ namespace integration.Controllers
         private readonly string _mtConnect;
         private readonly string _aproConnect;
 
-        public LocationController(HttpClient httpClient, ILogger<LocationController> logger,IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClient;
             _logger = logger;
@@ -155,14 +155,14 @@ namespace integration.Controllers
         {
             var datetimeCreate = string.IsNullOrEmpty(location.datetime_create) ? DateTime.UtcNow.ToString("yyyy-MM-dd") : DateTime.Parse(location.datetime_create).ToString("yyyy-MM-dd");
             var datetimeUpdate = string.IsNullOrEmpty(location.datetime_update) ? DateTime.UtcNow.ToString("yyyy-MM-dd") : DateTime.Parse(location.datetime_update).ToString("yyyy-MM-dd");
-            
+
             return new
             {
                 idBT = location.id,
                 longitude = location.lon,
                 latitude = location.lat,
                 status = "Действующая", //необходимо принимать статусы по кодам
-                address = location.address
+                location.address
             };
         }
     }

@@ -30,18 +30,26 @@ namespace integration
             {
                 var tokenController = scope.ServiceProvider.GetService<TokenController>();
                 tokenController.GetTokens();
+                var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
                 var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
-                var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
 
+                /* try
+                 {
+                     await locationController.SyncLocations();
+                 }
+                 catch (Exception ex)
+                 {
+                     _logger.LogError(ex, "Error while syncing locations.");
+                 }*/
 
-                /*try
+                try
                 {
-                    var newWasteData = await wasteSiteEntryController.GetNewWasteData();
-                    if (newWasteData.Count > 0)
+                    var newWasteData = await wasteSiteEntryController.GetEntriesData();
+                    if (WasteSiteEntryController.newEntry.Count() > 0)
                     {
-                        _logger.LogInformation($"Found {newWasteData.Count} new/updated records to sync");
-                        foreach (var wasteData in newWasteData)
+                        _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
+                        foreach (var wasteData in WasteSiteEntryController.newEntry)
                         {
                             await ProcessWasteData(wasteData, entryController);
                         }
@@ -54,26 +62,19 @@ namespace integration
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "An error occurred while syncing data.");
-                }*/
-                try
-                {
-                    await locationController.SyncLocations();
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error while syncing locations.");
-                }
+                
 
             }
         }
 
-        private async Task ProcessWasteData(WasteData wasteData, EntryController entryController)
+        private async Task ProcessWasteData(EntryData wasteData, EntryController entryController)
         {
             try
             {
-                if (wasteData.idBT == 0)
+                if (wasteData.BtNumber == 0)
                 {
-                    _logger.LogError($"No ID found: {wasteData.idBT}");
+                    _logger.LogError($"No ID found: {wasteData.BtNumber}");
                     return;
                 }
 
@@ -81,7 +82,7 @@ namespace integration
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error processing data with id: {wasteData.idBT}");
+                _logger.LogError(ex, $"Error processing data with id: {wasteData.BtNumber}");
             }
         }
         public Task StopAsync(CancellationToken cancellationToken)
