@@ -10,6 +10,7 @@ namespace integration
         private readonly ILogger<DataSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private Timer? _timer;
+        private const int _updateTime = 30;
 
         public DataSyncService(ILogger<DataSyncService> logger, IServiceProvider serviceProvider)
         {
@@ -20,7 +21,7 @@ namespace integration
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("DataSyncService is starting.");
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(30));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(_updateTime));
             return Task.CompletedTask;
         }
 
@@ -46,12 +47,17 @@ namespace integration
                 try
                 {
                     var newWasteData = await wasteSiteEntryController.GetEntriesData();
-                    if (WasteSiteEntryController.newEntry.Count() > 0)
+                    LastUpdateTextFileManager.SetLastUpdateTime("entry");
+                    if (WasteSiteEntryController.newEntry.Count() > 0 || WasteSiteEntryController.updateEntry.Count() > 0)
                     {
                         _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
                         foreach (var wasteData in WasteSiteEntryController.newEntry)
                         {
-                            await ProcessWasteData(wasteData, entryController);
+                            await ProcessWasteData(wasteData, entryController, true);
+                        }
+                        foreach (var wasteUpdateData in WasteSiteEntryController.updateEntry)
+                        {
+                            await ProcessWasteData(wasteUpdateData, entryController,false);
                         }
                     }
                     else
@@ -68,7 +74,7 @@ namespace integration
             }
         }
 
-        private async Task ProcessWasteData(EntryData wasteData, EntryController entryController)
+        private async Task ProcessWasteData(EntryData wasteData, EntryController entryController, bool isNew)
         {
             try
             {
@@ -77,14 +83,17 @@ namespace integration
                     _logger.LogError($"No ID found: {wasteData.BtNumber}");
                     return;
                 }
-
-                await entryController.ProcessEntryData(wasteData);
+                if (isNew)
+                    await entryController.ProcessEntryPostData(wasteData);
+                else { await entryController.ProcessEntryPatchData(wasteData); }
+                
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error processing data with id: {wasteData.BtNumber}");
             }
         }
+
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("DataSyncService is stopping.");

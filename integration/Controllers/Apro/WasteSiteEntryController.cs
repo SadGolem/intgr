@@ -15,9 +15,9 @@ namespace integration.Controllers.Apro
         private readonly HttpClient _httpClient;
         private readonly ILogger<WasteSiteEntryController> _logger;
         private readonly IMemoryCache _memoryCache;
-        private const string LastUpdateKey = "LastWasteDataUpdate";
         private readonly IConfiguration _configuration;
         public static List<EntryData> newEntry = new List<EntryData>();
+        public static List<EntryData> updateEntry = new List<EntryData>();
 
         public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -26,7 +26,7 @@ namespace integration.Controllers.Apro
             _memoryCache = memoryCache;
             _configuration = configuration;
             _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.ToString()
-                .Replace("token-auth/", "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,client_contact, author{name},status,volume,date, capacity{capacity},type{id,name}}");
+                .Replace("token-auth/", "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,client_contact, author{name},status,volume,date, capacity{capacity},type{id,name},ext_id}");
         }
 
         [HttpGet]
@@ -36,7 +36,7 @@ namespace integration.Controllers.Apro
             newEntry.Clear();
             try
             {
-                await FetchAndPostLocations();
+                await FetchAndPostEntry();
                 return Ok("Locations synced successfully.");
             }
             catch (Exception ex)
@@ -46,13 +46,13 @@ namespace integration.Controllers.Apro
             }
         }
 
-        private async Task FetchAndPostLocations()
+        private async Task FetchAndPostEntry()
         {
             _logger.LogInformation($"Fetching locations from {_aproConnectSettings}...");
             List<EntryData> entries = new List<EntryData>();
             try
             {
-                entries = await FetchLocationData();
+                entries = await FetchEntryData();
             }
             catch (Exception ex)
             {
@@ -61,18 +61,25 @@ namespace integration.Controllers.Apro
             }
 
             _logger.LogInformation($"Received {entries.Count} locations");
-            var lastUpdate = GetLastUpdateTime();
-
+            var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("entry");
+            
             foreach (var entry in entries)
             {
-                if (entry.DateTimeCreate > lastUpdate || entry.DateTimeUpdate > lastUpdate)
+                if (entry.DateTimeCreate > lastUpdate)
                 {
-                    newEntry.Add(entry);
+                    if (entry.DateTimeUpdate > lastUpdate && entry.DateTimeUpdate < entry.DateTimeCreate)
+                    {
+                        updateEntry.Add(entry);
+                    }
+                    else
+                    {
+                        newEntry.Add(entry);
+                    }
                 }
             }
         }
 
-        private async Task<List<EntryData>> FetchLocationData()
+        private async Task<List<EntryData>> FetchEntryData()
         {
             var entries = new List<EntryData>();
             var token = await TokenController._authorizer.GetCachedTokenAPRO();
@@ -104,77 +111,6 @@ namespace integration.Controllers.Apro
                 throw;
             }
 
-        }
-
-       /* private async Task<List<EntryData>> FetchNewData(DateTime lastUpdate)
-        {
-            var apiUrl = _aproConnectSettings.CallbackUrl.Replace("token-auth", "wf__wastetakeoutrequest__garbage_collection_request");
-            string token = "";
-            try
-            {
-                token = await TokenController._authorizer.GetCachedTokenAPRO();
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Can not fetch token");
-                return new List<EntryData>();
-            }
-
-            var newWasteData = new List<EntryData>();
-            try
-            {
-                var response = await _httpClient.GetAsync(apiUrl);
-                response.EnsureSuccessStatusCode();
-
-                var content = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                
-                var result = JsonSerializer.Deserialize<WasteDataResponse>(content, options);
-                if (result != null && result.Results != null)
-                {
-                    foreach (var data in result.Results)
-                    {
-                        if (data.datetime_create > lastUpdate || data.datetime_update > lastUpdate)
-                        {
-                            newWasteData.Add(data);
-                        }
-                    }
-                }
-                return newWasteData;
-            }*/
- /*           catch (HttpRequestException ex)
-            {
-                _logger.LogError(ex, $"Error getting data from API: {apiUrl}");
-                return new List<EntryData>();
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, $"Error while deserializing the response from: {apiUrl}");
-                return new List<EntryData>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Unexpected error while getting new data from : {apiUrl}");
-                return new List<EntryData>();
-            }
-        }*/
-
-        private DateTime GetLastUpdateTime()
-        {
-            if (_memoryCache.TryGetValue(LastUpdateKey, out DateTime lastUpdate))
-            {
-                return lastUpdate;
-            }
-            return DateTime.MinValue;
-        }
-
-        private void SetLastUpdateTime(DateTime lastUpdate)
-        {
-            _memoryCache.Set(LastUpdateKey, lastUpdate, TimeSpan.FromHours(1));
         }
     }
 }
