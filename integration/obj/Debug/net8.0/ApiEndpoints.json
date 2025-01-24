@@ -1,7 +1,29 @@
 [
   {
     "ContainingType": "integration.Controllers.MT.EntryController",
-    "Method": "ProcessEntryData",
+    "Method": "ProcessEntryPostData",
+    "RelativePath": "api/Entry",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteData",
+        "Type": "EntryData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "integration.Controllers.MT.EntryController",
+    "Method": "ProcessEntryPatchData",
     "RelativePath": "api/Entry",
     "HttpMethod": "",
     "IsController": true,

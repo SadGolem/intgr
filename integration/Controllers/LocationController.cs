@@ -153,8 +153,8 @@ namespace integration.Controllers
 
         private object MapLocationData(LocationData location)
         {
-            var datetimeCreate = string.IsNullOrEmpty(location.datetime_create) ? DateTime.UtcNow.ToString("yyyy-MM-dd") : DateTime.Parse(location.datetime_create).ToString("yyyy-MM-dd");
-            var datetimeUpdate = string.IsNullOrEmpty(location.datetime_update) ? DateTime.UtcNow.ToString("yyyy-MM-dd") : DateTime.Parse(location.datetime_update).ToString("yyyy-MM-dd");
+           // var datetimeCreate = string.IsNullOrEmpty(location.datetime_create) ? DateTime.UtcNow.ToString("yyyy-MM-dd") : DateTime.Parse(location.datetime_create).ToString("yyyy-MM-dd");
+         //   var datetimeUpdate = string.IsNullOrEmpty(location.datetime_update) ? DateTime.UtcNow.ToString("yyyy-MM-dd") : DateTime.Parse(location.datetime_update).ToString("yyyy-MM-dd");
 
             return new
             {

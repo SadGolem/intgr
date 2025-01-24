@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 public class EntryData
 {
@@ -24,23 +22,29 @@ public class EntryData
 
     [JsonPropertyName("type")]
     [JsonConverter(typeof(TypeConverter))]  // Применяем конвертер
-    public TypeData? Type { get; set; } //Сделаем nullable, а далее будем использовать TypeName
+    public TypeData? IdContainerType { get; set; } //Сделаем nullable, а далее будем использовать TypeName
 
     [JsonPropertyName("date")]
     public string? PlanDateRO { get; set; } // Обработка в сеттере сохранена
 
-    [JsonPropertyName("volume")]
-    public float? Volume { get; set; }
+    [JsonPropertyName("containers")]
+    public Container[]? Containers { get; set; }
+
+    [JsonPropertyName("number")]
+    public int? additionalContainers { get; set; }
+
+    [JsonPropertyName("capacity")]
+    public Capacity? Capacity { get; set;}
 
     public string CreationDate
     {
         get => DateTime.UtcNow.Date.ToString("yyyy-MM-dd");
     }
-    public int? IdContainerType { get; set; } // Предположим, может быть null
 
-    public int? CommentByRO { get; set; } // Предположим, может быть null
+    [JsonPropertyName("comment")]
+    public string? CommentByRO { get; set; }
 
-    //Здесь наоборот json из МТ в БТ поэтому так
+    [JsonPropertyName("ext_id")]
     public string? Ext_id { get; set; }
 
     public string LocationStatus
@@ -71,7 +75,7 @@ public class EntryData
     {
         get
         {
-            return this.Type?.Name;
+            return this.IdContainerType?.Name;
         }
     }
 
@@ -127,6 +131,19 @@ public class AuthorData
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
+}
+
+public class Container
+{
+    [JsonPropertyName("id")]
+    public int? id { get; set; }
+}
+
+
+public class Capacity
+{
+    [JsonPropertyName("capacity")]
+    public float? volume { get; set; }
 }
 
 public class StatusData

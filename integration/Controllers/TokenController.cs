@@ -126,7 +126,6 @@ namespace integration
             }
         }
 
-
         private async Task<string> GetTokenFromSecondSystem()
         {
             var requestBody = new
