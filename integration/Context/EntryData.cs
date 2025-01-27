@@ -3,7 +3,7 @@
 public class EntryData
 {
     [JsonPropertyName("client_contact")]
-    public string? ConsumerName { get; set; } // Может быть null
+    public ClientContact? ConsumerName { get; set; } // Может быть null
 
     [JsonPropertyName("datetime_create")]
     public DateTime DateTimeCreate { get; set; }
@@ -43,6 +43,7 @@ public class EntryData
 
     [JsonPropertyName("comment")]
     public string? CommentByRO { get; set; }
+
 
     [JsonPropertyName("ext_id")]
     public string? Ext_id { get; set; }
@@ -137,6 +138,14 @@ public class Container
 {
     [JsonPropertyName("id")]
     public int? id { get; set; }
+}
+
+public class ClientContact
+{
+    [JsonPropertyName("id")]
+    public int? id { get; set; }
+    [JsonPropertyName("name")]
+    public string? name { get; set; }
 }
 
 

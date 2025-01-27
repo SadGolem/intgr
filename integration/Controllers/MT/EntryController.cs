@@ -4,7 +4,6 @@ using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using integration.Controllers.Apro;
 using integration.Context;
-using Microsoft.IdentityModel.Tokens;
 namespace integration.Controllers.MT
 {
     [ApiController]
@@ -98,7 +97,7 @@ namespace integration.Controllers.MT
         {
             return new
             {
-                consumerName = wasteData.ConsumerName ?? "",
+                consumerName = wasteData.ConsumerName?.name ?? "",
                 idBT = wasteData.BtNumber,
                 creator = wasteData.AuthorName,
                 status = /*wasteData.Status.Name*/ "Новая",
