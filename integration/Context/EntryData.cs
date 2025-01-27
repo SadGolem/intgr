@@ -14,11 +14,14 @@ public class EntryData
     [JsonPropertyName("id")]
     public int BtNumber { get; set; }
 
+    [JsonPropertyName("waste_site")]
+    public Location location { get; set; }
+
     [JsonPropertyName("author")]
-    public AuthorData? Author { get; set; } //  Объект Author
+    public AuthorData? Author { get; set; }
 
     [JsonPropertyName("status")]
-    public StatusData? Status { get; set; } // Объект Status
+    public StatusData? Status { get; set; } 
 
     [JsonPropertyName("type")]
     [JsonConverter(typeof(TypeConverter))]  // Применяем конвертер
@@ -28,7 +31,7 @@ public class EntryData
     public string? PlanDateRO { get; set; } // Обработка в сеттере сохранена
 
     [JsonPropertyName("containers")]
-    public Container[]? Containers { get; set; }
+    public List<Container>? Containers { get; set; }
 
     [JsonPropertyName("number")]
     public int? additionalContainers { get; set; }
@@ -148,6 +151,11 @@ public class ClientContact
     public string? name { get; set; }
 }
 
+public class Location
+{
+    [JsonPropertyName("id")]
+    public int? id { get; set; }
+}
 
 public class Capacity
 {

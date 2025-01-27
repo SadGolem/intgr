@@ -26,7 +26,7 @@ namespace integration.Controllers.Apro
             _memoryCache = memoryCache;
             _configuration = configuration;
             _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.ToString()
-                .Replace("token-auth/", "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,client_contact{id,name}, author{name},status,volume,date, capacity{capacity},type{id,name},ext_id, comment}");
+                .Replace("token-auth/", "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{capacity},type{id,name},ext_id, comment, containers{id}}");
 
         }
 
@@ -68,13 +68,13 @@ namespace integration.Controllers.Apro
             {
                 if (entry.DateTimeCreate > lastUpdate || entry.DateTimeUpdate > lastUpdate)
                 {
-                    if (entry.DateTimeUpdate > entry.DateTimeCreate)
-                    {
-                        updateEntry.Add(entry);
-                    }
-                    else
+                    if (entry.DateTimeCreate > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
                     {
                         newEntry.Add(entry);
+                    }
+                    else if (entry.DateTimeUpdate > lastUpdate)
+                    {
+                        updateEntry.Add(entry);
                     }
                 }
             }
