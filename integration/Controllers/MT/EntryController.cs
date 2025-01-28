@@ -74,21 +74,26 @@ namespace integration.Controllers.MT
                 HttpResponseMessage response;
 
                 response = await client.PatchAsJsonAsync(apiUrl, MapWasteDataToRequest(wasteData));
+                
 
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
+                ToMessage($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");
                 _logger.LogInformation($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");
             }
             catch (HttpRequestException ex)
             {
+                ToMessage(ex + $" HTTP error while sending data with ID: {wasteData.BtNumber}");
                 _logger.LogError(ex, $"HTTP error while sending data with ID: {wasteData.BtNumber}");
             }
             catch (JsonException ex)
             {
+                ToMessage(ex + $" Json Exception while sending data with ID: {wasteData.BtNumber}");
                 _logger.LogError(ex, $"Json Exception while sending data with ID: {wasteData.BtNumber}");
             }
             catch (Exception ex)
             {
+                ToMessage(ex + $" Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
                 _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
             }
         }
@@ -110,6 +115,10 @@ namespace integration.Controllers.MT
                 type = wasteData.EntryType, //тип заявки
                 idContainerType = 5/*wasteData.IdContainerType ?? 5*/
             };
+        }
+        void ToMessage(string ex)
+        {
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.SetEntryInfo, ex);
         }
     }
 }

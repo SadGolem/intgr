@@ -37,7 +37,7 @@ namespace integration.Controllers.Apro
             newEntry.Clear();
             try
             {
-                await FetchAndPostEntry();
+                await FetchEntry();
                 return Ok("Locations synced successfully.");
             }
             catch (Exception ex)
@@ -47,7 +47,7 @@ namespace integration.Controllers.Apro
             }
         }
 
-        private async Task FetchAndPostEntry()
+        private async Task FetchEntry()
         {
             _logger.LogInformation($"Fetching locations from {_aproConnectSettings}...");
             List<EntryData> entries = new List<EntryData>();
@@ -63,7 +63,7 @@ namespace integration.Controllers.Apro
 
             _logger.LogInformation($"Received {entries.Count} locations");
             var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("entry");
-            
+
             foreach (var entry in entries)
             {
                 if (entry.DateTimeCreate > lastUpdate || entry.DateTimeUpdate > lastUpdate)
@@ -91,13 +91,14 @@ namespace integration.Controllers.Apro
 
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
-
+                ToMessage(content);
                 entries = JsonSerializer.Deserialize<List<EntryData>>(content);
 
                 return entries;
             }
             catch (HttpRequestException ex)
             {
+                ToMessage(ex.Message.ToString());
                 _logger.LogError(ex, $"Error during GET request to {_aproConnectSettings}");
                 throw;
             }
@@ -112,6 +113,11 @@ namespace integration.Controllers.Apro
                 throw;
             }
 
+        }
+
+        void ToMessage(string ex)
+        {
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.GetEntryInfo, ex);
         }
     }
 }

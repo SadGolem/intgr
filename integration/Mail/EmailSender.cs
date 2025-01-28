@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static EmailMessageBuilder;
+using System.Text;
 
 public static class EmailSender
 {
@@ -44,15 +46,33 @@ public static class EmailSender
         }
     }
 
+    private static string BuildBodyEmail(ListType listType)
+    {
+        return EmailMessageBuilder.GetList(listType).ToString() ?? "";
+    }
+
     public static async Task Send()
     {
         List<string> recipients = new List<string> {
             "zubcova_ma@kuzro.ru" // Отправляем самому себе для теста
          };
 
-        string emailSubject = "Тема вашего письма";
-        string emailBody = "<html><body><h1>Привет, это тестовое письмо!</h1><p>Это тело письма.</p></body></html>";
+        StringBuilder fullBody = new StringBuilder();
+        foreach (ListType listType in Enum.GetValues(typeof(ListType)))
+        {
+            fullBody.Clear();
+            fullBody.AppendLine($"<h2>{listType}</h2>");
+            fullBody.Append("<pre>"); // Для лучшего отображения многострочных данных
+            fullBody.Append(BuildBodyEmail(listType));
+            fullBody.Append("</pre>");
+            fullBody.AppendLine("<br>");
 
-        await SendEmailsAsync(recipients, emailSubject, emailBody);
+            string emailSubject = listType.ToString();
+            string emailBody = fullBody.ToString();
+
+            await SendEmailsAsync(recipients, emailSubject, emailBody);
+        }
     }
+
+        
 }

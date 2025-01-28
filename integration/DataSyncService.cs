@@ -1,6 +1,8 @@
 ﻿using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
+using System.Formats.Tar;
+using System.Security.Cryptography.X509Certificates;
 
 namespace integration
 {
@@ -20,54 +22,29 @@ namespace integration
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("DataSyncService is starting.");
+            EmailMessageBuilder.ClearList();
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(_updateTime));
             return Task.CompletedTask;
         }
 
         private async void DoWork(object? state)
         {
-            using (var scope = _serviceProvider.CreateScope())
+            try
             {
-                var tokenController = scope.ServiceProvider.GetService<TokenController>();
-                tokenController.GetTokens();
-                var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
-                var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
-                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
-
-                /* try
-                 {
-                     await locationController.SyncLocations();
-                 }
-                 catch (Exception ex)
-                 {
-                     _logger.LogError(ex, "Error while syncing locations.");
-                 }*/
-
-                try
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    var newWasteData = await wasteSiteEntryController.GetEntriesData();
-                    LastUpdateTextFileManager.SetLastUpdateTime("entry");
-                    if (WasteSiteEntryController.newEntry.Count() > 0 || WasteSiteEntryController.updateEntry.Count() > 0)
-                    {
-                        _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
-                        foreach (var wasteData in WasteSiteEntryController.newEntry)
-                        {
-                            await ProcessWasteData(wasteData, entryController, true);
-                        }
-                        foreach (var wasteUpdateData in WasteSiteEntryController.updateEntry)
-                        {
-                            await ProcessWasteData(wasteUpdateData, entryController,false);
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogInformation("No new/updated records found.");
-                    }
+                    var tokenController = scope.ServiceProvider.GetService<TokenController>();
+                    tokenController.GetTokens();
+                    var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
+                    var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
+                    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
+
+                    //  StartLocation(locationController);
+                    StartEntry(wasteSiteEntryController, entryController);
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "An error occurred while syncing data.");
-                }
+            }
+            finally
+            {
                 await SendAsync();
             }
         }
@@ -75,6 +52,47 @@ namespace integration
         private async Task SendAsync()
         {
             await EmailSender.Send();
+        }
+
+        private async void StartLocation(LocationController locationController)
+        {
+            try
+            {
+                await locationController.SyncLocations();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing locations.");
+            }
+        }
+
+        private async void StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)
+        {
+            try
+            {
+                var newWasteData = await wasteSiteEntryController.GetEntriesData();
+                LastUpdateTextFileManager.SetLastUpdateTime("entry");
+                if (WasteSiteEntryController.newEntry.Count() > 0 || WasteSiteEntryController.updateEntry.Count() > 0)
+                {
+                    _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
+                    foreach (var wasteData in WasteSiteEntryController.newEntry)
+                    {
+                        await ProcessWasteData(wasteData, entryController, true);
+                    }
+                    foreach (var wasteUpdateData in WasteSiteEntryController.updateEntry)
+                    {
+                        await ProcessWasteData(wasteUpdateData, entryController, false);
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("No new/updated records found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while syncing data.");
+            }
         }
 
         private async Task ProcessWasteData(EntryData wasteData, EntryController entryController, bool isNew)
