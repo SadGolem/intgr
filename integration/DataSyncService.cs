@@ -68,7 +68,13 @@ namespace integration
                 {
                     _logger.LogError(ex, "An error occurred while syncing data.");
                 }
+                await SendAsync();
             }
+        }
+
+        private async Task SendAsync()
+        {
+            await EmailSender.Send();
         }
 
         private async Task ProcessWasteData(EntryData wasteData, EntryController entryController, bool isNew)
