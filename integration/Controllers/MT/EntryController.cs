@@ -46,6 +46,7 @@ namespace integration.Controllers.MT
 
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
+                ToMessage($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");
                 _logger.LogInformation($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");
             }
             catch (HttpRequestException ex)
@@ -73,10 +74,14 @@ namespace integration.Controllers.MT
                 var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/update_from_bt");
                 HttpResponseMessage response;
 
+                if (!CheckRequestBody(wasteData))
+                {
+                    return;
+                }
+
                 var requestBody = MapWasteDataToRequest(wasteData);
                 response = await client.PatchAsJsonAsync(apiUrl, requestBody);
                 
-
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
                 ToMessage($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");
@@ -101,10 +106,7 @@ namespace integration.Controllers.MT
 
         private object MapWasteDataToRequest(EntryData wasteData)
         {
-            if (!CheckRequestBody(wasteData))
-            {
-                throw new Exception("Произошла ошибка. Подробнее в EmailMessageBuilder");
-            }
+            
             return new
             {
                 consumerName = wasteData.ConsumerName?.name ?? "",
