@@ -25,9 +25,8 @@ namespace integration.Controllers.Apro
             _logger = logger;
             _memoryCache = memoryCache;
             _configuration = configuration;
-            _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.ToString()
-                .Replace("token-auth/", "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{capacity},type{id,name},ext_id, comment, containers{id}}");
-
+            ConnectngStringApro _connectngStringApro = new ConnectngStringApro(_configuration);
+            _aproConnectSettings = _connectngStringApro.GetAproConnectSettings();
         }
 
         [HttpGet]

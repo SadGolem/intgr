@@ -29,24 +29,23 @@ namespace integration
 
         private async void DoWork(object? state)
         {
-            try
+            using (var scope = _serviceProvider.CreateScope())
             {
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var tokenController = scope.ServiceProvider.GetService<TokenController>();
-                    tokenController.GetTokens();
-                    var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
-                    var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
-                    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
+                var tokenController = scope.ServiceProvider.GetService<TokenController>();
+                tokenController.GetTokens();
+                var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
+                var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
+                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                    //  StartLocation(locationController);
-                    StartEntry(wasteSiteEntryController, entryController);
-                }
+                //  StartLocation(locationController);
+                StartEntry(wasteSiteEntryController, entryController);
+                Send();
             }
-            finally
-            {
-                await SendAsync();
-            }
+        }
+
+        private void Send()
+        {
+            SendAsync();
         }
 
         private async Task SendAsync()
