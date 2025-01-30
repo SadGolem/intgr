@@ -16,7 +16,7 @@ namespace integration.Controllers.MT
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly TokenController _tokenController;
-
+        private StatusCoder statusCoder = new StatusCoder();
         public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
         {
             _logger = logger;
@@ -73,7 +73,8 @@ namespace integration.Controllers.MT
                 var apiUrl = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/entry/update_from_bt");
                 HttpResponseMessage response;
 
-                response = await client.PatchAsJsonAsync(apiUrl, MapWasteDataToRequest(wasteData));
+                var requestBody = MapWasteDataToRequest(wasteData);
+                response = await client.PatchAsJsonAsync(apiUrl, requestBody);
                 
 
                 response.EnsureSuccessStatusCode();
@@ -100,12 +101,16 @@ namespace integration.Controllers.MT
 
         private object MapWasteDataToRequest(EntryData wasteData)
         {
+            if (!CheckRequestBody(wasteData))
+            {
+                throw new Exception("Произошла ошибка. Подробнее в EmailMessageBuilder");
+            }
             return new
             {
                 consumerName = wasteData.ConsumerName?.name ?? "",
                 idBT = wasteData.BtNumber,
                 creator = wasteData.AuthorName,
-                status = /*wasteData.Status.Name*/ "Новая",
+                status = statusCoder.ToCorrectStatus(wasteData),
                 idLocation = wasteData.location?.id ?? 0,
                 amount = wasteData.Containers?.Count,
                 volume = wasteData.Capacity?.volume ?? 0,
@@ -113,9 +118,38 @@ namespace integration.Controllers.MT
                 planDateRO = wasteData.PlanDateRO,
                 commentByRO = wasteData.CommentByRO ?? "",
                 type = wasteData.EntryType, //тип заявки
-                idContainerType = 5/*wasteData.IdContainerType ?? 5*/
+                idContainerType = statusCoder.ToCorrectContainer(wasteData)
             };
         }
+
+        bool CheckRequestBody(EntryData wasteData)
+        {
+            if (wasteData.ConsumerName == null || wasteData.ConsumerName?.name == "")
+            {
+                ToMessage($" ConsumerName is empty: {wasteData.BtNumber}");
+                return false;
+            }
+            else if (wasteData.Status == null || (wasteData.Status.Id != 302 && wasteData.Status.Id != 282 && wasteData.Status.Id != 179))
+            {
+                ToMessage($" Status is empty or incorrect: {wasteData.BtNumber}");
+                return false;
+            }
+            else if (wasteData.Containers == null || wasteData.Containers.Count == 0)
+            {
+                ToMessage($" Containers is empty or incorrect: {wasteData.BtNumber}");
+                return false;
+            }
+            else if (wasteData.Capacity == null || wasteData.Capacity?.volume == 0)
+            {
+                ToMessage($" Volume is empty or incorrect: {wasteData.BtNumber}");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         void ToMessage(string ex)
         {
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.SetEntryInfo, ex);
