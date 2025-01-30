@@ -23,37 +23,33 @@ namespace integration
         {
             _logger.LogInformation("DataSyncService is starting.");
             EmailMessageBuilder.ClearList();
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(_updateTime));
+            _timer = new Timer(async (state) => await DoWork(state), null, TimeSpan.Zero, TimeSpan.FromMinutes(_updateTime));
             return Task.CompletedTask;
         }
 
-        private async void DoWork(object? state)
+        private async Task DoWork(object? state)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
                 var tokenController = scope.ServiceProvider.GetService<TokenController>();
-                tokenController.GetTokens();
+                await tokenController.GetTokens();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
                 var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                //  StartLocation(locationController);
-                StartEntry(wasteSiteEntryController, entryController);
-                Send();
+                await StartLocation(locationController);
+                await StartEntry(wasteSiteEntryController, entryController);
+                await SendAsync();
             }
         }
 
-        private void Send()
-        {
-            SendAsync();
-        }
 
         private async Task SendAsync()
         {
             await EmailSender.Send();
         }
 
-        private async void StartLocation(LocationController locationController)
+        private async Task StartLocation(LocationController locationController)
         {
             try
             {
@@ -65,13 +61,13 @@ namespace integration
             }
         }
 
-        private async void StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)
+        private async Task StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)
         {
             try
             {
                 var newWasteData = await wasteSiteEntryController.GetEntriesData();
                 LastUpdateTextFileManager.SetLastUpdateTime("entry");
-                if (WasteSiteEntryController.newEntry.Count() > 0 || WasteSiteEntryController.updateEntry.Count() > 0)
+                if (WasteSiteEntryController.newEntry.Any() || WasteSiteEntryController.updateEntry.Any())
                 {
                     _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
                     foreach (var wasteData in WasteSiteEntryController.newEntry)
@@ -106,7 +102,7 @@ namespace integration
                 if (isNew)
                     await entryController.ProcessEntryPostData(wasteData);
                 else { await entryController.ProcessEntryPatchData(wasteData); }
-                
+
             }
             catch (Exception ex)
             {
@@ -125,5 +121,6 @@ namespace integration
         {
             _timer?.Dispose();
         }
+
     }
 }
