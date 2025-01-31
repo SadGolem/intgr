@@ -6,13 +6,17 @@ public static class EmailMessageBuilder
     public enum ListType
     {
         GetEntryInfo,
-        SetEntryInfo
+        SetEntryInfo,
+        GetLocationInfo,
+        SetLocationInfo
     }
 
     private static Dictionary<ListType, List<string>> _lists = new Dictionary<ListType, List<string>>
     {
         { ListType.GetEntryInfo, new List<string>() },
-        { ListType.SetEntryInfo, new List<string>() }
+        { ListType.SetEntryInfo, new List<string>() },
+        { ListType.GetLocationInfo, new List<string>() },
+        { ListType.SetLocationInfo, new List<string>() }
     };
 
     public static void PutInformation(ListType listType, string s)

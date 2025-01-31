@@ -61,7 +61,7 @@ public static class EmailSender
         foreach (ListType listType in Enum.GetValues(typeof(ListType)))
         {
             fullBody.Clear();
-            fullBody.AppendLine($"<h2>{listType}</h2>");
+            /*fullBody.AppendLine($"<h2>{listType}</h2>");*/
             fullBody.Append("<pre>"); // Для лучшего отображения многострочных данных
             fullBody.Append(BuildBodyEmail(listType));
             fullBody.Append("</pre>");
@@ -70,6 +70,8 @@ public static class EmailSender
             string emailSubject = listType.ToString();
             string emailBody = fullBody.ToString();
 
+            if (emailBody == "<pre></pre><br>\r\n")
+                return;
             await SendEmailsAsync(recipients, emailSubject, emailBody);
         }
     }
