@@ -106,7 +106,7 @@ namespace integration.Controllers.MT
 
         private object MapWasteDataToRequest(EntryData wasteData)
         {
-            
+
             return new
             {
                 consumerName = wasteData.ConsumerName?.name ?? "",
@@ -120,7 +120,8 @@ namespace integration.Controllers.MT
                 planDateRO = wasteData.PlanDateRO,
                 commentByRO = wasteData.CommentByRO ?? "",
                 type = wasteData.EntryType, //тип заявки
-                idContainerType = statusCoder.ToCorrectContainer(wasteData)
+                idContainerType = statusCoder.ToCorrectContainer(wasteData),
+                idMtUser = _configuration.GetSection("idMtUser")
             };
         }
 

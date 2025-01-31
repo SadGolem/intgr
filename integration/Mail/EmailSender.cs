@@ -71,7 +71,7 @@ public static class EmailSender
             string emailBody = fullBody.ToString();
 
             if (emailBody == "<pre></pre><br>\r\n")
-                return;
+                continue;
             await SendEmailsAsync(recipients, emailSubject, emailBody);
         }
     }

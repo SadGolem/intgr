@@ -14,13 +14,13 @@ namespace integration.Context
         private readonly IConfiguration _configuration;
         private string _aproConnectSettings;
 
-        public ConnectngStringApro(IConfiguration configuration)
+        public ConnectngStringApro(IConfiguration configuration, string url)
         {
             _configuration = configuration;
-            InitializeAproConnectSettings();
+            InitializeAproConnectSettings(url);
         }
 
-        private void InitializeAproConnectSettings()
+        private void InitializeAproConnectSettings(string url)
         {
             var authSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>();
             if (authSettings == null || string.IsNullOrEmpty(authSettings.CallbackUrl))
@@ -42,7 +42,7 @@ namespace integration.Context
 
 
             _aproConnectSettings = callbackUrl
-                .Replace("token-auth/", $"wf__wastetakeoutrequest__garbage_collection_request/?query={{id, datetime_create, datetime_update,waste_site{{id}},client_contact{{id,name}}, author{{name}},status,volume,date, capacity{{capacity}},type{{id,name}},ext_id, comment, containers{{id}}}}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
+                .Replace("token-auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
 
 
         }

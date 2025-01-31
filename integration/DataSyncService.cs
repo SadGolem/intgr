@@ -38,7 +38,7 @@ namespace integration
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
                 await StartLocation(locationController);
-                await StartEntry(wasteSiteEntryController, entryController);
+               // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
             }
         }

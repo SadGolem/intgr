@@ -9,9 +9,9 @@ namespace integration.Context
         [JsonPropertyName("status")]
         public int status { get; set; }
         [JsonPropertyName("datetime_create")]
-        public string datetime_create { get; set; }
+        public DateTime datetime_create { get; set; }
         [JsonPropertyName("datetime_update")]
-        public string datetime_update { get; set; }
+        public DateTime datetime_update { get; set; }
         [JsonPropertyName("lon")]
         public double lon { get; set; }
         [JsonPropertyName("lat")]
