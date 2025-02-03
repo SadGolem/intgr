@@ -43,7 +43,6 @@ namespace integration
             }
         }
 
-
         private async Task SendAsync()
         {
             await EmailSender.Send();

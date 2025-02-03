@@ -2,7 +2,6 @@
 using System.Text.Json;
 using integration.Context;
 using System.Text;
-using System.Globalization;
 
 namespace integration.Controllers
 {
@@ -65,9 +64,6 @@ namespace integration.Controllers
                 _logger.LogError(ex, "Error during locations fetch");
                 return;
             }
-
-            
-
             _logger.LogInformation($"Received {locations.Count} locations");
         }
 
@@ -135,6 +131,7 @@ namespace integration.Controllers
             //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             try
             {
+                if (!CheckLocation(location)) return;
                 var mappedLocation = MapLocationData(location);
                 var jsonBody = JsonSerializer.Serialize(mappedLocation);
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -181,6 +178,16 @@ namespace integration.Controllers
             };
         }
 
+        private bool CheckLocation(LocationData location)
+        {
+            if (location.address == null || location.address == "")
+            {
+                ToSetMessage("Address is empty");
+                return false;
+            }
+            return true;
+        }
+
         void ToSetMessage(string ex)
         {
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.SetLocationInfo, ex);
@@ -191,6 +198,5 @@ namespace integration.Controllers
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.GetLocationInfo, ex);
         }
     }
-
 }
 

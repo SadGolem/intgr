@@ -43,8 +43,6 @@ namespace integration.Context
 
             _aproConnectSettings = callbackUrl
                 .Replace("token-auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
-
-
         }
         public string GetAproConnectSettings()
         {

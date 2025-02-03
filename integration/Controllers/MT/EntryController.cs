@@ -106,7 +106,6 @@ namespace integration.Controllers.MT
 
         private object MapWasteDataToRequest(EntryData wasteData)
         {
-
             return new
             {
                 consumerName = wasteData.ConsumerName?.name ?? "",
