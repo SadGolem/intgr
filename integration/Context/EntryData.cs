@@ -37,7 +37,7 @@ public class EntryData
     public int? additionalContainers { get; set; }
 
     [JsonPropertyName("capacity")]
-    public Capacity? Capacity { get; set;}
+    public Capacity Capacity { get; set;}
 
     public string CreationDate
     {
@@ -159,8 +159,8 @@ public class Location
 
 public class Capacity
 {
-    [JsonPropertyName("capacity")]
-    public float? volume { get; set; }
+    [JsonPropertyName("id")]
+    public int id { get; set; }
 }
 
 public class StatusData

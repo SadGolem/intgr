@@ -114,7 +114,7 @@ namespace integration.Controllers.MT
                 status = statusCoder.ToCorrectStatus(wasteData),
                 idLocation = wasteData.location?.id ?? 0,
                 amount = wasteData.Containers?.Count,
-                volume = wasteData.Capacity?.volume ?? 0,
+                volume = statusCoder.ToCorrectCapacity(wasteData.Capacity.id) ,
                 creationDate = wasteData.DateTimeCreate.ToString("yyyy-MM-dd"),
                 planDateRO = wasteData.PlanDateRO,
                 commentByRO = wasteData.CommentByRO ?? "",
@@ -141,7 +141,7 @@ namespace integration.Controllers.MT
                 ToMessage($" Containers is empty or incorrect: {wasteData.BtNumber}");
                 return false;
             }
-            else if (wasteData.Capacity == null || wasteData.Capacity?.volume == 0)
+            else if (wasteData.Capacity == null || wasteData.Capacity?.id == 0)
             {
                 ToMessage($" Volume is empty or incorrect: {wasteData.BtNumber}");
                 return false;

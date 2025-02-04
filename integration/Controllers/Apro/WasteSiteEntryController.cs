@@ -14,17 +14,15 @@ namespace integration.Controllers.Apro
         private string _aproConnectSettings;
         private readonly HttpClient _httpClient;
         private readonly ILogger<WasteSiteEntryController> _logger;
-        private readonly IMemoryCache _memoryCache;
         private readonly IConfiguration _configuration;
         public static List<EntryData> newEntry = new List<EntryData>();
         public static List<EntryData> updateEntry = new List<EntryData>();
         private string url = "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{capacity},type{id,name},ext_id, comment, containers{id}}";
 
-        public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IMemoryCache memoryCache, IConfiguration configuration)
+        public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _logger = logger;
-            _memoryCache = memoryCache;
             _configuration = configuration;
             ConnectngStringApro _connectngStringApro = new ConnectngStringApro(_configuration, url);
             _aproConnectSettings = _connectngStringApro.GetAproConnectSettings();
@@ -68,6 +66,7 @@ namespace integration.Controllers.Apro
             {
                 if (entry.DateTimeCreate > lastUpdate || entry.DateTimeUpdate > lastUpdate)
                 {
+                    //надо найти объем
                     if (entry.DateTimeCreate > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
                     {
                         newEntry.Add(entry);
