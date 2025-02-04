@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public class StatusCoder
+    public static class StatusCoder
     {
         private static Dictionary<int, string> _statusEntry = new Dictionary<int, string>
         {
@@ -17,20 +17,21 @@ namespace integration.Context
             { 52, "Черновик" }
         };
 
-        private static Dictionary<int, string> _statusLocation = new Dictionary<int, string>
+        private static List<(int Key, string Value)> _statusLocation = new List<(int Key, string Value)>
         {
-            { 179, "Новая" }, //черновик
-            { 43, "Заявка на проверку" }, //заявка на проверку
-            { 61, "Проверенная" }, //запланировано
-            { 301, "Изменена" }, //
-            { 166, "Инспекция" }, //запланировано
-            { 282, "Действующая" },//обслуживается
-            { 302, "Фактическая" }, //проверено
-            { 302, "Плановая" }, //заявка на проверку
-            { 300, "Неизвестная" },//не проверено
-            { 52, "Закрыта" }, //временно закрыто
-            { 52, "Проинспектирована" } //запланировано
+            ( 52, "Новая" ),
+            ( 74, "Заявка на проверку" ),
+            ( 167, "Проверенная" ),
+            ( 301, "Изменена" ), //не готово
+            ( 167, "Инспекция" ),
+            ( 14, "Действующая" ),
+            ( 67, "Фактическая" ),
+            ( 74, "Плановая" ),
+            ( 159, "Неизвестная" ),
+            ( 70, "Закрыта" ),
+            ( 167, "Проинспектирована" )
         };
+
 
         private static Dictionary<int, double> _containersCapacityMapping = new Dictionary<int, double>
         {
@@ -92,107 +93,51 @@ namespace integration.Context
             { 2534, 48 }
         };
 
-        private static Dictionary<int, int> _containersMapping = new Dictionary<int, int>
+        private static List<(int Key, int Value)> _containersMapping = new List<(int Key, int Value)>
         {
-            { 3, 153 },
-            { 19, 99 },
-            { 7, 142 },
-            { 7, 103 },
-            { 4, 98 },
-            { 38, 102 },
-            { 3, 111 },
-            { 4, 34 },
-            { 3, 114 },
-            { 3, 105 },
-            { 3, 137 },
-            { 3, 139 },
-            { 3, 132 },
-            { 3, 138 },
-            { 3, 136 },
-            { 3, 135 },
-            { 2, 145 },
-            { 3, 143 },
-            { 4, 37 },
-            { 3, 134 },
-            { 3, 106 },
-            { 3, 2 },
-            { 4, 160 },
-            { 4, 96 },
-            { 3, 148 },
-            { 3, 146 },
-            { 29, 36 },
-            { 3, 108 },
-            { 4, 97 },
-            { 20, 152 },
-            { 3, 157 },
-            { 29, 117 },
-            { 29, 113 },
-            { 8, 110 },
-            { 29, 133 },
-            { 29, 115 },
-            { 29, 129 },
-            { 29, 128 },
-            { 29, 140 },
-            { 29, 107 },
-            { 29, 130 },
-            { 29, 118 },
-            { 29, 19 },
-            { 29, 112 },
-            { 29, 151 },
-            { 3, 155 },
-            { 8, 154 },
-            { 4, 131 },
-            { 4, 104 },
-            { 4, 150 },
-            { 3, 165 },
-            { 3, 159 },
-            { 8, 109 },
-            { 8, 162 },
-            { 29, 166 },
-            { 29, 164 },
-            { 8, 161 },
-            { 3, 141 },
-            { 3, 156 },
-            { 19, 101 },
-            { 19, 149 },
-            { 19, 158 },
-            { 19, 163 },
-            { 19, 100 },
-            { 19, 144 },
-            { 4, 147 }
+            (3, 153), (19, 99), (7, 142), (7, 103), (4, 98), (38, 102), (3, 111),
+            (4, 34), (3, 114), (3, 105), (3, 137), (3, 139), (3, 132), (3, 138),
+            (3, 136), (3, 135), (2, 145), (3, 143), (4, 37), (3, 134), (3, 106),
+            (3, 2), (4, 160), (4, 96), (3, 148), (3, 146), (29, 36), (3, 108),
+            (4, 97), (20, 152), (3, 157), (29, 117), (29, 113), (8, 110), (29, 133),
+            (29, 115), (29, 129), (29, 128), (29, 140), (29, 107), (29, 130),
+            (29, 118), (29, 19), (29, 112), (29, 151), (3, 155), (8, 154), (4, 131),
+            (4, 104), (4, 150), (3, 165), (3, 159), (8, 109), (8, 162), (29, 166),
+            (29, 164), (8, 161), (3, 141), (3, 156), (19, 101), (19, 149), (19, 158),
+            (19, 163), (19, 100), (19, 144), (4, 147)
         };
 
-        public string ToCorrectStatus(EntryData wasteData)
+        public static string ToCorrectStatus(EntryData wasteData)
         {
             int status = wasteData.Status?.Id ?? 0;
             if (status == 0)
                 return "";
             else if (status != 179 && status != 302 && status != 282)
                 return "";
-            else if (_statusEntry.ContainsKey(status))
+            else if (_statusEntry.TryGetValue(status, out string? value))
             {
-                return _statusEntry[status];  // Перекодируем статус если он существует в словаре
+                return value;  // Перекодируем статус если он существует в словаре
             }
             return "";
         }
 
-        public int ToCorrectContainer(EntryData wasteData)
+        public static int ToCorrectContainer(EntryData wasteData) //Возвращаем список
         {
-            if (wasteData.IdContainerType == null) return -1;
+            if (wasteData.IdContainerType == null) return -1 ; // или null, если хотите
 
             int containerId = wasteData.IdContainerType.Id;
-
-            if (_containersMapping.ContainsKey(containerId))
+            int results = 0;
+            foreach (var item in _containersMapping)
             {
-                return _containersMapping[containerId];
+                if (item.Key == containerId)
+                {
+                    results = item.Value;
+                }
             }
-            else
-            {
-                return -1; //  -1 если не найдено.
-            }
+            return results; // Вернет пустой список, если ничего не найдено
         }
 
-        public double ToCorrectCapacity(int idCapacity)
+        public static double ToCorrectCapacity(int idCapacity)
         {
             if (idCapacity == null) return -1;
 
@@ -205,5 +150,19 @@ namespace integration.Context
                 return -1;
             }
         }
+
+        public static string ToCorrectLocationStatus(int id) //Возвращаем список
+        {
+            string results = "";
+            foreach (var item in _statusLocation)
+            {
+                if (item.Key == id)
+                {
+                    results = item.Value;
+                }
+            }
+            return results; // Вернет пустой список, если ничего не найдено
+        }
+
     }
 }

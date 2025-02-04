@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-public static class LastUpdateTextFileManager
+public static class LastUpdateTextFileManager 
 {
     private const string _filePath = "C:\\Projects\\intgr\\saves\\save01.txt";
     private const string DateTimeFormat = "O";
@@ -129,4 +129,5 @@ public static class LastUpdateTextFileManager
                        ((x & 0x00ff0000) >> 8) +
                        ((x & 0xff000000) >> 24));
     }
+
 }

@@ -17,7 +17,7 @@ namespace integration.Controllers.Apro
         private readonly IConfiguration _configuration;
         public static List<EntryData> newEntry = new List<EntryData>();
         public static List<EntryData> updateEntry = new List<EntryData>();
-        private string url = "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{capacity},type{id,name},ext_id, comment, containers{id}}";
+        private string url = "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{id},type{id,name},ext_id, comment, containers{id}}";
 
         public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IConfiguration configuration)
         {

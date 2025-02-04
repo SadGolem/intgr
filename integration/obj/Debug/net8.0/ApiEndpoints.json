@@ -1,5 +1,15 @@
 [
   {
+    "ContainingType": "ClientController",
+    "Method": "GetEntriesData",
+    "RelativePath": "api/Client",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "integration.Controllers.MT.EntryController",
     "Method": "ProcessEntryPostData",
     "RelativePath": "api/Entry",

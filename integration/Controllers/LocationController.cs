@@ -16,8 +16,8 @@ namespace integration.Controllers
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _mtConnect;
-        private readonly string url = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address}";
-        private readonly string _aproConnect = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address}";
+        private readonly string url = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
+        private readonly string _aproConnect = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
 
         public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
@@ -56,7 +56,7 @@ namespace integration.Controllers
             try
             {
                 locations = await FetchLocationData();
-                LastUpdateTextFileManager.SetLastUpdateTime("locations");
+                
                 await PostOrPatch(locations);
             }
             catch (Exception ex)
@@ -83,8 +83,10 @@ namespace integration.Controllers
                     {
                         await PostAndPatchLocation(location, false);
                     }
-                } 
-            } 
+                }
+                LastUpdateTextFileManager.SetLastUpdateTime("locations");
+            }
+            
         }
 
         private async Task<List<LocationData>> FetchLocationData()
@@ -105,6 +107,7 @@ namespace integration.Controllers
                 locations = await JsonSerializer.DeserializeAsync<List<LocationData>>(
                    await response.Content.ReadAsStreamAsync(), options);
                 ToGetMessage("Got locations: " + content);
+                
                 return locations;
             }
             catch (HttpRequestException ex)
@@ -172,7 +175,7 @@ namespace integration.Controllers
                 idBT = location.id,
                 longitude = location.lon,
                 latitude = location.lat,
-                status = "Действующая", //необходимо принимать статусы по кодам
+                status = StatusCoder.ToCorrectLocationStatus(location.status), //необходимо принимать статусы по кодам
                 address = location.address,
                 idMtUser = _configuration.GetSection("idMtUser")
             };

@@ -1,8 +1,6 @@
 ﻿using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
-using System.Formats.Tar;
-using System.Security.Cryptography.X509Certificates;
 
 namespace integration
 {
@@ -38,7 +36,7 @@ namespace integration
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
                 await StartLocation(locationController);
-               // await StartEntry(wasteSiteEntryController, entryController);
+                await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
             }
         }
@@ -120,6 +118,5 @@ namespace integration
         {
             _timer?.Dispose();
         }
-
     }
 }

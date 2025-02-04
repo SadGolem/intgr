@@ -16,7 +16,6 @@ namespace integration.Controllers.MT
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly TokenController _tokenController;
-        private StatusCoder statusCoder = new StatusCoder();
         public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
         {
             _logger = logger;
@@ -51,14 +50,17 @@ namespace integration.Controllers.MT
             }
             catch (HttpRequestException ex)
             {
+                ToMessage(ex + $" HTTP error while sending data with ID: {wasteData.BtNumber}");
                 _logger.LogError(ex, $"HTTP error while sending data with ID: {wasteData.BtNumber}");
             }
             catch (JsonException ex)
             {
+                ToMessage(ex + $" Json Exception while sending data with ID: {wasteData.BtNumber}");
                 _logger.LogError(ex, $"Json Exception while sending data with ID: {wasteData.BtNumber}");
             }
             catch (Exception ex)
             {
+                ToMessage(ex + $" Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
                 _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
             }
         }
@@ -111,16 +113,16 @@ namespace integration.Controllers.MT
                 consumerName = wasteData.ConsumerName?.name ?? "",
                 idBT = wasteData.BtNumber,
                 creator = wasteData.AuthorName,
-                status = statusCoder.ToCorrectStatus(wasteData),
+                status = StatusCoder.ToCorrectStatus(wasteData),
                 idLocation = wasteData.location?.id ?? 0,
                 amount = wasteData.Containers?.Count,
-                volume = statusCoder.ToCorrectCapacity(wasteData.Capacity.id) ,
+                volume = StatusCoder.ToCorrectCapacity(wasteData.Capacity.id),
                 creationDate = wasteData.DateTimeCreate.ToString("yyyy-MM-dd"),
                 planDateRO = wasteData.PlanDateRO,
                 commentByRO = wasteData.CommentByRO ?? "",
                 type = wasteData.EntryType, //тип заявки
-                idContainerType = statusCoder.ToCorrectContainer(wasteData),
-                idMtUser = _configuration.GetSection("idMtUser")
+                idContainerType = StatusCoder.ToCorrectContainer(wasteData),
+                /*idMtUser = _configuration.GetSection("idMtUser")*/
             };
         }
 

@@ -6,7 +6,7 @@ namespace integration.Context
     {
         [JsonPropertyName("id")]
         public int id { get; set; }
-        [JsonPropertyName("status")]
+        [JsonPropertyName("status_id")]
         public int status { get; set; }
         [JsonPropertyName("datetime_create")]
         public DateTime datetime_create { get; set; }
