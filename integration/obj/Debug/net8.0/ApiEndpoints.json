@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "ClientController",
-    "Method": "GetEntriesData",
+    "Method": "GetontragentsData",
     "RelativePath": "api/Client",
     "HttpMethod": "GET",
     "IsController": true,
@@ -57,6 +57,16 @@
     "ContainingType": "integration.Controllers.LocationController",
     "Method": "SyncLocations",
     "RelativePath": "api/Location/syncLocations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "integration.Controllers.Apro.ScheduleController",
+    "Method": "GetScheduleData",
+    "RelativePath": "api/Schedule",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

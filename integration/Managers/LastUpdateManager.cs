@@ -82,38 +82,29 @@ public static class LastUpdateTextFileManager
 
     public static DateTime GetNetworkTimeUtc(string ntpServer = "time.nist.gov")
     {
-        // NTP message size - 16 bytes of the digest (RFC 2030)
         var ntpData = new byte[48];
 
-        //Setting the Leap Indicator, Version Number and Mode values
-        ntpData[0] = 0x1B; //LI = 0 (no warning), VN = 3 (IPv4 only), Mode = 3 (Client Mode)
+        ntpData[0] = 0x1B;
 
         var addresses = Dns.GetHostEntry(ntpServer).AddressList;
 
-        // NTP работает через UDP и использует порт 123
         var ipEndPoint = new IPEndPoint(addresses[0], 123);
         using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
         {
             socket.Connect(ipEndPoint);
 
-            //Stops code hang if NTP is blocked
             socket.ReceiveTimeout = 3000;
 
             socket.Send(ntpData);
             socket.Receive(ntpData);
         }
 
-        //Offset to get to the "Transmit Timestamp" field (time at which the reply 
-        //departed the server for the client, in 64-bit timestamp format."
         const byte serverReplyTime = 40;
 
-        // Get the seconds part
         ulong intPart = BitConverter.ToUInt32(ntpData, serverReplyTime);
 
-        // Get the seconds fraction
         ulong fractPart = BitConverter.ToUInt32(ntpData, serverReplyTime + 4);
 
-        //Convert From big-endian to little-endian
         intPart = SwapEndianness(intPart);
         fractPart = SwapEndianness(fractPart);
 
@@ -121,7 +112,6 @@ public static class LastUpdateTextFileManager
         return (new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds((long)milliseconds);
     }
 
-    // Convert From big-endian to little-endian
     static uint SwapEndianness(ulong x)
     {
         return (uint)(((x & 0x000000ff) << 24) +

@@ -177,7 +177,7 @@ namespace integration.Controllers
                 latitude = location.lat,
                 status = StatusCoder.ToCorrectLocationStatus(location.status), //необходимо принимать статусы по кодам
                 address = location.address,
-                idMtUser = _configuration.GetSection("idMtUser")
+                //idMtUser = _configuration.GetSection("idMtUser")
             };
         }
 
@@ -193,12 +193,12 @@ namespace integration.Controllers
 
         void ToSetMessage(string ex)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.SetLocationInfo, ex);
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setlocation, ex);
         }
 
         void ToGetMessage(string ex)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.GetLocationInfo, ex);
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
         }
     }
 }

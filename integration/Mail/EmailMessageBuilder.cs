@@ -1,22 +1,32 @@
-﻿using System.Collections.Generic;
-using static EmailMessageBuilder;
-
+﻿
 public static class EmailMessageBuilder
 {
     public enum ListType
     {
-        GetEntryInfo,
-        SetEntryInfo,
-        GetLocationInfo,
-        SetLocationInfo
+        getentry,
+        setentry,
+        getlocation,
+        setlocation,
+        getschedule,
+        setschedule,
+        getcontragent,
+        setcontragent,
+        getemitter,
+        setemitter
     }
 
     private static Dictionary<ListType, List<string>> _lists = new Dictionary<ListType, List<string>>
     {
-        { ListType.GetEntryInfo, new List<string>() },
-        { ListType.SetEntryInfo, new List<string>() },
-        { ListType.GetLocationInfo, new List<string>() },
-        { ListType.SetLocationInfo, new List<string>() }
+        { ListType.getcontragent, new List<string>() },
+        { ListType.setcontragent, new List<string>() },
+        { ListType.getemitter, new List<string>() },
+        { ListType.setemitter, new List<string>() },
+        { ListType.getlocation, new List<string>() },
+        { ListType.setlocation, new List<string>() },
+        { ListType.getschedule, new List<string>() },
+        { ListType.setschedule, new List<string>() },
+        { ListType.getentry, new List<string>() },
+        { ListType.setentry, new List<string>() }
     };
 
     public static void PutInformation(ListType listType, string s)
@@ -41,12 +51,6 @@ public static class EmailMessageBuilder
     public static void ClearList(ListType listType)
     {
         _lists[listType].Clear();
-    }
-
-    public static void ClearList()
-    {
-        //foreach()
-        //_lists[listType].Clear();
     }
 
     public static void AddNewList(ListType listType)

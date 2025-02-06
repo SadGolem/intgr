@@ -111,12 +111,11 @@ namespace integration.Controllers.Apro
                 _logger.LogError(ex, $"Unexpected error while fetching data from {_aproConnectSettings}");
                 throw;
             }
-
         }
 
         void ToMessage(string ex)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.GetEntryInfo, ex);
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getentry, ex);
         }
     }
 }

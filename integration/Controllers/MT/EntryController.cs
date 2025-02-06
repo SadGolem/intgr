@@ -156,7 +156,7 @@ namespace integration.Controllers.MT
 
         void ToMessage(string ex)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.SetEntryInfo, ex);
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setentry, ex);
         }
     }
 }

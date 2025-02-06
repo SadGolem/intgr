@@ -20,7 +20,7 @@ namespace integration
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("DataSyncService is starting.");
-            EmailMessageBuilder.ClearList();
+           // EmailMessageBuilder.ClearList();
             _timer = new Timer(async (state) => await DoWork(state), null, TimeSpan.Zero, TimeSpan.FromMinutes(_updateTime));
             return Task.CompletedTask;
         }
@@ -31,11 +31,16 @@ namespace integration
             {
                 var tokenController = scope.ServiceProvider.GetService<TokenController>();
                 await tokenController.GetTokens();
+
+                var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
+                var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
                 var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
+                await StartContragent(contragentController);
                 await StartLocation(locationController);
+                await StartLoctko(scheduleController);
                 await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
             }
@@ -44,6 +49,18 @@ namespace integration
         private async Task SendAsync()
         {
             await EmailSender.Send();
+        }
+
+        private async Task StartLoctko(ScheduleController scheduleController)
+        {
+            try
+            {
+                await scheduleController.GetScheduleData();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing schedule.");
+            }
         }
 
         private async Task StartLocation(LocationController locationController)
@@ -55,6 +72,18 @@ namespace integration
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing locations.");
+            }
+        }
+
+        private async Task StartContragent(ClientController clientController)
+        {
+            try
+            {
+                await clientController.GetontragentsData();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing contragents.");
             }
         }
 
