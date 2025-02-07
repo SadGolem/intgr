@@ -1,6 +1,6 @@
 ﻿namespace integration.Context
 {
-    public class ClientData
+    public class ClientData : Data
     {
 
     }

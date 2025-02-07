@@ -1,15 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using integration.Context;
+using System.Text.Json.Serialization;
 
-public class EntryData
+public class EntryData: Data
 {
     [JsonPropertyName("client_contact")]
     public ClientContact? ConsumerName { get; set; } // Может быть null
-
-    [JsonPropertyName("datetime_create")]
-    public DateTime DateTimeCreate { get; set; }
-
-    [JsonPropertyName("datetime_update")]
-    public DateTime DateTimeUpdate { get; set; }
 
     [JsonPropertyName("id")]
     public int BtNumber { get; set; }

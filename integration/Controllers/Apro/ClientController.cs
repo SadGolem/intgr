@@ -67,11 +67,11 @@ public class ClientController : ControllerBase
 
         foreach (var entry in entries)
         {
-            if (entry.DateTimeUpdate > lastUpdate)
+            if (entry.datetime_update > lastUpdate)
             {
                 updateEntries.Add(entry);
             }
-            else if (entry.DateTimeCreate > lastUpdate)
+            else if (entry.datetime_create > lastUpdate)
             {
                 newEntries.Add(entry);
             }
