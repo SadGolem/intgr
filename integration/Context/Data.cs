@@ -73,6 +73,20 @@ namespace integration.Context
             public bool? MeanDeleted { get; set; }
         }
 
+        public class Status
+        {
+            [JsonPropertyName("id")]
+            public int id { get; set; }
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+        }
+
+        public class Author
+        {
+            [JsonPropertyName("id")]
+            public int id { get; set; }
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+        }
     }
-}
 }
