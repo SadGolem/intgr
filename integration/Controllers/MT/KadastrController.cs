@@ -1,22 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using integration.Context;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Caching.Memory;
-using integration.Controllers.Apro;
-using integration.Context;
+
 namespace integration.Controllers.MT
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EntryController : ControllerBase
+    public class KadastrController
     {
         private AuthSettings _mtConnectSettings;
+        private string _mtConnect;
         private readonly ILogger<EntryController> _logger;
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly TokenController _tokenController;
-        public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
+        private readonly string url = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
+
+        public KadastrController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
         {
             _logger = logger;
             _memoryCache = memoryCache;
@@ -24,6 +27,7 @@ namespace integration.Controllers.MT
             _configuration = configuration;
             _tokenController = tokenController;
             _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
+           // _mtConnectSettings = _mtConnectSettings.CallbackUrl.Replace("auth", "api/v2/location/create");
             _logger.LogInformation("DataController initialized.");
         }
 
@@ -41,7 +45,7 @@ namespace integration.Controllers.MT
                 var jsonBody = JsonSerializer.Serialize(entry);
 
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-                using HttpResponseMessage response = await client.PostAsync(apiUrl,content) ;
+                using HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -83,7 +87,7 @@ namespace integration.Controllers.MT
 
                 var requestBody = MapWasteDataToRequest(wasteData);
                 response = await client.PatchAsJsonAsync(apiUrl, requestBody);
-                
+
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
                 ToMessage($"Successfully sent data for ID: {wasteData.BtNumber}. Response: {responseContent}");

@@ -7,15 +7,15 @@ namespace integration.Context
         public new string nameFileTime = "emitter";
 
         [JsonPropertyName("id")]
-        public int id_oob { get; set; }
+        public int id { get; set; }
         [JsonPropertyName("name")]
         public int name { get; set; }
         [JsonPropertyName("participant")]
         public ClientContact client { get; set; }
         [JsonPropertyName("address")]
-        public int address { get; set; }
+        public string address { get; set; }
         [JsonPropertyName("normative_unit_value_exist")]
-        public int normative { get; set; }
+        public bool normative { get; set; }
         [JsonPropertyName("status")]
         public Status status { get; set; }
         [JsonPropertyName("author")]

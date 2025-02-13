@@ -64,14 +64,14 @@ namespace integration.Controllers.Apro
 
             foreach (var entry in entries)
             {
-                if (entry.DateTimeCreate > lastUpdate || entry.DateTimeUpdate > lastUpdate)
+                if (entry.datetime_create > lastUpdate || entry.datetime_update > lastUpdate)
                 {
                     //надо найти объем
-                    if (entry.DateTimeCreate > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
+                    if (entry.datetime_create > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
                     {
                         newEntry.Add(entry);
                     }
-                    else if (entry.DateTimeUpdate > lastUpdate)
+                    else if (entry.datetime_update > lastUpdate)
                     {
                         updateEntry.Add(entry);
                     }

@@ -77,20 +77,34 @@ namespace integration
 
         private async Task StartContragent(ClientController clientController)
         {
-            try
+            /*try
             {
-                await clientController.GetontragentsData();
+                await clientController.GetEntriesData();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while syncing contragents.");
+                _logger.LogError(ex, "Error while syncing contragents.");*/
+            /*}*/
+        }
+
+        private async Task StartEmitter(ClientController clientController)
+        {
+            try
+            {
+                await clientController.SyncEmitter();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing emitters.");
             }
         }
+    
 
         private async Task StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)
         {
             try
             {
+                Console.WriteLine(wasteSiteEntryController.GetType());
                 var newWasteData = await wasteSiteEntryController.GetEntriesData();
                 LastUpdateTextFileManager.SetLastUpdateTime("entry");
                 if (WasteSiteEntryController.newEntry.Any() || WasteSiteEntryController.updateEntry.Any())

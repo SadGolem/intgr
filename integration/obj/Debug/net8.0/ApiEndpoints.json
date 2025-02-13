@@ -1,13 +1,67 @@
 [
   {
     "ContainingType": "ClientController",
-    "Method": "GetontragentsData",
-    "RelativePath": "api/Client",
+    "Method": "SyncEmitter",
+    "RelativePath": "api/Client/syncEmitters",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "integration.Controllers.Apro.EmitterController",
+    "Method": "GetData",
+    "RelativePath": "api/Emitter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "integration.Controllers.MT.EmitterControllerMT",
+    "Method": "ProcessEntryPostData",
+    "RelativePath": "api/EmitterControllerMT",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emitter",
+        "Type": "integration.Context.EmitterData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "integration.Controllers.MT.EmitterControllerMT",
+    "Method": "ProcessEntryPatchData",
+    "RelativePath": "api/EmitterControllerMT",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "emitter",
+        "Type": "integration.Context.EmitterData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "integration.Controllers.MT.EntryController",
@@ -35,6 +89,50 @@
     "ContainingType": "integration.Controllers.MT.EntryController",
     "Method": "ProcessEntryPatchData",
     "RelativePath": "api/Entry",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteData",
+        "Type": "EntryData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "integration.Controllers.MT.KadastrController",
+    "Method": "ProcessEntryPostData",
+    "RelativePath": "api/Kadastr",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteData",
+        "Type": "EntryData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "integration.Controllers.MT.KadastrController",
+    "Method": "ProcessEntryPatchData",
+    "RelativePath": "api/Kadastr",
     "HttpMethod": "",
     "IsController": true,
     "Order": 0,

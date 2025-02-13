@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace integration.Controllers.Apro
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ScheduleController
+    public class ScheduleController : ControllerBase
     {
         private readonly string _aproConnectSettings;
         private readonly IHttpClientFactory _httpClientFactory;

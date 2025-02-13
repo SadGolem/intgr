@@ -42,6 +42,7 @@ namespace integration.Controllers.Apro
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during emitters sync.");
+                ToGetMessage(ex + "Error during emitters sync.");
                 return StatusCode(500, "Error during emitters sync.");
             }
         }
@@ -57,10 +58,12 @@ namespace integration.Controllers.Apro
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during emitters fetch");
+                ToGetMessage(ex + "Error during emitters fetch");
                 return null;
             }
 
             _logger.LogInformation($"Received {emitters.Count} emitters");
+            ToGetMessage($"Received {emitters.Count} emitters");
             var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("emitter");
             var newEmitter = new List<EmitterData>();
             var updateEntries = new List<EmitterData>();
@@ -96,19 +99,27 @@ namespace integration.Controllers.Apro
                 var content = await response.Content.ReadAsStringAsync();
                 emitters = JsonSerializer.Deserialize<List<EmitterData>>(content);
                 LastUpdateTextFileManager.SetLastUpdateTime("emitter");
+                ToGetMessage(content);
                 return emitters;
             }
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, $"HTTP Error fetching emitters. Status code {ex.StatusCode}, URL: {_aproConnectSettings} ");
+                ToGetMessage(ex + $"HTTP Error fetching emitters. Status code {ex.StatusCode}, URL: {_aproConnectSettings} ");
                 throw;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error fetching or processing emitters from: {_aproConnectSettings}");
+                ToGetMessage(ex + $"Error fetching or processing emitters from: {_aproConnectSettings}");
                 throw;
             }
-        }     
+        }
+
+        void ToGetMessage(string ex)
+        {
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getemitter, ex);
+        }
     }
     public record SyncResult(List<EmitterData> NewEntries, List<EmitterData> UpdateEntries);
 }
