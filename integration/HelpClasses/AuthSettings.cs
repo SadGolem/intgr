@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace integration.Context
+namespace integration.HelpClasses
 {
     public class AuthSettings
     {

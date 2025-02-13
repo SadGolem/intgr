@@ -4,8 +4,6 @@ namespace integration.Context
 {
     public abstract class Data
     {
-        public string nameFileTime = "";
-
         [JsonPropertyName("datetime_create")]
         public DateTime datetime_create { get; set; }
         [JsonPropertyName("datetime_update")]

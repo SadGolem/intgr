@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public class LocationData
+    public class LocationData : Data
     {
         [JsonPropertyName("id")]
         public int id { get; set; }

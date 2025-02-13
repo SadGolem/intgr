@@ -3,12 +3,80 @@
   "WorkspaceRootPath": "C:\\Projects\\intgr\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\locationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\locationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\interfaces\\ilocationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\interfaces\\ilocationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\interfaces\\iservise.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\interfaces\\iservise.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\managers\\lastupdatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\managers\\lastupdatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\emittercounterpartydataextractorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\emittercounterpartydataextractorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\factory\\creator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\factory\\creator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\factory\\locationcreator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\factory\\locationcreator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\locationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\locationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\tokencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\tokencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\locationdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\locationdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\statuscoder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\statuscoder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\scheduledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\scheduledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\emitterdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\emitterdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\entrydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\entrydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\apro\\schedulecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\apro\\schedulecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\apro\\emittercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\apro\\emittercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\apro\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\apro\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\datasyncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,28 +95,12 @@
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\mt\\kadastrcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\tokencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\tokencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\mail\\emailmessagebuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\mail\\emailmessagebuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\mail\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\mail\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\managers\\lastupdatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\managers\\lastupdatemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\apro\\emittercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\apro\\emittercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\apro\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\apro\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\mt\\emittercontrollermt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -59,40 +111,12 @@
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\clientdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\authsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\authsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\helpclasses\\authsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\helpclasses\\authsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\controllers\\locationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\controllers\\locationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\emitterdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\emitterdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\entrydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\entrydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\locationdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\locationdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\nullablestringconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\nullablestringconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\context\\statuscoder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\context\\statuscoder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\helpclasses\\nullablestringconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\helpclasses\\nullablestringconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -101,10 +125,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\authorizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\authorizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\integration.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\integration.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\integration.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
@@ -121,17 +141,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 12,
               "Title": "ScheduleData.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\ScheduleData.cs",
               "RelativeDocumentMoniker": "integration\\Context\\ScheduleData.cs",
               "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\ScheduleData.cs",
               "RelativeToolTip": "integration\\Context\\ScheduleData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAQwBUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-06T10:10:32.848Z",
               "IsPinned": true,
@@ -139,115 +159,111 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "KadastrController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\KadastrController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\MT\\KadastrController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\KadastrController.cs",
-              "RelativeToolTip": "integration\\Controllers\\MT\\KadastrController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAIwKYAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "ILocationService.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Interfaces\\ILocationService.cs",
+              "RelativeDocumentMoniker": "integration\\Services\\Interfaces\\ILocationService.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\Interfaces\\ILocationService.cs",
+              "RelativeToolTip": "integration\\Services\\Interfaces\\ILocationService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-11T01:41:04.779Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "EntryController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EntryController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\MT\\EntryController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EntryController.cs",
-              "RelativeToolTip": "integration\\Controllers\\MT\\EntryController.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAAYwC0AAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T06:16:42.84Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "WasteSiteEntryController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
-              "RelativeToolTip": "integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAAIwEUAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T06:16:42.792Z",
+              "WhenOpened": "2025-02-13T06:53:01.805Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "DataSyncService.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\DataSyncService.cs",
-              "RelativeDocumentMoniker": "integration\\DataSyncService.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\DataSyncService.cs",
-              "RelativeToolTip": "integration\\DataSyncService.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAGoAAAAQAAAAAAAAAA==",
+              "Title": "IServise.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Interfaces\\IServise.cs",
+              "RelativeDocumentMoniker": "integration\\Services\\Interfaces\\IServise.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\Interfaces\\IServise.cs",
+              "RelativeToolTip": "integration\\Services\\Interfaces\\IServise.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T04:57:08.915Z",
+              "WhenOpened": "2025-02-13T06:52:44.858Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ScheduleController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ScheduleController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\ScheduleController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ScheduleController.cs",
-              "RelativeToolTip": "integration\\Controllers\\Apro\\ScheduleController.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAABUAAAANAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "LocationService.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\LocationService.cs",
+              "RelativeDocumentMoniker": "integration\\Services\\LocationService.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\LocationService.cs",
+              "RelativeToolTip": "integration\\Services\\LocationService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-06T10:07:00.326Z",
+              "WhenOpened": "2025-02-13T06:52:20.69Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "TokenController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\TokenController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\TokenController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\TokenController.cs",
-              "RelativeToolTip": "integration\\Controllers\\TokenController.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAGQAAAAWAAAAAAAAAA==",
+              "Title": "LocationCreator.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\LocationCreator.cs",
+              "RelativeDocumentMoniker": "integration\\Factory\\LocationCreator.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Factory\\LocationCreator.cs",
+              "RelativeToolTip": "integration\\Factory\\LocationCreator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-16T09:03:29.904Z",
+              "WhenOpened": "2025-02-13T03:28:00.895Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "EmailMessageBuilder.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Mail\\EmailMessageBuilder.cs",
-              "RelativeDocumentMoniker": "integration\\Mail\\EmailMessageBuilder.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Mail\\EmailMessageBuilder.cs",
-              "RelativeToolTip": "integration\\Mail\\EmailMessageBuilder.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAUAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "Creator.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\Creator.cs",
+              "RelativeDocumentMoniker": "integration\\Factory\\Creator.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Factory\\Creator.cs",
+              "RelativeToolTip": "integration\\Factory\\Creator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-28T03:02:41.532Z",
+              "WhenOpened": "2025-02-13T03:25:00.796Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "EmailSender.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Mail\\EmailSender.cs",
-              "RelativeDocumentMoniker": "integration\\Mail\\EmailSender.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Mail\\EmailSender.cs",
-              "RelativeToolTip": "integration\\Mail\\EmailSender.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAjwDwAAAAIAAAAAAAAAA==",
+              "Title": "LocationController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\LocationController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\LocationController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\LocationController.cs",
+              "RelativeToolTip": "integration\\Controllers\\LocationController.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAAFYAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T04:45:29.672Z",
+              "WhenOpened": "2025-02-04T02:28:14.408Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Program.cs",
+              "RelativeDocumentMoniker": "integration\\Program.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Program.cs",
+              "RelativeToolTip": "integration\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-15T01:46:25.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "EmitterCounterpartyDataExtractorController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\EmitterCounterpartyDataExtractorController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\EmitterCounterpartyDataExtractorController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\EmitterCounterpartyDataExtractorController.cs",
+              "RelativeToolTip": "integration\\Controllers\\EmitterCounterpartyDataExtractorController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T01:58:01.456Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "LastUpdateManager.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Managers\\LastUpdateManager.cs",
               "RelativeDocumentMoniker": "integration\\Managers\\LastUpdateManager.cs",
@@ -260,72 +276,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "EmitterController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\EmitterController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\EmitterController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\EmitterController.cs",
-              "RelativeToolTip": "integration\\Controllers\\Apro\\EmitterController.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAA==",
+              "DocumentIndex": 9,
+              "Title": "TokenController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\TokenController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\TokenController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\TokenController.cs",
+              "RelativeToolTip": "integration\\Controllers\\TokenController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGQAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-11T02:25:03.049Z",
+              "WhenOpened": "2025-01-16T09:03:29.904Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "LocationData.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\LocationData.cs",
+              "RelativeDocumentMoniker": "integration\\Context\\LocationData.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\LocationData.cs",
+              "RelativeToolTip": "integration\\Context\\LocationData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-30T05:20:30.601Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 11,
-              "Title": "ClientController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ClientController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\ClientController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ClientController.cs",
-              "RelativeToolTip": "integration\\Controllers\\Apro\\ClientController.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAACYAAAAyAAAAAAAAAA==",
+              "Title": "StatusCoder.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\StatusCoder.cs",
+              "RelativeDocumentMoniker": "integration\\Context\\StatusCoder.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\StatusCoder.cs",
+              "RelativeToolTip": "integration\\Context\\StatusCoder.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAAAJwAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-03T04:40:21.516Z",
+              "WhenOpened": "2025-01-28T09:53:32.34Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "EmitterControllerMT.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EmitterControllerMT.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\MT\\EmitterControllerMT.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EmitterControllerMT.cs",
-              "RelativeToolTip": "integration\\Controllers\\MT\\EmitterControllerMT.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAtwHIAAAAjAAAAAAAAAA==",
+              "DocumentIndex": 14,
+              "Title": "Data.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\Data.cs",
+              "RelativeDocumentMoniker": "integration\\Context\\Data.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\Data.cs",
+              "RelativeToolTip": "integration\\Context\\Data.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-11T01:53:22.922Z",
+              "WhenOpened": "2025-02-06T10:08:16.957Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "ClientData.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\ClientData.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\ClientData.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\ClientData.cs",
-              "RelativeToolTip": "integration\\Context\\ClientData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-03T04:45:13.704Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "EmitterData.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\EmitterData.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\EmitterData.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\EmitterData.cs",
-              "RelativeToolTip": "integration\\Context\\EmitterData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-11T02:24:14.973Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 15,
               "Title": "EntryData.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\EntryData.cs",
               "RelativeDocumentMoniker": "integration\\Context\\EntryData.cs",
@@ -338,59 +341,171 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Data.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\Data.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\Data.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\Data.cs",
-              "RelativeToolTip": "integration\\Context\\Data.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAAABYAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 13,
+              "Title": "EmitterData.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\EmitterData.cs",
+              "RelativeDocumentMoniker": "integration\\Context\\EmitterData.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\EmitterData.cs",
+              "RelativeToolTip": "integration\\Context\\EmitterData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-06T10:08:16.957Z",
+              "WhenOpened": "2025-02-11T02:24:14.973Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "LocationController.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\LocationController.cs",
-              "RelativeDocumentMoniker": "integration\\Controllers\\LocationController.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\LocationController.cs",
-              "RelativeToolTip": "integration\\Controllers\\LocationController.cs",
-              "ViewState": "AgIAAFQAAAAAAAAAAAAAABwAAABcAAAAAAAAAA==",
+              "DocumentIndex": 16,
+              "Title": "ScheduleController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ScheduleController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\ScheduleController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ScheduleController.cs",
+              "RelativeToolTip": "integration\\Controllers\\Apro\\ScheduleController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAABYAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T02:28:14.408Z",
+              "WhenOpened": "2025-02-06T10:07:00.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "EmitterController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\EmitterController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\EmitterController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\EmitterController.cs",
+              "RelativeToolTip": "integration\\Controllers\\Apro\\EmitterController.cs",
+              "ViewState": "AgIAADEAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-11T02:25:03.049Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "ClientController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ClientController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\ClientController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\ClientController.cs",
+              "RelativeToolTip": "integration\\Controllers\\Apro\\ClientController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-03T04:40:21.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "DataSyncService.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\DataSyncService.cs",
+              "RelativeDocumentMoniker": "integration\\DataSyncService.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\DataSyncService.cs",
+              "RelativeToolTip": "integration\\DataSyncService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAGoAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T04:57:08.915Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "WasteSiteEntryController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
+              "RelativeToolTip": "integration\\Controllers\\Apro\\WasteSiteEntryController.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAIwEUAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T06:16:42.792Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 21,
-              "Title": "NullableStringConverter.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\NullableStringConverter.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\NullableStringConverter.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\NullableStringConverter.cs",
-              "RelativeToolTip": "integration\\Context\\NullableStringConverter.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "EntryController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EntryController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\MT\\EntryController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EntryController.cs",
+              "RelativeToolTip": "integration\\Controllers\\MT\\EntryController.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAYwC0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-03T06:20:33.039Z",
+              "WhenOpened": "2025-01-27T06:16:42.84Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "LocationData.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\LocationData.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\LocationData.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\LocationData.cs",
-              "RelativeToolTip": "integration\\Context\\LocationData.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAkAAAAAAAAAA==",
+              "DocumentIndex": 22,
+              "Title": "KadastrController.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\KadastrController.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\MT\\KadastrController.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\KadastrController.cs",
+              "RelativeToolTip": "integration\\Controllers\\MT\\KadastrController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAIwKYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-30T05:20:30.601Z",
+              "WhenOpened": "2025-02-11T01:41:04.779Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "EmailMessageBuilder.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Mail\\EmailMessageBuilder.cs",
+              "RelativeDocumentMoniker": "integration\\Mail\\EmailMessageBuilder.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Mail\\EmailMessageBuilder.cs",
+              "RelativeToolTip": "integration\\Mail\\EmailMessageBuilder.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-28T03:02:41.532Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 24,
+              "Title": "EmailSender.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Mail\\EmailSender.cs",
+              "RelativeDocumentMoniker": "integration\\Mail\\EmailSender.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Mail\\EmailSender.cs",
+              "RelativeToolTip": "integration\\Mail\\EmailSender.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAjwDwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T04:45:29.672Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "EmitterControllerMT.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EmitterControllerMT.cs",
+              "RelativeDocumentMoniker": "integration\\Controllers\\MT\\EmitterControllerMT.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Controllers\\MT\\EmitterControllerMT.cs",
+              "RelativeToolTip": "integration\\Controllers\\MT\\EmitterControllerMT.cs",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAtwHIAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-11T01:53:22.922Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "ClientData.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\ClientData.cs",
+              "RelativeDocumentMoniker": "integration\\Context\\ClientData.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\ClientData.cs",
+              "RelativeToolTip": "integration\\Context\\ClientData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-03T04:45:13.704Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "NullableStringConverter.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\HelpClasses\\NullableStringConverter.cs",
+              "RelativeDocumentMoniker": "integration\\HelpClasses\\NullableStringConverter.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\HelpClasses\\NullableStringConverter.cs",
+              "RelativeToolTip": "integration\\HelpClasses\\NullableStringConverter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-03T06:20:33.039Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
               "Title": "Authorizer.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Authorizer.cs",
               "RelativeDocumentMoniker": "integration\\Authorizer.cs",
@@ -398,16 +513,17 @@
               "RelativeToolTip": "integration\\Authorizer.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAEwCsAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-30T02:40:56.913Z"
+              "WhenOpened": "2025-01-30T02:40:56.913Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 27,
               "Title": "AuthSettings.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\AuthSettings.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\AuthSettings.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\AuthSettings.cs",
-              "RelativeToolTip": "integration\\Context\\AuthSettings.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\HelpClasses\\AuthSettings.cs",
+              "RelativeDocumentMoniker": "integration\\HelpClasses\\AuthSettings.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\HelpClasses\\AuthSettings.cs",
+              "RelativeToolTip": "integration\\HelpClasses\\AuthSettings.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-30T01:43:28.495Z",
@@ -415,32 +531,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "StatusCoder.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Context\\StatusCoder.cs",
-              "RelativeDocumentMoniker": "integration\\Context\\StatusCoder.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Context\\StatusCoder.cs",
-              "RelativeToolTip": "integration\\Context\\StatusCoder.cs",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAAAJwAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-28T09:53:32.34Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Program.cs",
-              "RelativeDocumentMoniker": "integration\\Program.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Program.cs",
-              "RelativeToolTip": "integration\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-15T01:46:25.633Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 29,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\appsettings.json",
               "RelativeDocumentMoniker": "integration\\appsettings.json",
@@ -452,19 +543,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "integration.csproj",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\integration.csproj",
-              "RelativeDocumentMoniker": "integration\\integration.csproj",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\integration.csproj",
-              "RelativeToolTip": "integration\\integration.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-01-21T02:30:57.638Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 32,
               "Title": "TokenDataHandler.cs",
               "DocumentMoniker": "C:\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\TokenDataHandler.cs",
               "RelativeDocumentMoniker": "..\\..\\Users\\zubcova_ma\\Documents\\GitHub\\intgr\\integration\\TokenDataHandler.cs",
@@ -475,7 +554,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 31,
               "Title": "integration.http",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\integration.http",
               "RelativeDocumentMoniker": "integration\\integration.http",
@@ -484,6 +563,10 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
               "WhenOpened": "2025-01-14T07:02:35.436Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }

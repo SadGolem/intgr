@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using integration.HelpClasses;
 
 namespace integration.Controllers.Apro
 {

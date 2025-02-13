@@ -1,4 +1,5 @@
 ﻿using integration.Context;
+using integration.HelpClasses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;

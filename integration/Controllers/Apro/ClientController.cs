@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using integration;
 using System.Text;
+using integration.HelpClasses;
 
 [ApiController]
 [Route("api/[controller]")]

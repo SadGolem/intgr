@@ -2,6 +2,8 @@
 using System.Text.Json;
 using integration.Context;
 using System.Text;
+using integration.Factory;
+using integration.HelpClasses;
 
 namespace integration.Controllers
 {
@@ -19,7 +21,7 @@ namespace integration.Controllers
         private readonly string url = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
         private readonly string _aproConnect = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
 
-        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) 
         {
             _httpClient = httpClient;
             _logger = logger;
@@ -31,6 +33,7 @@ namespace integration.Controllers
             ConnectngStringApro _connectngStringApro = new ConnectngStringApro(_configuration, url);
             _aproConnect = _connectngStringApro.GetAproConnectSettings();
         }
+
 
         [HttpGet("syncLocations")] // This endpoint can be used for manual triggers
         public async Task<IActionResult> SyncLocations()
@@ -200,6 +203,8 @@ namespace integration.Controllers
         {
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
         }
+
+       
     }
 }
 

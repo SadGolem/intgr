@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<ClientController>();
