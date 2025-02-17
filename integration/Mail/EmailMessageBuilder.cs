@@ -1,5 +1,4 @@
-﻿
-public static class EmailMessageBuilder
+﻿public static class EmailMessageBuilder 
 {
     public enum ListType
     {
@@ -60,4 +59,6 @@ public static class EmailMessageBuilder
             _lists.Add(listType, new List<string>());
         }
     }
+
+
 }

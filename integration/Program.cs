@@ -1,15 +1,25 @@
 using integration;
+using integration.Context;
 using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using integration.HelpClasses;
+using integration.Services;
+using integration.Services.Factory;
+using integration.Services.Factory.Interfaces;
+using integration.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+
+// Register the factories
+builder.Services.AddTransient<IGetterServiceFactory<Data>, DataGetterServiceFactory>(); 
+builder.Services.AddTransient<IGetterServiceFactory<LocationData>, LocationGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<LocationData>, LocationGetterService>();
+
+
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<ClientController>();
 builder.Services.AddSingleton<EmitterController>();
@@ -28,15 +38,8 @@ builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
-
 var app = builder.Build();
-/*
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-*/
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

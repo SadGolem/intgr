@@ -2,14 +2,16 @@
 using System.Text.Json;
 using integration.Context;
 using System.Text;
-using integration.Factory;
 using integration.HelpClasses;
+using integration.Services.Interfaces;
+using integration.Services.Factory;
+using integration.Services.Factory.Interfaces;
 
 namespace integration.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LocationController : ControllerBase
+    public class LocationController : ControllerBase, IController
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<LocationController> _logger;
@@ -17,11 +19,12 @@ namespace integration.Controllers
         private readonly AuthSettings _destinationApiUrl;
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IGetterServiceFactory<LocationData> _service;
         private readonly string _mtConnect;
         private readonly string url = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
         private readonly string _aproConnect = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
 
-        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory) 
+        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory, IGetterServiceFactory<LocationData> service)
         {
             _httpClient = httpClient;
             _logger = logger;
@@ -32,6 +35,7 @@ namespace integration.Controllers
             _mtConnect = _destinationApiUrl.CallbackUrl.Replace("auth", "api/v2/location/create");
             ConnectngStringApro _connectngStringApro = new ConnectngStringApro(_configuration, url);
             _aproConnect = _connectngStringApro.GetAproConnectSettings();
+            _service = service;
         }
 
 
@@ -55,18 +59,11 @@ namespace integration.Controllers
         private async Task FetchtLocations()
         {
             _logger.LogInformation($"Fetching locations from {_sourceApiUrl}...");
-            List<LocationData> locations = new List<LocationData>();
-            try
-            {
-                locations = await FetchLocationData();
-                
-                await PostOrPatch(locations);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during locations fetch");
-                return;
-            }
+             List<LocationData> locations = new List<LocationData>();
+            IGetterService<LocationData> locationService = _service.Create();
+             locations = await locationService.GetSync();
+            //locations = await _service.GetSync() ;
+            await PostOrPatch(locations);
             _logger.LogInformation($"Received {locations.Count} locations");
         }
 
@@ -90,44 +87,6 @@ namespace integration.Controllers
                 LastUpdateTextFileManager.SetLastUpdateTime("locations");
             }
             
-        }
-
-        private async Task<List<LocationData>> FetchLocationData()
-        {
-            var locations = new List<LocationData>();
-            var token = await TokenController._authorizer.GetCachedTokenAPRO();
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            try
-            {
-                var response = await _httpClient.GetAsync(_aproConnect);
-
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                locations = await JsonSerializer.DeserializeAsync<List<LocationData>>(
-                   await response.Content.ReadAsStreamAsync(), options);
-                ToGetMessage("Got locations: " + content);
-                
-                return locations;
-            }
-            catch (HttpRequestException ex)
-            {
-                _logger.LogError(ex, $"Error during GET request to {_aproConnect}");
-                throw;
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, $"Error during JSON deserialization of response from {_aproConnect}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Unexpected error while fetching data from {_aproConnect}");
-                throw;
-            }
         }
 
         private async Task PostAndPatchLocation(LocationData location, bool isNew)
@@ -199,10 +158,7 @@ namespace integration.Controllers
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setlocation, ex);
         }
 
-        void ToGetMessage(string ex)
-        {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
-        }
+   
 
        
     }
