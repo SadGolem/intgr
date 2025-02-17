@@ -4,8 +4,7 @@ using integration.Context;
 using System.Text;
 using integration.HelpClasses;
 using integration.Services.Interfaces;
-using integration.Services.Factory;
-using integration.Services.Factory.Interfaces;
+using integration.Factory.GET.Interfaces;
 
 namespace integration.Controllers
 {
@@ -37,7 +36,6 @@ namespace integration.Controllers
             _aproConnect = _connectngStringApro.GetAproConnectSettings();
             _service = service;
         }
-
 
         [HttpGet("syncLocations")] // This endpoint can be used for manual triggers
         public async Task<IActionResult> SyncLocations()
@@ -157,10 +155,6 @@ namespace integration.Controllers
         {
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setlocation, ex);
         }
-
-   
-
-       
     }
 }
 

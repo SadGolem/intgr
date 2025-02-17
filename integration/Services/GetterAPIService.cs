@@ -10,7 +10,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using static EmailMessageBuilder;
-using integration.Services.Factory.Interfaces;
+using integration.Factory.GET.Interfaces;
 
 namespace integration.Services
 {
@@ -108,6 +108,5 @@ namespace integration.Services
         {
             EmailMessageBuilder.PutInformation(ListType.getlocation, ex);
         }
-
     }
 }

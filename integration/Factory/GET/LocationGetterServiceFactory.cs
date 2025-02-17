@@ -1,9 +1,10 @@
 ﻿using integration.Context;
+using integration.Factory.GET.Interfaces;
 using integration.HelpClasses;
-using integration.Services.Factory.Interfaces;
 using integration.Services.Interfaces;
+using integration.Services.Location;
 
-namespace integration.Services.Factory
+namespace integration.Factory.GET
 {
     public class LocationGetterServiceFactory : IGetterServiceFactory<LocationData>
     {

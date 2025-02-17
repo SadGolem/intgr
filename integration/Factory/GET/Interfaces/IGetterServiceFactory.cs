@@ -1,6 +1,6 @@
 ﻿using integration.Services.Interfaces;
 
-namespace integration.Services.Factory.Interfaces
+namespace integration.Factory.GET.Interfaces
 {
     public interface IGetterServiceFactory<T> where T : class
     {

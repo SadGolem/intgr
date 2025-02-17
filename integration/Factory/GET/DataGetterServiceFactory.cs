@@ -1,8 +1,8 @@
 ﻿using integration.Context;
-using integration.Services.Factory.Interfaces;
+using integration.Factory.GET.Interfaces;
 using integration.Services.Interfaces;
 
-namespace integration.Services.Factory
+namespace integration.Factory.GET
 {
     public class DataGetterServiceFactory : IGetterServiceFactory<Data>
     {

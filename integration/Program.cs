@@ -3,11 +3,11 @@ using integration.Context;
 using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
+using integration.Factory.GET;
+using integration.Factory.GET.Interfaces;
 using integration.HelpClasses;
-using integration.Services;
-using integration.Services.Factory;
-using integration.Services.Factory.Interfaces;
 using integration.Services.Interfaces;
+using integration.Services.Location;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,7 @@ builder.Services.AddMemoryCache();
 // Register the factories
 builder.Services.AddTransient<IGetterServiceFactory<Data>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterServiceFactory<LocationData>, LocationGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<LocationData>, LocationGetterService>();
+builder.Services.AddTransient<ISetterService<LocationData>, LocationGetterService>();
 
 
 builder.Services.AddSingleton<TokenController>();

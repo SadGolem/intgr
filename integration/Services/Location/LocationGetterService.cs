@@ -1,35 +1,25 @@
-﻿
-using integration.Context;
+﻿using integration.Context;
 using integration.HelpClasses;
 using integration.Services.Interfaces;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace integration.Services
+namespace integration.Services.Location
 {
-    public class LocationGetterService : IGetterService<LocationData>
+    public class LocationGetterService : ServiceBase, IGetterService<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type
         private readonly IConfiguration _configuration;
-       // private readonly string _mtConnect;
         private readonly string _aproConnect;
-       
 
         public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _configuration = configuration;
-            //_mtConnect = _configuration.GetConnectionString("MTconnect").ToString();
             _aproConnect = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.Replace("token-auth/", "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
 
-        }
-
-        public async Task Authorize(HttpClient httpClient)
-        {
-            var token = await TokenController._authorizer.GetCachedTokenAPRO();
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
         public async Task<List<LocationData>> FetchData()
