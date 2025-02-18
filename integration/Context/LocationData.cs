@@ -13,9 +13,9 @@ namespace integration.Context
         [JsonPropertyName("datetime_update")]
         public DateTime datetime_update { get; set; }
         [JsonPropertyName("lon")]
-        public double lon { get; set; }
+        public decimal lon { get; set; }
         [JsonPropertyName("lat")]
-        public double lat { get; set; }
+        public decimal lat { get; set; }
         [JsonPropertyName("address")]
         public string address { get; set; }
     }

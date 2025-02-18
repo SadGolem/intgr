@@ -60,7 +60,7 @@ namespace integration.Services
             try
             {
                 using var httpClient = _httpClientFactory.CreateClient(); 
-                await Authorize(httpClient);
+                await Authorize(httpClient, true);
                 var response = await httpClient.GetAsync(_aproConnect);
 
                 response.EnsureSuccessStatusCode();
@@ -92,7 +92,7 @@ namespace integration.Services
             }
         }
 
-        public async Task Authorize(HttpClient httpClient)
+        public async Task Authorize(HttpClient httpClient, bool isApro)
         {
             var token = await GetToken(); 
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);

@@ -20,12 +20,21 @@ namespace integration.Services
             _configuration = configuration;
             _stringConnect = configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl;
         }
-        public virtual async Task Authorize(HttpClient httpClient)
+
+        public virtual async Task Authorize(HttpClient httpClient, bool isAPRO)
         {
-            var token = await TokenController._authorizer.GetCachedTokenAPRO();
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var token = "";
+            if (isAPRO)
+                token = await TokenController._authorizer.GetCachedTokenAPRO();
+            else
+            {
+                token = await TokenController._authorizer.GetCachedTokenMT();
+            }
+
+            httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
-        
+
         public abstract void Message(string ex);
     }
 }

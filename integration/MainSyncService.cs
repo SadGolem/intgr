@@ -34,7 +34,7 @@ namespace integration
                 await tokenController.GetTokens();
 
                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
-                var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
+               // var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
               //  var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
               //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();

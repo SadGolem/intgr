@@ -11,7 +11,7 @@ namespace integration.Services.Location
         private readonly HttpClient _httpClient;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type
         private readonly IConfiguration _configuration;
-        private readonly string _aproConnect;
+        private readonly ConnectngStringApro _aproConnect;
 
         public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration, HttpClient httpClient) 
             : base(httpClientFactory, httpClient, logger, configuration)
@@ -19,10 +19,9 @@ namespace integration.Services.Location
             _httpClientFactory = httpClientFactory;
             _httpClient = httpClient;
             _logger = logger;
-            _configuration = configuration;
-            _aproConnect = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl
-                .Replace("token-auth/", "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
-
+            _configuration = configuration; 
+            _aproConnect = new ConnectngStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
+             
         }
 
         public async Task<List<LocationData>> FetchData()
@@ -33,8 +32,8 @@ namespace integration.Services.Location
             try
             {
                 using var httpClient = _httpClientFactory.CreateClient();
-                await Authorize(httpClient);
-                var response = await httpClient.GetAsync(_aproConnect);
+                await Authorize(httpClient, true);
+                var response = await httpClient.GetAsync(_aproConnect.GetAproConnectSettings());
 
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
