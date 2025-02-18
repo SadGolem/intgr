@@ -159,6 +159,7 @@ namespace integration.Context
                 if (item.Key == id)
                 {
                     results = item.Value;
+                    return results;
                 }
             }
             return results; // Вернет пустой список, если ничего не найдено

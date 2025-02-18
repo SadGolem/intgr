@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection.PortableExecutable;
+using System.Text;
 using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
@@ -22,8 +23,8 @@ namespace integration.Services.Location
             _httpClient = httpClient;
             _logger = logger;
             _configuration = configuration;
-            _mtConnectCreate = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.Replace("auth", "api/v2/location/create");
-            _mtConnectUpdate = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.Replace("auth", "api/v2/location/update");
+            _mtConnectCreate = _configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl.Replace("auth", "api/v2/location/create_from_bt ");
+            _mtConnectUpdate = _configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl.Replace("auth", "api/v2/location/update_from_bt ");
         }
         public bool Check(LocationData data)
         {
@@ -32,7 +33,6 @@ namespace integration.Services.Location
                     Message("Address is empty");
                     return false;
                 }
-
                 return true;
         }
         public async Task PostOrPatch(List<LocationData> locations)
@@ -45,7 +45,15 @@ namespace integration.Services.Location
                 {
                     if (location.datetime_create > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
                     {
-                        await PostAndPatch(location, true);
+                        try
+                        {
+                            await PostAndPatch(location, true);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
                     }
                     else if (location.datetime_update > lastUpdate)
                     {
@@ -94,10 +102,23 @@ namespace integration.Services.Location
                 throw;
             }
         }
-        public object MappingData(LocationData data)
+        public object MappingData(LocationData location)
         {
-            throw new NotImplementedException();
+            return new
+            {
+                /*idBT = location.id,
+                longitude = (decimal)location.lon,
+                latitude = (decimal)location.lat,
+                status = StatusCoder.ToCorrectLocationStatus(location.status), //необходимо принимать статусы по кодам
+                address = location.address*/
+                idBT = 1270290,
+                longitude = 87.32432,
+                latitude = 54.331,
+                status = "Новая", //необходимо принимать статусы по кодам
+                address = "г.Новокузнецк, ул.Металлургов, д.59"
+            };
         }
+
         public override void Message(string ex)
         {
            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setlocation, ex);
