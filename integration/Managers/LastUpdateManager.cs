@@ -1,38 +1,19 @@
 ﻿using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
+using integration.Managers;
 
-public static class LastUpdateTextFileManager 
+public static class TimeManager 
 {
-    private const string _filePath = "C:\\Projects\\intgr\\saves\\save01.txt";
     private const string DateTimeFormat = "O";
     private static string timeZone = "Europe/London";
-
+    private static FileManager _fileManager; static TimeManager()
+    {
+        _fileManager = new FileManager( DateTimeFormat);
+    }
     public static DateTime GetLastUpdateTime(string key)
     {
-        if (File.Exists(_filePath))
-        {
-            try
-            {
-                var lines = File.ReadAllLines(_filePath);
-                foreach (var line in lines)
-                {
-                    var parts = line.Split('=');
-                    if (parts.Length == 2 && parts[0] == key)
-                    {
-                        if (DateTime.TryParseExact(parts[1], DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime lastUpdate))
-                        {
-                            return lastUpdate;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading last update time from file: {ex.Message}");
-            }
-        }
-        return DateTime.MinValue;
+        return _fileManager.GetText(key);
     }
 
     public static void SetLastUpdateTime(string key)
@@ -40,44 +21,10 @@ public static class LastUpdateTextFileManager
         DateTime lastUpdate = GetNetworkTimeUtc();
         TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
         DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(lastUpdate, cstZone);
-        //lastUpdate = cstTime;
+
         var lines = new List<string>();
         bool updated = false;
-        if (File.Exists(_filePath))
-        {
-            try
-            {
-                lines.AddRange(File.ReadAllLines(_filePath));
-                for (int i = 0; i < lines.Count; i++)
-                {
-                    var parts = lines[i].Split('=');
-                    if (parts.Length == 2 && parts[0] == key)
-                    {
-                        lines[i] = $"{key}={cstTime.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}";
-                        updated = true;
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading last update time from file: {ex.Message}");
-            }
-
-        }
-        if (!updated)
-        {
-            lines.Add($"{key}={cstTime.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}");
-        }
-
-        try
-        {
-            File.WriteAllLines(_filePath, lines);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error writing last update time to file: {ex.Message}");
-        }
+        _fileManager.SetText(lines, updated, cstTime, key);
     }
 
     public static DateTime GetNetworkTimeUtc(string ntpServer = "time.nist.gov")
