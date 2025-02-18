@@ -17,13 +17,13 @@ namespace integration.Services
     public class GetterAPIService : IGetterService<Data>
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<GetterAPIService> _logger; // Correct logger type
+        private readonly ILogger<GetterAPIService> _logger; 
         private readonly IConfiguration _configuration;
         private readonly IGetterServiceFactory<Data> _getterServiceFactory;
         private readonly string _mtConnect;
         private readonly string _aproConnect;
 
-        public GetterAPIService( // Make constructor protected for inheritance
+        public GetterAPIService( 
             IHttpClientFactory httpClientFactory,
             ILogger<GetterAPIService> logger,
             IConfiguration configuration,

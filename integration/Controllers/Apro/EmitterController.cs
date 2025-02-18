@@ -65,7 +65,7 @@ namespace integration.Controllers.Apro
 
             _logger.LogInformation($"Received {emitters.Count} emitters");
             ToGetMessage($"Received {emitters.Count} emitters");
-            var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("emitter");
+            var lastUpdate = TimeManager.GetLastUpdateTime("emitter");
             var newEmitter = new List<EmitterData>();
             var updateEntries = new List<EmitterData>();
 
@@ -99,7 +99,7 @@ namespace integration.Controllers.Apro
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
                 emitters = JsonSerializer.Deserialize<List<EmitterData>>(content);
-                LastUpdateTextFileManager.SetLastUpdateTime("emitter");
+                TimeManager.SetLastUpdateTime("emitter");
                 ToGetMessage(content);
                 return emitters;
             }

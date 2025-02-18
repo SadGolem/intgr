@@ -1,7 +1,6 @@
 ﻿using integration.Context;
 using integration.HelpClasses;
 using integration.Services.Interfaces;
-using System.Net.Http;
 using System.Text.Json;
 
 namespace integration.Services.Location
@@ -9,21 +8,26 @@ namespace integration.Services.Location
     public class LocationGetterService : ServiceBase, IGetterService<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type
         private readonly IConfiguration _configuration;
         private readonly string _aproConnect;
 
-        public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration)
-        {
+        public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration, HttpClient httpClient) 
+            : base(httpClientFactory, httpClient, logger, configuration)
+        { 
             _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
             _logger = logger;
             _configuration = configuration;
-            _aproConnect = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl.Replace("token-auth/", "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
+            _aproConnect = _configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl
+                .Replace("token-auth/", "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
 
         }
 
         public async Task<List<LocationData>> FetchData()
         {
+            _logger.LogInformation($"Try getting locations from {_aproConnect}...");
             var data = new List<LocationData>();
 
             try
@@ -60,21 +64,18 @@ namespace integration.Services.Location
                 throw;
             }
         }
-
+        
         public async Task<List<LocationData>> GetSync()
         {
-            try
-            {
-                return await FetchData();
-            }
-            catch (Exception e)
-            {
-                //_logger.LogError(e, "Error in GetSync");
-                throw;
-            }
+            return await FetchData();
         }
 
-        public void Message(string ex)
+        public bool Check(LocationData locationData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Message(string ex)
         {
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
         }

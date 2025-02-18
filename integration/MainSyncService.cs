@@ -5,14 +5,14 @@ using integration.Services;
 
 namespace integration
 {
-    public class DataSyncService : IHostedService, IDisposable
+    public class MainSyncService : IHostedService, IDisposable
     {
-        private readonly ILogger<DataSyncService> _logger;
+        private readonly ILogger<MainSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private Timer? _timer;
         private const int _updateTime = 30;
 
-        public DataSyncService(ILogger<DataSyncService> logger, IServiceProvider serviceProvider)
+        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
@@ -69,7 +69,7 @@ namespace integration
         {
             try
             {
-                await locationController.SyncLocations();
+                await locationController.Sync();
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace integration
             {
                 Console.WriteLine(wasteSiteEntryController.GetType());
                 var newWasteData = await wasteSiteEntryController.GetEntriesData();
-                LastUpdateTextFileManager.SetLastUpdateTime("entry");
+                TimeManager.SetLastUpdateTime("entry");
                 if (WasteSiteEntryController.newEntry.Any() || WasteSiteEntryController.updateEntry.Any())
                 {
                     _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");

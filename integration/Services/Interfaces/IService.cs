@@ -1,11 +1,7 @@
-﻿using System.ComponentModel;
-using static EmailMessageBuilder;
+﻿namespace integration.Services.Interfaces;
 
-namespace integration.Services.Interfaces
+public interface IService
 {
-    public interface IServiceBase
-    {
-        Task Authorize(HttpClient httpClient);
-        void Message(string ex, ListType type);
-    }
+    protected Task Authorize(HttpClient httpClient);
+    protected void Message(string ex);
 }

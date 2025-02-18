@@ -6,9 +6,8 @@ namespace integration.Services.Interfaces
 {
     public interface ISetterService<T> : IService
     {
-        void PostAndPatch(T data, bool isNew);
+        Task PostOrPatch(List<T> data);
         object MappingData(T data);
         bool Check(T data);
-        void Message(EmailMessageBuilder.ListType type, string ex);
     }
 }

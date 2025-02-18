@@ -63,7 +63,7 @@ namespace integration.Controllers.Apro
             }
 
             _logger.LogInformation($"Received {schedules.Count} schedules");
-            var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("schedule");
+            var lastUpdate = TimeManager.GetLastUpdateTime("schedule");
             var newSchedules = new List<ScheduleData>();
             var updateSchedules = new List<ScheduleData>();
 
@@ -94,7 +94,7 @@ namespace integration.Controllers.Apro
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
                 schedules = JsonSerializer.Deserialize<List<ScheduleData>>(content);
-                LastUpdateTextFileManager.SetLastUpdateTime("schedule");
+                TimeManager.SetLastUpdateTime("schedule");
                 ToGetMessage(content);
                 return schedules;
             }

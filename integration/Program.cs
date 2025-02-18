@@ -5,7 +5,6 @@ using integration.Controllers.Apro;
 using integration.Controllers.MT;
 using integration.Factory.GET;
 using integration.Factory.GET.Interfaces;
-using integration.HelpClasses;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 
@@ -17,7 +16,7 @@ builder.Services.AddMemoryCache();
 // Register the factories
 builder.Services.AddTransient<IGetterServiceFactory<Data>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterServiceFactory<LocationData>, LocationGetterServiceFactory>();
-builder.Services.AddTransient<ISetterService<LocationData>, LocationGetterService>();
+builder.Services.AddTransient<IGetterService<LocationData>, LocationGetterService>();
 
 
 builder.Services.AddSingleton<TokenController>();
@@ -29,7 +28,7 @@ builder.Services.AddSingleton<ScheduleController>();
 builder.Services.AddSingleton<EntryController>();
 builder.Services.AddSingleton<LocationController>();
 builder.Services.AddSingleton<ScheduleController>();
-builder.Services.AddHostedService<DataSyncService>();
+builder.Services.AddHostedService<MainSyncService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

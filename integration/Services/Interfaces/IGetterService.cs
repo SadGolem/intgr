@@ -8,9 +8,5 @@ namespace integration.Services.Interfaces
         Task<List<T>> FetchData(); 
     }
 
-    public interface IService
-    {
-        Task Authorize(HttpClient httpClient);
-        void Message(string ex);
-    }
+  
 }

@@ -11,6 +11,7 @@ namespace integration.Factory.GET
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
         public LocationGetterServiceFactory(
             IHttpClientFactory httpClientFactory,
@@ -20,11 +21,12 @@ namespace integration.Factory.GET
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _configuration = configuration;
+            _httpClient = new HttpClient();
         }
 
         public IGetterService<LocationData> Create()
         {
-            return new LocationGetterService(_httpClientFactory, _logger, _configuration);
+            return new LocationGetterService(_httpClientFactory, _logger, _configuration, _httpClient);
         }
     }
 }

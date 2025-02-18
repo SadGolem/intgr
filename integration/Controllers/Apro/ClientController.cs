@@ -73,7 +73,7 @@ public class ClientController : ControllerBase
 
     private async Task PostOrPatch(List<EmitterData> emitters)
     {
-        var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("locations");
+        var lastUpdate = TimeManager.GetLastUpdateTime("locations");
 
         foreach (var emitter in emitters)
         {
@@ -89,7 +89,7 @@ public class ClientController : ControllerBase
                     await PostAndPatch(emitter, false);
                 }
             }
-            LastUpdateTextFileManager.SetLastUpdateTime("emitter");
+            TimeManager.SetLastUpdateTime("emitter");
         }
 
     }

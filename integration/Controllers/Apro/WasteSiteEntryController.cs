@@ -60,7 +60,7 @@ namespace integration.Controllers.Apro
             }
 
             _logger.LogInformation($"Received {entries.Count} locations");
-            var lastUpdate = LastUpdateTextFileManager.GetLastUpdateTime("entry");
+            var lastUpdate = TimeManager.GetLastUpdateTime("entry");
 
             foreach (var entry in entries)
             {
