@@ -32,16 +32,16 @@ namespace integration
                 var tokenController = scope.ServiceProvider.GetService<TokenController>();
                 await tokenController.GetTokens();
 
-                var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
+                    //var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
-                var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
-                var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
-                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
+                //var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
+                //var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
+               // var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                await StartContragent(contragentController);
+               // await StartContragent(contragentController);
                 await StartLocation(locationController);
-                await StartLoctko(scheduleController);
-                await StartEntry(wasteSiteEntryController, entryController);
+               // await StartLoctko(scheduleController);
+                //await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
             }
         }

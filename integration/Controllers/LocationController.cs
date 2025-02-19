@@ -27,7 +27,7 @@ namespace integration.Controllers
             _httpClientFactory = httpClientFactory;
             _sourceApiUrl = _configuration.GetSection("APROconnect").Get<AuthSettings>();/*"https://test.asu2.big3.ru/api/wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address}"; */// можно вынести в конфигурацию
             _destinationApiUrl = _configuration.GetSection("MTconnect").Get<AuthSettings>();
-            _mtConnect = _destinationApiUrl.CallbackUrl.Replace("auth", "api/v2/location/create");
+            _mtConnect = _destinationApiUrl.CallbackUrl.Replace("auth", "api/v2/location/create_from_asupro");
             ConnectngStringApro _connectngStringApro = new ConnectngStringApro(_configuration, url);
             _aproConnect = _connectngStringApro.GetAproConnectSettings();
         }
@@ -130,8 +130,8 @@ namespace integration.Controllers
         private async Task PostAndPatchLocation(LocationData location, bool isNew)
         {
             var client = _httpClientFactory.CreateClient();
-            var token = await TokenController._authorizer.GetCachedTokenAPRO();
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var token = await TokenController._authorizer.GetCachedTokenMT();
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             try
             {
                 if (!CheckLocation(location)) return;
