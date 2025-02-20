@@ -6,6 +6,7 @@ using integration.HelpClasses;
 using integration.Services.Interfaces;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET.Interfaces;
+using integration.Services.Location;
 
 namespace integration.Controllers
 {
@@ -14,24 +15,24 @@ namespace integration.Controllers
     public class LocationController : ControllerBase, IController
     {
         private readonly ILogger<LocationController> _logger;
-        private readonly AuthSettings _destinationApiUrl;
-        private readonly IConfiguration _configuration;
         private readonly IGetterServiceFactory<LocationData> _serviceGetter;
         private readonly ISetterServiceFactory<LocationData> _serviceSetter;
-        private IGetterService<LocationData> locationServiceGetter;
-        private ISetterService<LocationData> locationServiceSetter;
-        public LocationController(HttpClient httpClient, ILogger<LocationController> logger, IConfiguration configuration, 
-            IHttpClientFactory httpClientFactory, IGetterServiceFactory<LocationData> serviceGetter,
-            ISetterServiceFactory<LocationData> serviceSetter
+        private IGetterService<LocationData> _locationServiceGetter;
+        private ISetterService<LocationData> _locationServiceSetter;
+        private ILocationIdService _locationIdService;
+        
+        public LocationController(ILogger<LocationController> logger, 
+            IGetterServiceFactory<LocationData> serviceGetter,
+            ISetterServiceFactory<LocationData> serviceSetter,
+            ILocationIdService locationIdService
         )
         {
             _logger = logger;
-            _configuration = configuration;
-            _destinationApiUrl = _configuration.GetSection("MTconnect").Get<AuthSettings>();
             _serviceGetter = serviceGetter;
             _serviceSetter = serviceSetter;
+            _locationIdService = locationIdService;
         }
-        [HttpGet("syncLocations")] // This endpoint can be used for manual triggers
+        //[HttpGet("syncLocations")] // This endpoint can be used for manual triggers
         public async Task<IActionResult> Sync()
         {
             _logger.LogInformation("Starting manual location sync...");
@@ -49,17 +50,18 @@ namespace integration.Controllers
         }
         private async Task FetchtLocations()
         {
-            List<LocationData> locations = new List<LocationData>();
-            locationServiceGetter = _serviceGetter.Create();
-            locations = await locationServiceGetter.GetSync();
+            List<(LocationData,bool)> locations = new List<(LocationData,bool)>();
+            _locationServiceGetter = _serviceGetter.Create();
+            locations = await _locationServiceGetter.GetSync();
 
-            await PostOrPatch(locations);
+                // await PostOrPatch(locations);
+            _locationIdService.SetLocation(locations);
             _logger.LogInformation($"Received {locations.Count} locations");
         }
-        public async Task PostOrPatch(List<LocationData> locations)
+        public async Task PostOrPatch(List<(LocationData, bool)> locations)
         {
-            locationServiceSetter = _serviceSetter.Create();
-            await locationServiceSetter.PostOrPatch(locations);
+            _locationServiceSetter = _serviceSetter.Create();
+            await _locationServiceSetter.PostAndPatch(locations);
         }
     }
 }

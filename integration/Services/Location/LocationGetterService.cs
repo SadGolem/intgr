@@ -11,20 +11,20 @@ namespace integration.Services.Location
         private readonly HttpClient _httpClient;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type
         private readonly IConfiguration _configuration;
+        private readonly ILocationIdService _locationIdService;
         private readonly ConnectngStringApro _aproConnect;
 
-        public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration, HttpClient httpClient) 
+        public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration, HttpClient httpClient,ILocationIdService locationIdService) 
             : base(httpClientFactory, httpClient, logger, configuration)
         { 
             _httpClientFactory = httpClientFactory;
             _httpClient = httpClient;
             _logger = logger;
-            _configuration = configuration; 
+            _configuration = configuration;
+            _locationIdService = locationIdService;
             _aproConnect = new ConnectngStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
-             
         }
-
-        public async Task<List<LocationData>> FetchData()
+        public async Task<List<(LocationData, bool)>> FetchData()
         {
             _logger.LogInformation($"Try getting locations from {_aproConnect}...");
             var data = new List<LocationData>();
@@ -44,8 +44,8 @@ namespace integration.Services.Location
                 data = await JsonSerializer.DeserializeAsync<List<LocationData>>(
                    await response.Content.ReadAsStreamAsync(), options);
                 Message("Got: " + content);
-
-                return data;
+                
+                return await ProcessLocationsByDate(data);
             }
             catch (HttpRequestException ex)
             {
@@ -63,17 +63,53 @@ namespace integration.Services.Location
                 throw;
             }
         }
-        
-        public async Task<List<LocationData>> GetSync()
+        public async Task<List<(LocationData, bool)>> ProcessLocationsByDate(List<LocationData> locations)
+        {
+            List<(LocationData, bool)> data = new List<(LocationData, bool)>();
+
+            if (locations.Count <= 0)
+            {
+                TimeManager.SetLastUpdateTime("locations");
+                return data;
+            }
+            
+            var lastUpdate = TimeManager.GetLastUpdateTime("locations");
+
+            foreach (var location in locations)
+            {
+                if (location.datetime_create > lastUpdate || location.datetime_update > lastUpdate)
+                {
+                    if (location.datetime_create > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
+                    {
+                        try
+                        {
+                            data.Add((location,true));
+                            _locationIdService.SetLocationIds(location.id);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
+                    }
+                    else if (location.datetime_update > lastUpdate)
+                    {
+                        data.Add((location,false));
+                        _locationIdService.SetLocationIds(location.id);
+                    }
+                }
+            }
+            TimeManager.SetLastUpdateTime("locations");
+            return data;
+        }
+        public async Task<List<(LocationData,bool)>> GetSync()
         {
             return await FetchData();
         }
-
         public bool Check(LocationData locationData)
         {
             throw new NotImplementedException();
         }
-
         public override void Message(string ex)
         {
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);

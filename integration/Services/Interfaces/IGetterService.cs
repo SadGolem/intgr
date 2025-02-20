@@ -4,8 +4,8 @@ namespace integration.Services.Interfaces
 {
     public interface IGetterService<T> : IService
     {
-        Task<List<T>> GetSync();
-        Task<List<T>> FetchData(); 
+        Task<List<(T, bool IsNew)>> GetSync();
+        Task<List<(T,bool isNew)>> FetchData(); 
     }
 
   

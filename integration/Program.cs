@@ -23,6 +23,7 @@ builder.Services.AddTransient<ISetterServiceFactory<LocationData>, LocationSette
 builder.Services.AddTransient<ISetterService<LocationData>, LocationSetterService>();
 
 builder.Services.AddSingleton<TokenController>();
+builder.Services.AddSingleton<LocationIdService>();
 builder.Services.AddSingleton<ClientController>();
 builder.Services.AddSingleton<EmitterController>();
 builder.Services.AddSingleton<EmitterControllerMT>();
