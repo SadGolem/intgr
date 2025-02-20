@@ -21,6 +21,12 @@ namespace integration.Context
         [JsonPropertyName("author")]
         public Author? author { get; set; }
 
+        [JsonPropertyName("waste_source_categoty")]
+        public EmitterCategory emitterCategory { get; set; }
 
+        public class EmitterCategory()
+        {
+            [JsonPropertyName("name")] string name { get; set; }
+        }
     }
 }

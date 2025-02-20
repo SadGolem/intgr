@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using integration;
 using integration.Context;
 using integration.Controllers;
@@ -7,6 +8,7 @@ using integration.Factory.GET;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET;
 using integration.Factory.SET.Interfaces;
+using integration.Services.ContractPosition;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 
@@ -21,6 +23,7 @@ builder.Services.AddTransient<IGetterServiceFactory<LocationData>, LocationGette
 builder.Services.AddTransient<IGetterService<LocationData>, LocationGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationData>, LocationSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationData>, LocationSetterService>();
+builder.Services.AddTransient<IGetterService<ContractData>, ContractPositionGetterService>();
 
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<LocationIdService>();

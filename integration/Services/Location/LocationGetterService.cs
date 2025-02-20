@@ -8,9 +8,7 @@ namespace integration.Services.Location
     public class LocationGetterService : ServiceBase, IGetterService<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly HttpClient _httpClient;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type
-        private readonly IConfiguration _configuration;
         private readonly ILocationIdService _locationIdService;
         private readonly ConnectngStringApro _aproConnect;
 
@@ -18,12 +16,16 @@ namespace integration.Services.Location
             : base(httpClientFactory, httpClient, logger, configuration)
         { 
             _httpClientFactory = httpClientFactory;
-            _httpClient = httpClient;
             _logger = logger;
-            _configuration = configuration;
             _locationIdService = locationIdService;
             _aproConnect = new ConnectngStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
         }
+
+        public Task Get()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<(LocationData, bool)>> FetchData()
         {
             _logger.LogInformation($"Try getting locations from {_aproConnect}...");
@@ -72,7 +74,6 @@ namespace integration.Services.Location
                 TimeManager.SetLastUpdateTime("locations");
                 return data;
             }
-            
             var lastUpdate = TimeManager.GetLastUpdateTime("locations");
 
             foreach (var location in locations)

@@ -167,7 +167,7 @@ namespace integration.Services.Location
         }
         public override void Message(string ex)
         {
-           EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setlocation, ex);
+           
         }
     }
 }

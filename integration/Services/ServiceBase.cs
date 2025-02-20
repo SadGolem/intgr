@@ -11,7 +11,6 @@ namespace integration.Services
         private readonly ILogger<ServiceBase> _logger;
         private readonly IConfiguration _configuration;
         private readonly string _stringConnect;
-
         public ServiceBase (IHttpClientFactory httpClientFactory,HttpClient httpClient, ILogger<ServiceBase> logger, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
@@ -20,7 +19,6 @@ namespace integration.Services
             _configuration = configuration;
             _stringConnect = configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl;
         }
-
         public virtual async Task Authorize(HttpClient httpClient, bool isAPRO)
         {
             var token = "";
@@ -34,7 +32,6 @@ namespace integration.Services
             httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
-
         public abstract void Message(string ex);
     }
 }
