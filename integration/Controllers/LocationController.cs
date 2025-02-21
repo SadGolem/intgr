@@ -15,14 +15,14 @@ namespace integration.Controllers
     public class LocationController : ControllerBase, IController
     {
         private readonly ILogger<LocationController> _logger;
-        private readonly IGetterServiceFactory<LocationData> _serviceGetter;
+        private readonly IGetterLocationServiceFactory<LocationData> _serviceGetter;
         private readonly ISetterServiceFactory<LocationData> _serviceSetter;
-        private IGetterService<LocationData> _locationServiceGetter;
+        private IGetterLocationService<LocationData> _locationServiceGetter;
         private ISetterService<LocationData> _locationServiceSetter;
         private ILocationIdService _locationIdService;
         
         public LocationController(ILogger<LocationController> logger, 
-            IGetterServiceFactory<LocationData> serviceGetter,
+            IGetterLocationServiceFactory<LocationData> serviceGetter,
             ISetterServiceFactory<LocationData> serviceSetter,
             ILocationIdService locationIdService
         )

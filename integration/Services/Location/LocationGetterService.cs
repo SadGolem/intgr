@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace integration.Services.Location
 {
-    public class LocationGetterService : ServiceBase, IGetterService<LocationData>
+    public class LocationGetterService : ServiceBase, IGetterLocationService<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type

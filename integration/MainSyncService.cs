@@ -36,12 +36,14 @@ namespace integration
                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
                // var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
+                var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
               //  var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
               //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
             //    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
                 //await StartContragent(contragentController);
-                await StartLocation(locationController/*, getterAPI*/);
+                await GetLocation(locationController);
+                await GetContractPosition(contractPositionController);
                // await StartLoctko(scheduleController);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
@@ -65,7 +67,7 @@ namespace integration
             }
         }
 
-        private async Task StartLocation(LocationController locationController/*, GetterAPIService service*/)
+        private async Task GetLocation( LocationController locationController)
         {
             try
             {
@@ -74,6 +76,17 @@ namespace integration
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing locations.");
+            }
+        }
+        private async Task GetContractPosition(ContractPositionController contractPositionController)
+        {
+            try
+            {
+                await contractPositionController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing contract position.");
             }
         }
 

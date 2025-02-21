@@ -39,7 +39,18 @@ public class ContractPositionController : ControllerBase, IController
     }
     public async Task GetContractPositions()
     {
-        _getter = _serviceGetter.Create();
-        await _getter.Get();
+        try
+        {
+            _getter = _serviceGetter.Create();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await _getter.Get();
+        }
     }
 }

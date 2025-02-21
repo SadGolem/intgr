@@ -24,6 +24,7 @@ namespace integration.Factory.GET
             _logger = logger;
             _configuration = configuration;
             _httpClient = new HttpClient();
+            _locationIdService = new LocationIdService();
         }
 
         public IGetterService<ContractData> Create()

@@ -6,14 +6,13 @@ using integration.Services.Location;
 
 namespace integration.Factory.GET
 {
-    public class LocationGetterServiceFactory : IGetterServiceFactory<LocationData>
+    public class LocationGetterServiceFactory : IGetterLocationServiceFactory<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger;
         private readonly IConfiguration _configuration;
         private readonly ILocationIdService _locationIdService;
         private readonly HttpClient _httpClient;
-
         public LocationGetterServiceFactory(
             IHttpClientFactory httpClientFactory,
             ILogger<LocationGetterService> logger,
@@ -24,8 +23,7 @@ namespace integration.Factory.GET
             _configuration = configuration;
             _httpClient = new HttpClient();
         }
-
-        public IGetterService<LocationData> Create()
+        public IGetterLocationService<LocationData> Create()
         {
             return new LocationGetterService(_httpClientFactory, _logger, _configuration, _httpClient, _locationIdService);
         }
