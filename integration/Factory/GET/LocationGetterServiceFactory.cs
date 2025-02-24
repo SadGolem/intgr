@@ -16,12 +16,13 @@ namespace integration.Factory.GET
         public LocationGetterServiceFactory(
             IHttpClientFactory httpClientFactory,
             ILogger<LocationGetterService> logger,
-            IConfiguration configuration)
+            IConfiguration configuration, ILocationIdService locationIdService)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _configuration = configuration;
             _httpClient = new HttpClient();
+            _locationIdService = locationIdService;
         }
         public IGetterLocationService<LocationData> Create()
         {

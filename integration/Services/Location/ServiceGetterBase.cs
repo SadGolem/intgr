@@ -16,7 +16,7 @@ public class ServiceGetterBase<T> : ServiceBase
     public async Task<string> Get(IHttpClientFactory _httpClientFactory, string _connect)
     {
         var client = _httpClientFactory.CreateClient();
-        await Authorize(client, false);
+        await Authorize(client, true);
         try
         {
             HttpResponseMessage response;
