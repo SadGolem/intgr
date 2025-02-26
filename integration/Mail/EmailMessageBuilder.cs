@@ -51,6 +51,13 @@
     {
         _lists[listType].Clear();
     }
+    public static void ClearList()
+    {
+        foreach (var list in (_lists))
+        {
+            list.Value.Clear();
+        }
+    }
 
     public static void AddNewList(ListType listType)
     {

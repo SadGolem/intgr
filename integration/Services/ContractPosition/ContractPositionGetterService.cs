@@ -17,8 +17,8 @@ public class ContractPositionGetterService(
     private readonly ILogger<ContractPositionGetterService> _logger = logger; 
     private readonly IConfiguration _configuration = configuration;
     private List<int> _locationIdSList = new List<int>(); 
-    private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract" +
-                                 "_position_takeout/?waste_site=1225908&query={id,number,status{color,id,name},contract{id,name,status{color,id,name}},waste_source{id,name,waste_source_category{name},address},waste_site{participant{id,name},address}," +
+    private readonly string _aproConnect ="https://asu2.big3.ru/api/wf__contract_position_emitter__contract" +
+                                 "_position_takeout/?waste_site=2085591&query={id,number,status{color,id,name},contract{id,name,status{color,id,name}},waste_source{id,name,waste_source_category{name},address},waste_site{participant{id,name},address}," +
                                  "estimation_value,value,value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";
 
     public async Task Get()
@@ -26,10 +26,10 @@ public class ContractPositionGetterService(
         GetLocationsId();
         try
         {
-            foreach (var loc in _locationIdSList)
-            {
-                await GetPosition(loc);
-            }
+            /*foreach (var loc in _locationIdSList)
+            {*/
+                await GetPosition(2085591);
+            /*}*/
         }
         catch (Exception e)
         {
@@ -39,7 +39,8 @@ public class ContractPositionGetterService(
     }
     async Task GetPosition(int id)
     {
-        await Get(_httpClientFactory, _aproConnect.Replace("1225908", id.ToString()));
+        //await Get(_httpClientFactory, _aproConnect.Replace("1225908", id.ToString()));
+        await Get(_httpClientFactory, _aproConnect);
     }
     private void GetLocationsId()
     {

@@ -47,6 +47,7 @@ namespace integration
                // await StartLoctko(scheduleController);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
+                EmailMessageBuilder.ClearList();
             }
         }
 
