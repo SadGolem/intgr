@@ -1,9 +1,5 @@
-﻿using System.Text;
-using System.Text.Json;
-using integration.Services.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-
+﻿using System.Text.Json;
+using integration.Context;
 namespace integration.Services.Location;
 
 public class ServiceGetterBase<T> : ServiceBase
@@ -13,18 +9,18 @@ public class ServiceGetterBase<T> : ServiceBase
     {
         _logger = logger;
     }
-    public async Task<string> Get(IHttpClientFactory _httpClientFactory, string _connect)
+    public async Task<List<ContractPositionData>> Get(IHttpClientFactory _httpClientFactory, string _connect)
     {
         var client = _httpClientFactory.CreateClient();
         await Authorize(client, true);
         try
         {
-            HttpResponseMessage response;
-            response = await client.GetAsync(_connect);
+            var response = await client.GetAsync(_connect);
 
             response.EnsureSuccessStatusCode();  
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return "Succesess getted" + responseContent;
+            var responseContentString = await response.Content.ReadAsStringAsync();
+            var responseContent = JsonSerializer.Deserialize<List<ContractPositionData>>(responseContentString);
+            return responseContent;
         }
         catch (HttpRequestException ex)
         {

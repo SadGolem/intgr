@@ -32,7 +32,6 @@ namespace integration.Context
             ( 167, "Проинспектирована" )
         };
 
-
         private static Dictionary<int, double> _containersCapacityMapping = new Dictionary<int, double>
         {
             { 1, 1.1 },

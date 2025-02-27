@@ -11,7 +11,8 @@
         getcontragent,
         setcontragent,
         getemitter,
-        setemitter
+        setemitter,
+        getall
     }
 
     private static Dictionary<ListType, List<string>> _lists = new Dictionary<ListType, List<string>>
@@ -25,7 +26,8 @@
         { ListType.getschedule, new List<string>() },
         { ListType.setschedule, new List<string>() },
         { ListType.getentry, new List<string>() },
-        { ListType.setentry, new List<string>() }
+        { ListType.setentry, new List<string>() },
+        { ListType.getall, new List<string>() }
     };
 
     public static void PutInformation(ListType listType, string s)

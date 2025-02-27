@@ -22,8 +22,8 @@ builder.Services.AddTransient<IGetterLocationServiceFactory<LocationData>, Locat
 builder.Services.AddTransient<IGetterLocationService<LocationData>, LocationGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationData>, LocationSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationData>, LocationSetterService>();
-builder.Services.AddTransient<IGetterServiceFactory<ContractData>, ContractPositionGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ContractData>, ContractPositionGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ContractPositionData>, ContractPositionGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ContractPositionData>, ContractPositionGetterService>();
 
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<LocationController>();
