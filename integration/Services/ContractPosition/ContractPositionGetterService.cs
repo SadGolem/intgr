@@ -12,7 +12,7 @@ public class ContractPositionGetterService(
     HttpClient httpClient,
     ILogger<ContractPositionGetterService> logger,
     IConfiguration configuration,
-    ILocationIdService locationIdService, IConverterToStorageService converterToStorageService)
+    ILocationIdService locationIdService, IConverterToStorageService converterToStorageService,  IStorageService storageService )
     : ServiceGetterBase<ContractPositionData>(httpClientFactory, httpClient, logger, configuration),
         IGetterService<ContractPositionData>
 {
@@ -20,6 +20,7 @@ public class ContractPositionGetterService(
     private readonly ILogger<ContractPositionGetterService> _logger = logger; 
     private readonly IConfiguration _configuration = configuration;
     private IConverterToStorageService _converterToStorageService = converterToStorageService;
+    private IStorageService _storageService = storageService;
     private List<int> _locationIdSList; 
     private readonly string _aproConnect ="https://asu2.big3.ru/api/wf__contract_position_emitter__contract" +
                                  "_position_takeout/?waste_site=2085591&query={id,number,status{color,id,name},contract{id,name,status{color,id,name}},waste_source{id,name,waste_source_category{name},address},waste_site{participant{id,name},address}," +
@@ -45,11 +46,8 @@ public class ContractPositionGetterService(
     {
         //await Get(_httpClientFactory, _aproConnect.Replace("1225908", id.ToString()));
         List<ContractPositionData> postionsList = await Get(_httpClientFactory, _aproConnect); //по позициям получаем всю инфу
-        _converterToStorageService.Mapping(postionsList);
-
-        /*
-        //тут надо преобразовать данные ПРЕОБРАЗОВАНИЕ
-        _storageService.SetNewStruct(CreateStruct());*/
+        
+        _storageService.SetNewStruct(_converterToStorageService.Mapping(postionsList));
         Message("");
     }
 

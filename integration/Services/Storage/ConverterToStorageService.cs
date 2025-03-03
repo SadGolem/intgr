@@ -1,6 +1,6 @@
 ﻿using integration.Context;
+using integration.Services.Schedule;
 using integration.Structs;
-using Newtonsoft.Json;
 
 namespace integration.Services.Storage;
 
@@ -12,19 +12,26 @@ public interface IConverterToStorageService
 public class ConverterToStorageService : IConverterToStorageService
 {
     private List<int> contractPositionList;
+    private IScheduleStorageService _scheduleStorage;
+
+    public ConverterToStorageService(IScheduleStorageService scheduleStorage)
+    {
+        _scheduleStorage = scheduleStorage;
+    }
+
     public IntegrationStruct Mapping(List<ContractPositionData> context)
     {
-        MappingContractPosition(context);
-        return new IntegrationStruct();
+        return CreateStruct(context);
+        
     }
     
-    private void MappingContractPosition(List<ContractPositionData> context)
+    private IntegrationStruct CreateStruct(List<ContractPositionData> context)
     {
         int idLocation = context.First().waste_site.id;
         List<ContractData> contractDatas = new List<ContractData>();
         List<EmitterData> emitterDatas = new List<EmitterData>();
         List<ClientData> clientDatas = new List<ClientData>();
-        List<ScheduleData> scheduleDatas = new List<ScheduleData>();
+        List<ScheduleData> scheduleDatas = _scheduleStorage.GetScheduls();
         LocationData locationDatas = new LocationData();
         
         foreach (var pos in context)
@@ -34,16 +41,16 @@ public class ConverterToStorageService : IConverterToStorageService
             emitterDatas.Add(pos.waste_source);
             clientDatas.Add(pos.contract.client);
             locationDatas = pos.waste_site;
-            //scheduleDatas.Add(pos.);
+            foreach (var schedule in scheduleDatas)
+            {
+                if (locationDatas.id == schedule.location.id)
+                {
+                    scheduleDatas.Add(schedule);
+                    break;
+                }
+            }
         }
 
-        new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatas);
-    }
-    
-    private IntegrationStruct CreateStruct()
-    {
-        var data = new IntegrationStruct();
-
-        return data;
+        return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatas);
     }
 }

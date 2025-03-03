@@ -36,15 +36,17 @@ namespace integration
                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
                // var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
+                var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
-              //  var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
+                
               //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
             //    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
                 //await StartContragent(contragentController);
                 await GetLocation(locationController);
+                await StartSchedule(scheduleController);
                 await GetContractPosition(contractPositionController);
-               // await StartLoctko(scheduleController);
+               
                // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
                 EmailMessageBuilder.ClearList();
@@ -56,11 +58,11 @@ namespace integration
             await EmailSender.Send();
         }
 
-        private async Task StartLoctko(ScheduleController scheduleController)
+        private async Task StartSchedule(ScheduleController scheduleController)
         {
             try
             {
-                await scheduleController.GetScheduleData();
+                await scheduleController.Sync();
             }
             catch (Exception ex)
             {

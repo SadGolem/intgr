@@ -10,6 +10,8 @@ using integration.Factory.SET.Interfaces;
 using integration.Services.ContractPosition;
 using integration.Services.Interfaces;
 using integration.Services.Location;
+using integration.Services.Schedule;
+using integration.Services.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,22 +19,27 @@ builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
+builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
+builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
+builder.Services.AddSingleton<IStorageService, StorageService>();
 builder.Services.AddTransient<IGetterServiceFactory<Data>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterLocationServiceFactory<LocationData>, LocationGetterServiceFactory>();
 builder.Services.AddTransient<IGetterLocationService<LocationData>, LocationGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationData>, LocationSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationData>, LocationSetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ScheduleData>, ScheduleGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ScheduleData>, ScheduleGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<ContractPositionData>, ContractPositionGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ContractPositionData>, ContractPositionGetterService>();
 
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<LocationController>();
+builder.Services.AddSingleton<ScheduleController>();
 builder.Services.AddSingleton<ContractPositionController>();
 builder.Services.AddSingleton<ClientController>();
 builder.Services.AddSingleton<EmitterController>();
 builder.Services.AddSingleton<EmitterControllerMT>();
 builder.Services.AddSingleton<WasteSiteEntryController>();
-builder.Services.AddSingleton<ScheduleController>();
 builder.Services.AddSingleton<EntryController>();
 builder.Services.AddSingleton<ScheduleController>();
 builder.Services.AddHostedService<MainSyncService>();
