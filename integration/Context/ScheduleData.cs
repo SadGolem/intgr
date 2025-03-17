@@ -13,7 +13,7 @@ namespace integration.Context
         [JsonPropertyName("containers")]
         public List<Container>? containers { get; set; }
         [JsonPropertyName("schedule")]
-        public int gr_w { get; set; }
+        public string gr_w { get; set; }
         [JsonPropertyName("dates")]
         public string[] dates { get; set; }
     }

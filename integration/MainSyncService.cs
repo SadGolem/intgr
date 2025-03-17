@@ -1,7 +1,6 @@
 ﻿using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
-using integration.Services;
 
 namespace integration
 {
@@ -44,9 +43,8 @@ namespace integration
 
                 //await StartContragent(contragentController);
                 await GetLocation(locationController);
-                await StartSchedule(scheduleController);
                 await GetContractPosition(contractPositionController);
-               
+                await StartSchedule(scheduleController);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
                 EmailMessageBuilder.ClearList();
@@ -117,7 +115,6 @@ namespace integration
             }
         }
     
-
         private async Task StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)
         {
             try

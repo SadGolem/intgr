@@ -19,6 +19,25 @@ namespace integration.HelpClasses
             _configuration = configuration;
             InitializeAproConnectSettings(url);
         }
+        
+        public string ReplaceStringUtl(string old, string newString)
+        {
+            return _aproConnectSettings.Replace(old, newString);
+        }
+        public string ReplaceStringUtlWithoutDate(string old, string newString)
+        {
+            string replaced = _aproConnectSettings.Replace(old, newString); // Заменяем old на newString
+            int index = replaced.IndexOf(newString); // Находим индекс вхождения newString
+            if (index != -1)
+            {
+                return replaced.Substring(0, index + newString.Length); // Обрезаем строку после newString
+            }
+            else
+            {
+                return replaced; // Если newString не найдена, возвращаем исходную строку после замены
+            }
+        }
+
 
         private void InitializeAproConnectSettings(string url)
         {

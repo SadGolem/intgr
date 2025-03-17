@@ -1,7 +1,5 @@
-﻿using System.Diagnostics.Contracts;
-using integration.Context;
+﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
-using integration.Factory.SET.Interfaces;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using Microsoft.AspNetCore.Mvc;

@@ -2,7 +2,7 @@
 
 namespace integration.Context;
 
-public class ContractData : Data
+public partial class ContractData : Data
 {
     [JsonPropertyName("id")] //id договора (возможно допника)
     public int id { get; set; }

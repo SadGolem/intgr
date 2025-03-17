@@ -13,7 +13,6 @@ public class ConverterToStorageService : IConverterToStorageService
 {
     private List<int> contractPositionList;
     private IScheduleStorageService _scheduleStorage;
-
     public ConverterToStorageService(IScheduleStorageService scheduleStorage)
     {
         _scheduleStorage = scheduleStorage;
@@ -22,7 +21,6 @@ public class ConverterToStorageService : IConverterToStorageService
     public IntegrationStruct Mapping(List<ContractPositionData> context)
     {
         return CreateStruct(context);
-        
     }
     
     private IntegrationStruct CreateStruct(List<ContractPositionData> context)

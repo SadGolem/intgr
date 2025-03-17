@@ -1,9 +1,8 @@
 ﻿using integration.Context;
+using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Services.Storage;
-using integration.Structs;
-using Newtonsoft.Json;
 
 namespace integration.Services.ContractPosition;
 
@@ -12,29 +11,32 @@ public class ContractPositionGetterService(
     HttpClient httpClient,
     ILogger<ContractPositionGetterService> logger,
     IConfiguration configuration,
-    ILocationIdService locationIdService, IConverterToStorageService converterToStorageService,  IStorageService storageService )
+    ILocationIdService locationIdService, IContractPositionStorage contractPositionStorage,  IStorageService storageService )
     : ServiceGetterBase<ContractPositionData>(httpClientFactory, httpClient, logger, configuration),
         IGetterService<ContractPositionData>
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly ILogger<ContractPositionGetterService> _logger = logger; 
     private readonly IConfiguration _configuration = configuration;
-    private IConverterToStorageService _converterToStorageService = converterToStorageService;
+   // private IConverterToStorageService _converterToStorageService = converterToStorageService;
+    private IContractPositionStorage _contractPositionStorage = contractPositionStorage;
     private IStorageService _storageService = storageService;
     private List<int> _locationIdSList; 
-    private readonly string _aproConnect ="https://asu2.big3.ru/api/wf__contract_position_emitter__contract" +
-                                 "_position_takeout/?waste_site=2085591&query={id,number,status{color,id,name},contract{id,name,status{color,id,name}},waste_source{id,name,waste_source_category{name},address},waste_site{participant{id,name},address}," +
-                                 "estimation_value,value,value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";
+    private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125&" +
+                                          "query={id,number,status{id,name},contract{id,name,status{id,name},root_id},waste_source{id,name,waste_source_" +
+                                          "category{name},address, normative_unit_value_exist, participant{id,name},status{id,name}, author{name}},waste_" +
+                                          "site{id,participant{id,name},address, author{name}, lat,lon,status{id}},estimation_value,value" +
+                                          ",value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";
 
     public async Task Get()
     { 
         GetLocationsId();
         try
         {
-            /*foreach (var loc in _locationIdSList)
-            {*/
-                await GetPosition(2085591);
-            /*}*/
+            foreach (var loc in _locationIdSList)
+            {
+                await GetPosition(loc);
+            }
         }
         catch (Exception e)
         {
@@ -44,11 +46,10 @@ public class ContractPositionGetterService(
     }
     async Task GetPosition(int id)
     {
-        //await Get(_httpClientFactory, _aproConnect.Replace("1225908", id.ToString()));
-        List<ContractPositionData> postionsList = await Get(_httpClientFactory, _aproConnect); //по позициям получаем всю инфу
+        List<ContractPositionData> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("2085591", id.ToString())); //по позициям получаем всю инфу
+            //_contractPositionStorage.SetPositions(postionsList); // тут мы отправляем данные в сторэйдж
         
-        _storageService.SetNewStruct(_converterToStorageService.Mapping(postionsList));
-        Message("");
+        _storageService.SetNewStruct(postionsList);
     }
 
     private void GetLocationsId()

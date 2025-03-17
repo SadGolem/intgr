@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public class LocationData : Data
+    public partial class LocationData : Data
     {
         [JsonPropertyName("id")] public int id { get; set; }
         [JsonPropertyName("status_id")] public int status { get; set; }
@@ -12,7 +12,7 @@ namespace integration.Context
         [JsonPropertyName("lat")] public decimal lat { get; set; }
         [JsonPropertyName("address")] public string address { get; set; }
         
-        [JsonPropertyName("participant")] public string participant { get; set; }
+        [JsonPropertyName("participant")] public Participant participant { get; set; }
 
         public class Participant()
         {

@@ -1,8 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using integration.HelpClasses;
 
 namespace integration.Controllers.Apro

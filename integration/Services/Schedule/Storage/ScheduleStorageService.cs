@@ -5,7 +5,7 @@ namespace integration.Services.Schedule;
 
 public class ScheduleStorageService : IScheduleStorageService
 {
-    public static List<ScheduleData> _SchedulesList;
+    public static List<ScheduleData> _SchedulesList = new List<ScheduleData>();
     private readonly ILocationIdService _locationIdService;
     private List<int> ids = new List<int>();
 
@@ -18,10 +18,13 @@ public class ScheduleStorageService : IScheduleStorageService
     {
         return _SchedulesList;
     }
-
+    public List<ScheduleData> GetScheduls(int idPositionData)
+    {
+        return _SchedulesList;
+    }
     public void SetSchedules(ScheduleData dates)
     {
-        throw new NotImplementedException();
+        _SchedulesList.Add(dates);
     }
 
     public void SetSchedules(List<ScheduleData> datas)

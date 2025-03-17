@@ -1,7 +1,5 @@
 ﻿using integration.Context;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using integration.Factory.GET.Interfaces;
 using integration.HelpClasses;
 using integration.Services.Interfaces;

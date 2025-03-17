@@ -9,7 +9,7 @@ namespace integration.Context
         [JsonPropertyName("id")]
         public int id { get; set; }
         [JsonPropertyName("name")]
-        public int name { get; set; }
+        public string name { get; set; }
         [JsonPropertyName("participant")]
         public ClientContact client { get; set; }
         [JsonPropertyName("address")]

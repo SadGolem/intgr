@@ -1,12 +1,12 @@
-﻿using integration.Structs;
+﻿using integration.Context;
+using integration.Structs;
 
 namespace integration.Services.Storage;
 
 public interface IStorageService
 {
     List<IntegrationStruct> GetStructIds();
-    void SetNewStruct(IntegrationStruct data);
-    void SetNewStruct(List<IntegrationStruct> data);
+    void SetNewStruct(List<ContractPositionData> data);
     void DeleteStruct(IntegrationStruct data);
     void Clear();
 }
@@ -14,10 +14,18 @@ public interface IStorageService
 public class StorageService : IStorageService
 {
     public static List<IntegrationStruct> integrationDataList;
+    private IConverterToStorageService _converterToStorageService;
 
-    public StorageService()
+    public StorageService(IConverterToStorageService converterToStorageService)
     {
         integrationDataList = new List<IntegrationStruct>();
+        _converterToStorageService = converterToStorageService;
+    }
+
+    public void SetNewStruct(List<ContractPositionData> contractPositionDatas)
+    {
+        IntegrationStruct structs = _converterToStorageService.Mapping(contractPositionDatas);
+        NewStruct(structs);
     }
 
     public List<IntegrationStruct> GetStructIds()
@@ -25,21 +33,14 @@ public class StorageService : IStorageService
         return integrationDataList;
     }
     
-    public void SetNewStruct(IntegrationStruct data)
+    private void NewStruct(IntegrationStruct data)
     {
         integrationDataList.Add(data);
     }
-
-    public void SetNewStruct(List<IntegrationStruct> data)
-    {
-        integrationDataList = data;
-    }
-
     public void DeleteStruct(IntegrationStruct data)
     {
         integrationDataList.Remove(data);
     }
-
     public void Clear()
     {
         integrationDataList.Clear();
