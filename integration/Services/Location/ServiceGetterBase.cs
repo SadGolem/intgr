@@ -9,7 +9,7 @@ public class ServiceGetterBase<T> : ServiceBase
     {
         _logger = logger;
     }
-    public async Task<List<ContractPositionData>> Get(IHttpClientFactory _httpClientFactory, string _connect)
+    public async Task<List<T>> Get(IHttpClientFactory _httpClientFactory, string _connect)
     {
         var client = _httpClientFactory.CreateClient();
         await Authorize(client, true);
@@ -19,7 +19,7 @@ public class ServiceGetterBase<T> : ServiceBase
 
             response.EnsureSuccessStatusCode();  
             var responseContentString = await response.Content.ReadAsStringAsync();
-            var responseContent = JsonSerializer.Deserialize<List<ContractPositionData>>(responseContentString);
+            var responseContent = JsonSerializer.Deserialize<List<T>>(responseContentString);
             return responseContent;
         }
         catch (HttpRequestException ex)
