@@ -22,11 +22,12 @@ public class ContractPositionGetterService(
     private IContractPositionStorage _contractPositionStorage = contractPositionStorage;
     private IStorageService _storageService = storageService;
     private List<int> _locationIdSList; 
-    private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125&" +
-                                          "query={id,number,status{id,name},contract{id,name,status{id,name},root_id},waste_source{id,name,waste_source_" +
-                                          "category{name},address, normative_unit_value_exist, participant{id,name},status{id,name}, author{name}},waste_" +
-                                          "site{id,participant{id,name},address, author{name}, lat,lon,status{id}},estimation_value,value" +
-                                          ",value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";
+    private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125" +
+                                          "&query={id,number,status{id,name},contract{id,name,status{id,name},root_id,participant{id,name,short_name," +
+                                          " inn,kpp,ogrn,root_company ,waste_person}},waste_source{id,name,waste_source_category{name},address, " +
+                                          "normative_unit_value_exist, participant{id,name},status{id,name}, author{name}},waste_site{id,participant{id}," +
+                                          "address, author{name}, lat,lon,status{id},datetime_create, datetime_update}" +
+                                          ",estimation_value,value,value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";
 
     public async Task Get()
     { 
@@ -48,7 +49,7 @@ public class ContractPositionGetterService(
     {
         List<ContractPositionData> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("2085591", id.ToString())); //по позициям получаем всю инфу
             //_contractPositionStorage.SetPositions(postionsList); // тут мы отправляем данные в сторэйдж
-        
+        _contractPositionStorage.SetPositions(postionsList);
         _storageService.SetNewStruct(postionsList);
     }
 

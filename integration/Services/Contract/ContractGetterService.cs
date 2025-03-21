@@ -6,17 +6,17 @@ using integration.Services.Location;
 
 namespace integration.Services.Client;
 
-public class ClientGetterService(
+public class ContractGetterService(
     IHttpClientFactory httpClientFactory,
     HttpClient httpClient,
-    ILogger<ClientGetterService> logger,
+    ILogger<ContractGetterService> logger,
     IConfiguration configuration,
     IContractPositionStorage contractPositionStorage, IContractStorageService contractStorageService)
     : ServiceGetterBase<ContractData>(httpClientFactory, httpClient, logger, configuration),
         IGetterService<ContractData>
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly ILogger<ClientGetterService> _logger = logger;
+    private readonly ILogger<ContractGetterService> _logger = logger;
     private IContractStorageService _contractStorageService = contractStorageService;
 
     private readonly IConfiguration _configuration = configuration;

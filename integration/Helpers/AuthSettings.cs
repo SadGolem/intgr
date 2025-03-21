@@ -9,12 +9,12 @@ namespace integration.HelpClasses
         public string CallbackUrl { get; set; }
     }
 
-    public class ConnectngStringApro
+    public class ConnectingStringApro
     {
         private readonly IConfiguration _configuration;
         private string _aproConnectSettings;
 
-        public ConnectngStringApro(IConfiguration configuration, string url)
+        public ConnectingStringApro(IConfiguration configuration, string url)
         {
             _configuration = configuration;
             InitializeAproConnectSettings(url);
@@ -61,7 +61,7 @@ namespace integration.HelpClasses
 
 
             _aproConnectSettings = callbackUrl
-                .Replace("token-auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
+                .Replace("auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
         }
         public string GetAproConnectSettings()
         {

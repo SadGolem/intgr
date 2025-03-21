@@ -21,8 +21,8 @@ namespace integration.Controllers.Apro
             _httpClient = httpClient;
             _logger = logger;
             _configuration = configuration;
-            ConnectngStringApro _connectngStringApro = new ConnectngStringApro(_configuration, url);
-            _aproConnectSettings = _connectngStringApro.GetAproConnectSettings();
+            ConnectingStringApro connectingStringApro = new ConnectingStringApro(_configuration, url);
+            _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
         }
 
         [HttpGet]

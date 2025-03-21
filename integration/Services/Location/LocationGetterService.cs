@@ -10,7 +10,7 @@ namespace integration.Services.Location
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger; // Correct logger type
         private readonly ILocationIdService _locationIdService;
-        private readonly ConnectngStringApro _aproConnect;
+        private readonly ConnectingStringApro _aproConnect;
 
         public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration, HttpClient httpClient,ILocationIdService locationIdService) 
             : base(httpClientFactory, httpClient, logger, configuration)
@@ -18,7 +18,7 @@ namespace integration.Services.Location
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _locationIdService = locationIdService;
-            _aproConnect = new ConnectngStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
+            _aproConnect = new ConnectingStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
         }
 
         public Task Get()

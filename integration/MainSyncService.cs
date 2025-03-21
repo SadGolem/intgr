@@ -33,11 +33,11 @@ namespace integration
                 await tokenController.GetTokens();
 
                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
-               // var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
+                
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
                 var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
-                
+                var contragentController = scope.ServiceProvider.GetRequiredService<ContractController>();
               //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
             //    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
@@ -45,6 +45,7 @@ namespace integration
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
                 await StartSchedule(scheduleController);
+                await StartContragent(contragentController);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
                 EmailMessageBuilder.ClearList();
@@ -91,28 +92,28 @@ namespace integration
             }
         }
 
-        private async Task StartContragent(ClientController clientController)
-        {
-            /*try
-            {
-                await clientController.GetEntriesData();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while syncing contragents.");*/
-            /*}*/
-        }
-
-        private async Task StartEmitter(ClientController clientController)
+        private async Task StartContragent(ContractController contractController)
         {
             try
             {
-                await clientController.SyncEmitter();
+                await contractController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing contragents.");
+            }
+        }
+        
+        private async Task StartEmitter(ContractController contractController)
+        {
+            /*try
+            {
+                await contractController.SyncEmitter();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing emitters.");
-            }
+            }*/
         }
     
         private async Task StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)

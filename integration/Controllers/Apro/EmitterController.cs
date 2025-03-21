@@ -23,8 +23,8 @@ namespace integration.Controllers.Apro
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
-            ConnectngStringApro connectngStringApro = new ConnectngStringApro(configuration, url);
-            _aproConnectSettings = connectngStringApro.GetAproConnectSettings();
+            ConnectingStringApro connectingStringApro = new ConnectingStringApro(configuration, url);
+            _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
         }
 
         [HttpGet]
