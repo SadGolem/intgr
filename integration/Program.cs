@@ -23,11 +23,12 @@ builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
-builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
 builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
+builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
 builder.Services.AddSingleton<IContractStorageService, ContractStorageService>();
 builder.Services.AddSingleton<IStorageService, StorageService>();
+builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
 builder.Services.AddTransient<IGetterServiceFactory<Data>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterLocationServiceFactory<LocationData>, LocationGetterServiceFactory>();
 builder.Services.AddTransient<IGetterLocationService<LocationData>, LocationGetterService>();

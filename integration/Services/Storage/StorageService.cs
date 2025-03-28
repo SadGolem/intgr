@@ -6,7 +6,7 @@ namespace integration.Services.Storage;
 public interface IStorageService
 {
     List<IntegrationStruct> GetStructIds();
-    //void SetNewStruct(List<ContractPositionData> data);
+    void SetNewStruct(IntegrationStruct data);
     void DeleteStruct(IntegrationStruct data);
     void Clear();
 }
@@ -14,26 +14,18 @@ public interface IStorageService
 public class StorageService : IStorageService
 {
     public static List<IntegrationStruct> integrationDataList;
-    private IConverterToStorageService _converterToStorageService;
 
-    public StorageService(IConverterToStorageService converterToStorageService)
+    public StorageService()
     {
         integrationDataList = new List<IntegrationStruct>();
-        _converterToStorageService = converterToStorageService;
     }
-
-    /*  public void SetNewStruct(List<ContractPositionData> contractPositionDatas)
-    {
-        IntegrationStruct structs = _converterToStorageService.Mapping(contractPositionDatas);
-        NewStruct(structs);
-    }*/
 
     public List<IntegrationStruct> GetStructIds()
     {
         return integrationDataList;
     }
-    
-    private void NewStruct(IntegrationStruct data)
+
+    public void SetNewStruct(IntegrationStruct data)
     {
         integrationDataList.Add(data);
     }
@@ -44,5 +36,10 @@ public class StorageService : IStorageService
     public void Clear()
     {
         integrationDataList.Clear();
+    }
+
+    private void Message(string m)
+    {
+        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getall,m);
     }
 }

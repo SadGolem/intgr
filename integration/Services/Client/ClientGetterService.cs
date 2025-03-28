@@ -20,7 +20,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
     private List<int> _locationIdSList;
 
     private string _aproConnectUrlit =
-        "/wf__participant__legal_entity/?query={id,datetime_create,datetime_update,name, full_name, inn,kpp, chief{id,name}}&id=";
+        "wf__participant__legal_entity/?query={id,datetime_create,datetime_update,name, full_name, inn,kpp, chief{id,name}}&id=";
 
     private string _aproConnectUrlitURL = "";
     private string _aproConnectPhysicsURL = "";
@@ -28,13 +28,13 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
     private string _getMailURL = "";
     private string _getBossURL = "";
     private readonly string _aproConnectPhysics =
-        "/wf__participant__fl/?query={id,datetime_create,datetime_update,name, full_name, inn,kpp, chief{id,name}}&id=";
+        "wf__participant__fl/?query={id,datetime_create,datetime_update,name, full_name, inn,kpp, chief{id,name}}&id=";
     private readonly string _getBIK =
         "wf__account__bank_account_details/?query={bik}&participant_id=";
     private readonly string _getMail =
-        "/wf__contact__counterparties_contacts/?participant=5778712&query={id,contact_type{id,name},value}&contact_type_id=3";
+        "wf__contact__counterparties_contacts/?participant=5778712&query={id,contact_type{id,name},value}&contact_type_id=3";
     private readonly string _getBoss =
-        "/wf__employee__employee/?participant=986874&query={id,name,position}";
+        "wf__employee__employee/?participant=986874&query={id,name,position}";
     
     private List<(int,string)> clients_id = new List<(int,string)>();
     List<ClientData> clients = new List<ClientData>();

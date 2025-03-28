@@ -11,20 +11,17 @@ public class ContractPositionGetterService(
     HttpClient httpClient,
     ILogger<ContractPositionGetterService> logger,
     IConfiguration configuration,
-    ILocationIdService locationIdService, IContractPositionStorageService contractPositionStorageService,  IStorageService storageService )
+    ILocationIdService locationIdService, IContractPositionStorageService contractPositionStorageService )
     : ServiceGetterBase<ContractPositionData>(httpClientFactory, httpClient, logger, configuration),
         IGetterService<ContractPositionData>
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly ILogger<ContractPositionGetterService> _logger = logger; 
-    private readonly IConfiguration _configuration = configuration;
    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
     private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
-    private IStorageService _storageService = storageService;
     private List<int> _locationIdSList; 
     private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125" +
                                           "&query={id,number,status{id,name},contract{id,name,status{id,name},root_id,participant{id,name,short_name," +
-                                          " inn,kpp,ogrn,root_company ,waste_person}},waste_source{id,name,waste_source_category{name},address, " +
+                                          " inn,kpp,ogrn,root_company ,waste_person, doc_type{name}}},waste_source{id,name,waste_source_category{name},address, " +
                                           "normative_unit_value_exist, participant{id,name},status{id,name}, author{name}},waste_site{id,participant{id}," +
                                           "address, author{name}, lat,lon,status{id},datetime_create, datetime_update}" +
                                           ",estimation_value,value,value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";

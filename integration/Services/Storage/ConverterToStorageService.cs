@@ -18,18 +18,21 @@ public class ConverterToStorageService : IConverterToStorageService
     private IScheduleStorageService _scheduleStorage;
     private IContractStorageService _contractStorageService;
     private IClientStorageService _clientStorageService;
+    private IStorageService _storageService;
     private IContractPositionStorageService _contractPositionStorageService;
     private List<ContractData> contracts = new List<ContractData>();
     private List<ScheduleData> schedules = new List<ScheduleData>();
     private List<ClientData> clients = new List<ClientData>();
     private List<ContractPositionData> contractPositions = new List<ContractPositionData>();
     
-    public ConverterToStorageService(IScheduleStorageService scheduleStorage, IContractStorageService contractStorageService, IClientStorageService clientStorageService, IContractPositionStorageService contractPositionStorageService)
+    public ConverterToStorageService(IScheduleStorageService scheduleStorage, IContractStorageService contractStorageService,
+        IClientStorageService clientStorageService, IContractPositionStorageService contractPositionStorageService, IStorageService storageService)
     {
         _scheduleStorage = scheduleStorage;
         _contractStorageService = contractStorageService;
         _clientStorageService = clientStorageService;
         _contractPositionStorageService = contractPositionStorageService;
+        _storageService = storageService;
     }
 
     public async Task GetAll()
@@ -43,16 +46,20 @@ public class ConverterToStorageService : IConverterToStorageService
     public async Task ToStorage()
     {
         await GetAll();
+        await Mapping();
     }
 
-    public IntegrationStruct Mapping(List<ContractPositionData> context)
+    private async Task Mapping()
     {
-        return CreateStruct(context);
+        foreach (var position in contractPositions)
+        {
+            _storageService.SetNewStruct(CreateStruct(position));
+        }
     }
-    
-    private IntegrationStruct CreateStruct(List<ContractPositionData> context)
+
+    private IntegrationStruct CreateStruct(ContractPositionData context)
     {
-        int idLocation = context.First().waste_site.id;
+        int idLocation = context.waste_site.id;
         contracts = _contractStorageService.GetContracts();
         schedules = _scheduleStorage.GetScheduls();
         List<ContractData> contractDatas = new List<ContractData>();
@@ -60,32 +67,30 @@ public class ConverterToStorageService : IConverterToStorageService
         List<ClientData> clientDatas = new List<ClientData>();
         List<ScheduleData> scheduleDatas = new List<ScheduleData>();
         LocationData locationDatas = new LocationData();
-        
-        foreach (var pos in context)
+
+        int idPos = context.id;
+        contractDatas.Add(context.contract);
+        emitterDatas.Add(context.waste_source);
+        clientDatas.Add(context.contract.client);
+        locationDatas = context.waste_site;
+        foreach (var schedule in scheduleDatas)
         {
-            int idPos = pos.id;
-            //contractDatas.Add(pos.contract);
-            emitterDatas.Add(pos.waste_source);
-            clientDatas.Add(pos.contract.client);
-            locationDatas = pos.waste_site;
-            foreach (var schedule in scheduleDatas)
+            if (locationDatas.id == schedule.location.id)
             {
-                if (locationDatas.id == schedule.location.id)
-                {
-                    scheduleDatas.Add(schedule);
-                    break;
-                }
-            }
-            foreach (var contract in contractDatas)
-            {
-                if (pos.contract.root_id == contract.root_id)
-                {
-                    contractDatas.Add(contract);
-                    break;
-                }
+                scheduleDatas.Add(schedule);
+                break;
             }
         }
 
-        return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatas);
+        foreach (var contract in contractDatas)
+        {
+            if (context.contract.root_id == contract.root_id)
+            {
+                contractDatas.Add(contract);
+                break;
+            }
+        }
+
+    return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatas);
     }
 }
