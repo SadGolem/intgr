@@ -2,7 +2,7 @@
 
 namespace integration.Services.ContractPosition.Storage;
 
-public class ContractPositionStorage : IContractPositionStorage
+public class ContractPositionStorageService : IContractPositionStorageService
 {
     public static List<ContractPositionData> ContractPositionList = new List<ContractPositionData>();
     public List<ContractPositionData> GetPosition()

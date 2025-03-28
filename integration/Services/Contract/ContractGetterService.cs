@@ -11,7 +11,7 @@ public class ContractGetterService(
     HttpClient httpClient,
     ILogger<ContractGetterService> logger,
     IConfiguration configuration,
-    IContractPositionStorage contractPositionStorage, IContractStorageService contractStorageService)
+    IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService)
     : ServiceGetterBase<ContractData>(httpClientFactory, httpClient, logger, configuration),
         IGetterService<ContractData>
 {
@@ -22,12 +22,13 @@ public class ContractGetterService(
     private readonly IConfiguration _configuration = configuration;
 
     // private IConverterToStorageService _converterToStorageService = converterToStorageService;
-    private IContractPositionStorage _contractPositionStorage = contractPositionStorage;
+    private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
     private List<int> _locationIdSList;
 
     private readonly string _aproConnect =
-        "https://test.asu2.big3.ru/api/wf__contract__contract_takeout/?query={id,name,status{id,name},contract_type{name}, " +
-        "root_id,participant{id,name,short_name, inn,kpp, ogrn, root_company ,waste_person}, v_order}&v_order=0&root_id=";
+        "https://test.asu2.big3.ru/api/wf__contract__contract_takeout/?query={id,name,status{id,name},contract_type{name}," +
+        " root_id,participant{id,name,short_name, inn,kpp, ogrn, root_company ,waste_person,doc_type{name}}, " +
+        "v_order}&v_order=0&root_id=";
 
     private List<string> root_ids = new List<string>();
 
@@ -41,7 +42,7 @@ public class ContractGetterService(
 
     private async Task GetContractsToList()
     {
-        List<ContractPositionData> contractsPosList = _contractPositionStorage.GetPosition();
+        List<ContractPositionData> contractsPosList = _contractPositionStorageService.GetPosition();
 
         foreach (var con in contractsPosList)
         {

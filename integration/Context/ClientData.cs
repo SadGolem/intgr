@@ -7,9 +7,13 @@ namespace integration.Context
         public new string nameFileTime = "contragent";
 
         [JsonPropertyName("id")]
-        public int id_oob { get; set; }
+        public int id { get; set; }
         [JsonPropertyName("name")]
         public string name { get; set; }
+        [JsonPropertyName("bik")]
+        public string bik { get; set; }
+        [JsonPropertyName("value")]
+        public string mail { get; set; }
         [JsonPropertyName("short_name")]
         public string short_name { get; set; }
         [JsonPropertyName("inn")]
@@ -24,6 +28,15 @@ namespace integration.Context
         public Boss boss { get; set; }*/
         [JsonPropertyName("waste_person")]
         public string person_id {get; set;}
+        [JsonPropertyName("doc_type")]
+        public Doc_type doc_type { get; set; }
+        
+        public class Doc_type
+        {
+            [JsonPropertyName("name")]
+            public string name { get; set; }
+
+        }
 
         public class Boss
         {

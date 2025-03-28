@@ -24,7 +24,7 @@ namespace integration.HelpClasses
         {
             return _aproConnectSettings.Replace(old, newString);
         }
-        public string ReplaceStringUtlWithoutDate(string old, string newString)
+        public string ReplaceStringUrlWithoutDate(string old, string newString)
         {
             string replaced = _aproConnectSettings.Replace(old, newString); // Заменяем old на newString
             int index = replaced.IndexOf(newString); // Находим индекс вхождения newString
@@ -61,7 +61,7 @@ namespace integration.HelpClasses
 
 
             _aproConnectSettings = callbackUrl
-                .Replace("auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
+                .Replace("token-auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
         }
         public string GetAproConnectSettings()
         {

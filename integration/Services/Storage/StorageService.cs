@@ -6,7 +6,7 @@ namespace integration.Services.Storage;
 public interface IStorageService
 {
     List<IntegrationStruct> GetStructIds();
-    void SetNewStruct(List<ContractPositionData> data);
+    //void SetNewStruct(List<ContractPositionData> data);
     void DeleteStruct(IntegrationStruct data);
     void Clear();
 }
@@ -22,11 +22,11 @@ public class StorageService : IStorageService
         _converterToStorageService = converterToStorageService;
     }
 
-    public void SetNewStruct(List<ContractPositionData> contractPositionDatas)
+    /*  public void SetNewStruct(List<ContractPositionData> contractPositionDatas)
     {
         IntegrationStruct structs = _converterToStorageService.Mapping(contractPositionDatas);
         NewStruct(structs);
-    }
+    }*/
 
     public List<IntegrationStruct> GetStructIds()
     {

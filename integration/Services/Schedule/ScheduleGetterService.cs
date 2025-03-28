@@ -12,28 +12,28 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ScheduleGetterService> _logger; // Correct logger type
     private readonly IScheduleStorageService _scheduleStorageService;
-    private readonly IContractPositionStorage _contractPositionStorage;
+    private readonly IContractPositionStorageService _contractPositionStorageService;
     private ConnectingStringApro _aproConnect;
     private string asuPro = "https://test.asu2.big3.ru/api/wf__wastesitescheduleset__waste_site_schedule_set/?position=3215337&query={id,waste_site{id},containers{id},schedule, dates}";
     
-    public ScheduleGetterService(IHttpClientFactory httpClientFactory, HttpClient httpClient, ILogger<ScheduleGetterService> logger, IConfiguration configuration, IScheduleStorageService scheduleStorageService, IContractPositionStorage contractPositionStorage)
+    public ScheduleGetterService(IHttpClientFactory httpClientFactory, HttpClient httpClient, ILogger<ScheduleGetterService> logger, IConfiguration configuration, IScheduleStorageService scheduleStorageService, IContractPositionStorageService contractPositionStorageService)
         : base(httpClientFactory, httpClient, logger, configuration)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _aproConnect = new ConnectingStringApro(configuration, asuPro);
         _scheduleStorageService = scheduleStorageService;
-        _contractPositionStorage = contractPositionStorage;
+        _contractPositionStorageService = contractPositionStorageService;
     }
 
     public async Task Get()
     {
         _logger.LogInformation($"Try getting scheduls from {_aproConnect}...");
         var schedules = new List<ScheduleData>();
-        var positions = _contractPositionStorage.GetPosition();
+        var positions = _contractPositionStorageService.GetPosition();
         foreach (var pos in positions)
         {
-           // var url = _aproConnect.ReplaceStringUtlWithoutDate("3215337", pos.id.ToString());
+           // var url = _aproConnect.ReplaceStringUrlWithoutDate("3215337", pos.id.ToString());
            var url = asuPro.Replace("3215337", pos.id.ToString());
             try
             {

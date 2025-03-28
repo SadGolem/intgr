@@ -1,6 +1,7 @@
 ﻿using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
+using integration.Services.Storage;
 
 namespace integration
 {
@@ -8,13 +9,15 @@ namespace integration
     {
         private readonly ILogger<MainSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private  IConverterToStorageService _converterToStorageService;
         private Timer? _timer;
         private const int _updateTime = 30;
 
-        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider)
+        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, IConverterToStorageService converterToStorageService)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+            _converterToStorageService = converterToStorageService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -37,17 +40,21 @@ namespace integration
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
                 var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
-                var contragentController = scope.ServiceProvider.GetRequiredService<ContractController>();
+                var contractController = scope.ServiceProvider.GetRequiredService<ContractController>();
+                var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
+
               //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
             //    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
-
-                //await StartContragent(contragentController);
+            
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
-                await StartSchedule(scheduleController);
-                await StartContragent(contragentController);
+                await GetSchedule(scheduleController);
+                await GetContract(contractController);
+                await GetClient(contragentController);
+                await SetStruct(_converterToStorageService);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await SendAsync();
+                
                 EmailMessageBuilder.ClearList();
             }
         }
@@ -57,7 +64,7 @@ namespace integration
             await EmailSender.Send();
         }
 
-        private async Task StartSchedule(ScheduleController scheduleController)
+        private async Task GetSchedule(ScheduleController scheduleController)
         {
             try
             {
@@ -92,11 +99,27 @@ namespace integration
             }
         }
 
-        private async Task StartContragent(ContractController contractController)
+        private async Task GetContract(ContractController contractController)
         {
             try
             {
                 await contractController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing contracts.");
+            }
+        }
+        
+        private async Task SetStruct(IConverterToStorageService converter)
+        {
+            await converter.ToStorage();
+        }
+        private async Task GetClient(ClientController clientController)
+        {
+            try
+            {
+                await clientController.Sync();
             }
             catch (Exception ex)
             {

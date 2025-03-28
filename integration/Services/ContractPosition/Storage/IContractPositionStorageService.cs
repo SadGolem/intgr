@@ -2,7 +2,7 @@
 
 namespace integration.Services.ContractPosition.Storage;
 
-public interface IContractPositionStorage
+public interface IContractPositionStorageService
 {
     List<ContractPositionData> GetPosition();
     void SetPosition(ContractPositionData dates);

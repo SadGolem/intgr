@@ -1,18 +1,16 @@
 ﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
 using integration.Services.Client;
-using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
-using integration.Services.Location;
 using integration.Services.Storage;
 
-namespace integration.Factory.GET;
+namespace integration.Factory;
 
-public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
+public class ClientGetterServiceFactory : IGetterServiceFactory<ClientData>
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<ContractGetterService> _logger;
+    private readonly ILogger<ClientGetterService> _logger;
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
     private readonly IConverterToStorageService _converterToStorageService;
@@ -20,9 +18,9 @@ public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
     private readonly IStorageService _storageService;
     private readonly IContractStorageService _contractStorageService;
 
-    public ContractGetterServiceFactory(
+    public ClientGetterServiceFactory(
         IHttpClientFactory httpClientFactory,
-        ILogger<ContractGetterService> logger,
+        ILogger<ClientGetterService> logger,
         IConfiguration configuration, IConverterToStorageService converterToStorageService, IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService)
     {
         _httpClientFactory = httpClientFactory;
@@ -34,8 +32,8 @@ public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
         _contractStorageService = contractStorageService;
     }
 
-    public IGetterService<ContractData> Create()
+    public IGetterService<ClientData> Create()
     {
-        return new ContractGetterService(_httpClientFactory, _httpClient, _logger, _configuration, _contractPositionStorageService, _contractStorageService);
+        return new ClientGetterService(_httpClientFactory, _httpClient, _logger, _configuration, _contractPositionStorageService);
     }
 }

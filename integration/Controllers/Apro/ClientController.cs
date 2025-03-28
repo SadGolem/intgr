@@ -13,28 +13,27 @@ using integration.Services.Location;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContractController : ControllerBase, IController
+public class ClientController : ControllerBase, IController
 {
-    private readonly ILogger<ContractController> _logger;
-    private readonly IGetterServiceFactory<ContractData> _serviceGetter;
-    private IGetterService<ContractData> _getter;
+    private readonly ILogger<ClientController> _logger;
+    private readonly IGetterServiceFactory<ClientData> _serviceGetter;
+    private IGetterService<ClientData> _getter;
     private ILocationIdService _locationIdService;
-    public ContractController(ILogger<ContractController> logger, 
-        IGetterServiceFactory<ContractData> serviceGetter,
+    public ClientController(ILogger<ClientController> logger, 
+        IGetterServiceFactory<ClientData> serviceGetter,
         ILocationIdService locationIdService)
     {
         _logger = logger;
         _serviceGetter = serviceGetter;
         _locationIdService = locationIdService;
     }
-
-    [HttpGet("syncEmitters")] // This endpoint can be used for manual triggers
+    
     public async Task<IActionResult> Sync()
     {
         _logger.LogInformation("Starting manual contragents sync...");
         try
         {
-            await GetContracts();
+            await GetClients();
 
             return Ok("Contragents synced successfully.");
         }
@@ -45,7 +44,7 @@ public class ContractController : ControllerBase, IController
         }
     }
 
-    private async Task GetContracts()
+    private async Task GetClients()
     {
         try
         {

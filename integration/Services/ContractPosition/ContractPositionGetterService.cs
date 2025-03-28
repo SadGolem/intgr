@@ -11,7 +11,7 @@ public class ContractPositionGetterService(
     HttpClient httpClient,
     ILogger<ContractPositionGetterService> logger,
     IConfiguration configuration,
-    ILocationIdService locationIdService, IContractPositionStorage contractPositionStorage,  IStorageService storageService )
+    ILocationIdService locationIdService, IContractPositionStorageService contractPositionStorageService,  IStorageService storageService )
     : ServiceGetterBase<ContractPositionData>(httpClientFactory, httpClient, logger, configuration),
         IGetterService<ContractPositionData>
 {
@@ -19,7 +19,7 @@ public class ContractPositionGetterService(
     private readonly ILogger<ContractPositionGetterService> _logger = logger; 
     private readonly IConfiguration _configuration = configuration;
    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
-    private IContractPositionStorage _contractPositionStorage = contractPositionStorage;
+    private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
     private IStorageService _storageService = storageService;
     private List<int> _locationIdSList; 
     private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125" +
@@ -48,9 +48,9 @@ public class ContractPositionGetterService(
     async Task GetPosition(int id)
     {
         List<ContractPositionData> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("2085591", id.ToString())); //по позициям получаем всю инфу
-            //_contractPositionStorage.SetPositions(postionsList); // тут мы отправляем данные в сторэйдж
-        _contractPositionStorage.SetPositions(postionsList);
-        _storageService.SetNewStruct(postionsList);
+            //_contractPositionStorageService.SetPositions(postionsList); // тут мы отправляем данные в сторэйдж
+        _contractPositionStorageService.SetPositions(postionsList);
+       
     }
 
     private void GetLocationsId()

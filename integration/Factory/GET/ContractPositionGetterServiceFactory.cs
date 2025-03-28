@@ -31,7 +31,7 @@ namespace integration.Factory.GET
         public IGetterService<ContractPositionData> Create()
         {
             return new ContractPositionGetterService(_httpClientFactory,_httpClient,  _logger, _configuration,
-                new LocationIdService(), new ContractPositionStorage() , new StorageService(_converterToStorageService));
+                new LocationIdService(), new ContractPositionStorageService() , new StorageService(_converterToStorageService));
         }
     }
 }
