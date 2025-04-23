@@ -32,9 +32,9 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
     private readonly string _getBIK =
         "wf__account__bank_account_details/?query={bik}&participant_id=";
     private readonly string _getMail =
-        "wf__contact__counterparties_contacts/?participant=5778712&query={id,contact_type{id,name},value}&contact_type_id=3";
+        "wf__contact__counterparties_contacts/?&query={id,contact_type{id,name},value}&contact_type_id=3&participant=";
     private readonly string _getBoss =
-        "wf__employee__employee/?participant=986874&query={id,name,position}";
+        "wf__employee__employee/?&query={id,name,position}&participant=";
     
     private List<(int,string)> clients_id = new List<(int,string)>();
     List<ClientData> clients = new List<ClientData>();
@@ -43,17 +43,20 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         HttpClient httpClient,
         ILogger<ClientGetterService> logger,
         IConfiguration configuration,
-        IContractPositionStorageService contractPositionStorageService) : base(httpClientFactory, httpClient, logger, configuration)
+        IContractPositionStorageService contractPositionStorageService, IClientStorageService clientStorage) : base(httpClientFactory, httpClient, logger, configuration)
     {
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
+        _contractPositionStorageService = contractPositionStorageService;
+        _clientStorage = clientStorage;
+        
         _aproConnectUrlitURL = new ConnectingStringApro(configuration, _aproConnectUrlit).ReplaceStringUrlWithoutDate("&id=","&id=");
         _aproConnectPhysicsURL = new ConnectingStringApro(configuration, _aproConnectPhysics).ReplaceStringUrlWithoutDate("id=","id=");
         _getBIK = new ConnectingStringApro(configuration, _getBIK).ReplaceStringUrlWithoutDate("participant_id=","participant_id=");
-        _getMailURL = new ConnectingStringApro(configuration, _getMail).ReplaceStringUrlWithoutDate("contact_type_id=3","contact_type_id=3");
-        _getBossURL = new ConnectingStringApro(configuration, _getBoss).ReplaceStringUrlWithoutDate("query={id,name,position}","query={id,name,position}");
-        
-        _contractPositionStorageService = contractPositionStorageService;
+        _getMailURL = new ConnectingStringApro(configuration, _getMail).ReplaceStringUrlWithoutDate("participant=","participant=");
+        _getBossURL =
+            new ConnectingStringApro(configuration, _getBoss).ReplaceStringUrlWithoutDate("query={id,name,position}",
+                "query={id,name,position}");
     }
     public async Task Get()
     {
@@ -124,7 +127,18 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
             {
                 bik = await Get(_httpClientFactory, _getBIK + cl.id);
                 if (bik.Count > 0)
-                    clients.ElementAt(cl.id).bik = bik.First().bik;
+                {
+                    var clientToUpdate = clients.FirstOrDefault(c => c.id == cl.id);
+
+                    if (clientToUpdate != null)
+                    {
+                        clientToUpdate.bik = bik.First().bik;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Клиент с id {cl.id} не найден в списке clients.");
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -136,15 +150,18 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
     //получение электронной почты
     private async Task GetMail()
     {
-        foreach (var cl in clients)
+        for (int i = 0; i < clients.Count; i++)
         {
-            string url = new ConnectingStringApro(_configuration, _getMail).ReplaceStringUrlWithoutDate("5778712",cl.id.ToString());
+            var cl = clients[i];
+
             List<ClientData> mail = new List<ClientData>();
             try
             {
-                mail = await Get(_httpClientFactory, url);
+                mail = await Get(_httpClientFactory, _getMailURL + cl.id);
                 if (mail.Count > 0)
-                    clients.ElementAt(cl.id).mail = mail.First().mail;
+                {
+                    clients[i].mail = mail.First().mail;
+                }
             }
             catch (Exception e)
             {
