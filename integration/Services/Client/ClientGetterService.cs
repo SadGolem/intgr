@@ -75,8 +75,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         {
             clients_id.Add((con.contract.client.id, con.contract.client.doc_type.name));
         }
-
-        await GetClientsDataFromAPRO();
+        
     }
 
     private async Task GetClientsDataFromAPRO()

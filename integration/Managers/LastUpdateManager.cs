@@ -1,16 +1,20 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using integration.Managers;
 
-public static class TimeManager 
+public static class TimeManager
 {
-    private const string DateTimeFormat = "O";
-    private static string timeZone = "Europe/London";
-    private static FileManager _fileManager; static TimeManager()
+    private const string DateTimeFormat = "o";
+    private static string timeZoneId = "Etc/GMT+1"; // TimeZoneId для GMT-1. ВНИМАНИЕ: Знак "+" инвертирован!
+    private static FileManager _fileManager;
+
+    static TimeManager()
     {
-        _fileManager = new FileManager( DateTimeFormat);
+        _fileManager = new FileManager(DateTimeFormat);
     }
+
     public static DateTime GetLastUpdateTime(string key)
     {
         return _fileManager.GetText(key);
@@ -18,13 +22,25 @@ public static class TimeManager
 
     public static void SetLastUpdateTime(string key)
     {
-        DateTime lastUpdate = GetNetworkTimeUtc();
-        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
-        DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(lastUpdate, cstZone);
+        DateTime lastUpdateUtc = GetNetworkTimeUtc(); // Получаем время из сети в UTC
 
-        var lines = new List<string>();
-        bool updated = false;
-        _fileManager.SetText(lines, updated, cstTime, key);
+        try
+        {
+            TimeZoneInfo targetZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            DateTime targetTime = TimeZoneInfo.ConvertTimeFromUtc(lastUpdateUtc, targetZone); // Преобразуем в целевой часовой пояс
+
+            var lines = new List<string>();
+            bool updated = false;
+            _fileManager.SetText(lines, updated, targetTime, key); // Сохраняем время в целевом часовом поясе
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            Console.WriteLine($"Часовой пояс с ID '{timeZoneId}' не найден.");
+            // Обработка ошибки: либо используем UTC, либо какое-то значение по умолчанию.
+            var lines = new List<string>();
+            bool updated = false;
+            _fileManager.SetText(lines, updated, lastUpdateUtc, key); // Сохраняем UTC в случае ошибки.
+        }
     }
 
     public static DateTime GetNetworkTimeUtc(string ntpServer = "time.nist.gov")
@@ -66,5 +82,5 @@ public static class TimeManager
                        ((x & 0x00ff0000) >> 8) +
                        ((x & 0xff000000) >> 24));
     }
-
 }
+
