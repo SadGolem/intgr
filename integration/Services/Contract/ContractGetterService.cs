@@ -1,0 +1,73 @@
+﻿using integration.Context;
+using integration.Services.Client.Storage;
+using integration.Services.ContractPosition.Storage;
+using integration.Services.Interfaces;
+using integration.Services.Location;
+
+namespace integration.Services.Client;
+
+public class ContractGetterService(
+    IHttpClientFactory httpClientFactory,
+    HttpClient httpClient,
+    ILogger<ContractGetterService> logger,
+    IConfiguration configuration,
+    IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService, ITokenService tokenService)
+    : ServiceGetterBase<ContractData>(httpClientFactory, httpClient, logger, configuration, tokenService),
+        IGetterService<ContractData>
+{
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly ILogger<ContractGetterService> _logger = logger;
+    private IContractStorageService _contractStorageService = contractStorageService;
+
+    private readonly IConfiguration _configuration = configuration;
+
+    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
+    private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
+    private List<int> _locationIdSList;
+
+    private readonly string _aproConnect =
+        "https://test.asu2.big3.ru/api/wf__contract__contract_takeout/?query={id,name,status{id,name},contract_type{name}," +
+        " root_id,participant{id,name,short_name, inn,kpp, ogrn, root_company ,waste_person,doc_type{name}}, " +
+        "v_order}&v_order=0&root_id=";
+
+    private List<string> root_ids = new List<string>();
+
+    public async Task Get()
+    {
+        //сначала получить uuid 
+        await GetContractsToList();
+        //затем вывести все договоры 
+        //передать список в сторэйдж
+    }
+
+    private async Task GetContractsToList()
+    {
+        List<ContractPositionData> contractsPosList = _contractPositionStorageService.GetPosition();
+
+        foreach (var con in contractsPosList)
+        {
+            root_ids.Add(con.contract.root_id);
+        }
+
+        await GetContractsDataFromAPRO();
+    }
+
+    private async Task GetContractsDataFromAPRO()
+    {
+        List<ContractData> contractsList = new List<ContractData>();
+        foreach (var id in root_ids)
+        {
+            try
+            {
+                contractsList = await Get(_httpClientFactory, _aproConnect + id);
+                if (contractsList.Count() > 0)
+                    _contractStorageService.SetContracts(contractsList.First());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
+}

@@ -12,18 +12,25 @@ namespace integration.Controllers.Apro
         private readonly string _aproConnectSettings;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<EmitterController> _logger;
+        private ITokenService _tokenService;
         private string url = "wf__wastesource__waste_source/?query={id, datetime_create, datetime_update,participant{id,name}, address, name, normative_unit_value_exist, status{id,name},waste_source_category{id}, author{name}}";
 
         public EmitterController(
             IHttpClientFactory httpClientFactory,
             ILogger<EmitterController> logger,
-            IConfiguration configuration
+            IConfiguration configuration, ITokenService tokenService
             )
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+<<<<<<< Updated upstream
             ConnectngStringApro connectngStringApro = new ConnectngStringApro(configuration, url);
             _aproConnectSettings = connectngStringApro.GetAproConnectSettings();
+=======
+            ConnectingStringApro connectingStringApro = new ConnectingStringApro(configuration, url);
+            _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
+            _tokenService = tokenService;
+>>>>>>> Stashed changes
         }
 
         [HttpGet]
@@ -88,7 +95,7 @@ namespace integration.Controllers.Apro
         private async Task<List<EmitterData>> FetchData()
         {
             var emitters = new List<EmitterData>();
-            var token = await TokenController._authorizer.GetCachedTokenAPRO();
+            var token = await _tokenService.GetCachedTokenAPRO();
             using var httpClient = _httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             try

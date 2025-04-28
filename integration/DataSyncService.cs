@@ -9,12 +9,23 @@ namespace integration
         private readonly ILogger<DataSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private Timer? _timer;
+        private IServiceScopeFactory _scopeFactory;
         private const int _updateTime = 30;
 
+<<<<<<< Updated upstream:integration/DataSyncService.cs
         public DataSyncService(ILogger<DataSyncService> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+=======
+        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, IServiceScopeFactory scopeFactory
+            ,IConverterToStorageService converterToStorageService)
+        {
+            _logger = logger;
+            _serviceProvider = serviceProvider;
+            _scopeFactory = scopeFactory;
+            _converterToStorageService = converterToStorageService;
+>>>>>>> Stashed changes:integration/MainSyncService.cs
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -157,6 +168,33 @@ namespace integration
             return Task.CompletedTask;
         }
 
+        protected async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    // Create a new scope
+                    using (var scope = _scopeFactory.CreateScope())
+                    {
+                        // Resolve IConverterToStorageService within the scope
+                        var converter = scope.ServiceProvider.GetRequiredService<IConverterToStorageService>();
+
+                        // Use the converter
+                        //await DoSomethingWithConverter(converter); // Example
+                        _logger.LogInformation("MainSyncService is running. " + DateTime.Now);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error in MainSyncService");
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); // Example delay
+            }
+        }
+    
+    
         public void Dispose()
         {
             _timer?.Dispose();

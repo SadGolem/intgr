@@ -15,9 +15,9 @@ namespace integration.Controllers.MT
         private readonly ILogger<EmitterControllerMT> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly TokenController _tokenController;
+        private readonly ITokenService _tokenController;
         private string url = "api/v2/garbage_maker/create_from_asupro";
-        public EmitterControllerMT(ILogger<EmitterControllerMT> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
+        public EmitterControllerMT(ILogger<EmitterControllerMT> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration, ITokenService tokenController)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
@@ -31,7 +31,7 @@ namespace integration.Controllers.MT
         {
             try
             {
-                var token = await TokenController._authorizer.GetCachedTokenMT();
+                var token = await _tokenController.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -69,7 +69,7 @@ namespace integration.Controllers.MT
         {
             try
             {
-                var token = await TokenController._authorizer.GetCachedTokenMT();
+                var token = await _tokenController.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);

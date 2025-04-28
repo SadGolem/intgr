@@ -16,11 +16,8 @@ namespace integration
         private readonly ILogger<TokenController> _logger;
         private readonly IMemoryCache _memoryCache;
         private readonly IConfiguration _configuration;
-        private AuthSettings _aproConnectSettings;
-        private AuthSettings _mtConnectSettings;
-        public static TokenController tokenController;
-        public static Authorizer _authorizer;
-        public static Dictionary<string, string> tokens = new Dictionary<string, string>();
+        private readonly AuthSettings _aproConnectSettings;
+        private readonly AuthSettings _mtConnectSettings;
 
         public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IConfiguration configuration)
         {
@@ -29,8 +26,6 @@ namespace integration
             _configuration = configuration;
             _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>();
             _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
-            tokenController = this;
-            _authorizer = new Authorizer(_logger, _memoryCache, _configuration, tokenController);
 
             var httpClientHandler = new HttpClientHandler
             {
@@ -46,13 +41,20 @@ namespace integration
             {
                 var token1 = await GetTokenFromSecondSystem();
                 var token2 = await GetTokenFromFirstSystem();
-                var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
-                var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
-                _logger.LogInformation($"Got new token: {token1}");
-                _memoryCache.Set(cacheKey, token1, TimeSpan.FromHours(24));
-                _memoryCache.Set(cacheKey2, token2, TimeSpan.FromHours(24));
-                tokens.Clear();
-                tokens.Add(token1, token2);
+                
+                var today = DateTime.UtcNow.Date; // Midnight UTC of the current day
+                var cacheKey1 = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}_{today:yyyyMMdd}";
+                var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}_{today:yyyyMMdd}";
+
+                _logger.LogInformation($"Got new token (System 1): {token1}");
+                _logger.LogInformation($"Got new token (System 2): {token2}");
+                
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(today.AddDays(1));
+
+                _memoryCache.Set(cacheKey1, token1, cacheEntryOptions);
+                _memoryCache.Set(cacheKey2, token2, cacheEntryOptions);
+
                 return Ok(new { Token1 = token1, Token2 = token2 });
             }
             catch (HttpRequestException ex)
@@ -87,6 +89,37 @@ namespace integration
                     StackTrace = ex.StackTrace,
                     InnerException = ex.InnerException?.Message
                 });
+            }
+        }
+        
+        [HttpGet("getToken/{system}")]
+        public IActionResult GetToken(string system)
+        {
+            string cacheKey;
+            if (system.ToLower() == "first")
+            {
+                var today = DateTime.UtcNow.Date;
+                cacheKey = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}_{today:yyyyMMdd}";
+            }
+            else if (system.ToLower() == "second")
+            {
+                var today = DateTime.UtcNow.Date;
+                cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}_{today:yyyyMMdd}";
+            }
+            else
+            {
+                return BadRequest("Invalid system.  Must be 'first' or 'second'.");
+            }
+
+            if (_memoryCache.TryGetValue(cacheKey, out string token))
+            {
+                _logger.LogInformation($"Retrieved token from cache for system {system}.");
+                return Ok(new { Token = token });
+            }
+            else
+            {
+                _logger.LogWarning($"Token not found in cache for system {system}.");
+                return NotFound(new { Message = "Token not found. Please refresh tokens." }); // Consider refreshing the token here.
             }
         }
 
@@ -164,6 +197,13 @@ namespace integration
         {
             [JsonPropertyName("token")]
             public string Token { get; set; }
+        }
+
+        public class AuthSettings
+        {
+            public string Login { get; set; }
+            public string Password { get; set; }
+            public string CallbackUrl { get; set; }
         }
     }
 }

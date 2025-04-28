@@ -16,10 +16,10 @@ namespace integration.Controllers.MT
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly TokenController _tokenController;
+        private readonly ITokenService _tokenController;
         private readonly string url = "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}";
 
-        public KadastrController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
+        public KadastrController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, ITokenService tokenController)
         {
             _logger = logger;
             _memoryCache = memoryCache;
@@ -35,7 +35,7 @@ namespace integration.Controllers.MT
         {
             try
             {
-                var token = await TokenController._authorizer.GetCachedTokenMT();
+                var token = await _tokenController.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -73,7 +73,7 @@ namespace integration.Controllers.MT
         {
             try
             {
-                var token = await TokenController._authorizer.GetCachedTokenMT();
+                var token = await _tokenController.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);

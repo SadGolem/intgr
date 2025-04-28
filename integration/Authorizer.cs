@@ -13,10 +13,11 @@ namespace integration
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly TokenController _tokenController;
+        private readonly ITokenService _tokenController;
+        
         private AuthSettings _aproConnectSettings;
 
-        public Authorizer(ILogger logger, IMemoryCache memoryCache, IConfiguration configuration, TokenController tokenController)
+        public Authorizer(ILogger logger, IMemoryCache memoryCache, IConfiguration configuration, ITokenService tokenController)
         {
             _logger = logger;
             _memoryCache = memoryCache;
@@ -28,31 +29,17 @@ namespace integration
 
         public async Task<string> GetCachedTokenMT()
         {
-            var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
-            if (_memoryCache.TryGetValue(cacheKey, out string cachedToken))
-            {
-                _logger.LogInformation($"Returning cached token: {cachedToken}");
-                return cachedToken;
-            }
           //  _logger.LogInformation("Getting new token.");
-            await _tokenController.GetTokens();
-            var token = TokenController.tokens.First().Key;
+            string token = await _tokenController.GetCachedTokenMT();
             _logger.LogInformation($"Got new token: {token}");
             return token;
         }
 
         public async Task<string> GetCachedTokenAPRO()
         {
-            var cacheKey = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
-            if (_memoryCache.TryGetValue(cacheKey, out string cachedToken))
-            {
-                _logger.LogInformation($"Returning cached token: {cachedToken}");
-                return cachedToken;
-            }
-
+            
             _logger.LogInformation("Getting new token.");
-            await _tokenController.GetTokens();
-            var token = TokenController.tokens.First().Value;
+            string token = await _tokenController.GetCachedTokenAPRO();
             _logger.LogInformation($"Got new token: {token}");
             return token;
         }

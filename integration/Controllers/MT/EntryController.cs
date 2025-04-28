@@ -15,8 +15,8 @@ namespace integration.Controllers.MT
         private readonly IMemoryCache _memoryCache;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly TokenController _tokenController;
-        public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, TokenController tokenController)
+        private readonly ITokenService _tokenController;
+        public EntryController(ILogger<EntryController> logger, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory, IConfiguration configuration, ITokenService tokenController)
         {
             _logger = logger;
             _memoryCache = memoryCache;
@@ -31,7 +31,7 @@ namespace integration.Controllers.MT
         {
             try
             {
-                var token = await TokenController._authorizer.GetCachedTokenMT();
+                var token = await _tokenController.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -69,7 +69,7 @@ namespace integration.Controllers.MT
         {
             try
             {
-                var token = await TokenController._authorizer.GetCachedTokenMT();
+                var token = await _tokenController.GetCachedTokenMT();
                 var client = _httpClientFactory.CreateClient();
                 _logger.LogInformation($"Using token for request: {token}");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
