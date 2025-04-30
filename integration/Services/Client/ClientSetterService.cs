@@ -4,27 +4,30 @@ using integration.Context;
 using integration.HelpClasses;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
+using integration.Services.Interfaces;
 using integration.Services.Location;
+using integration.Services.Storage;
 
 namespace integration.Services.Client;
 
-public class ClientSetterService : ServiceSetterBase<ClientData>
+public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService<ClientData>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly HttpClient _httpClient;
     private readonly ILogger<ClientSetterService> _logger;
     private IContractStorageService _contractStorageService;
+    private IStorageService _storageService;
     private readonly IConfiguration _configuration;
     private ConnectingStringApro _aproConnect;
 
     public ClientSetterService(IHttpClientFactory httpClientFactory, HttpClient httpClient,
         ILogger<ClientSetterService> logger, IConfiguration configuration,
-        IContractStorageService contractStorageService) : base(httpClientFactory, httpClient, logger, configuration)
+        IStorageService storageService) : base(httpClientFactory, httpClient, logger, configuration)
     {
         _httpClientFactory = httpClientFactory;
         _httpClient = httpClient;
         _logger = logger;
-        _contractStorageService = contractStorageService;
+        _storageService = storageService;
         _configuration = configuration;
     }
 
@@ -166,4 +169,28 @@ public class ClientSetterService : ServiceSetterBase<ClientData>
     }
 
 */
+  public Task PostAndPatch(List<(ClientData, bool)> data)
+  {
+      throw new NotImplementedException();
+  }
+
+  public Task Post(ClientData data)
+  {
+      throw new NotImplementedException();
+  }
+
+  public Task Patch(ClientData data)
+  {
+      throw new NotImplementedException();
+  }
+
+  public object MappingData(ClientData data)
+  {
+      throw new NotImplementedException();
+  }
+
+  public bool Check(ClientData data)
+  {
+      throw new NotImplementedException();
+  }
 }
