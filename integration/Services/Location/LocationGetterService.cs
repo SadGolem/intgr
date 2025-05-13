@@ -18,7 +18,7 @@ namespace integration.Services.Location
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _locationIdService = locationIdService;
-            _aproConnect = new ConnectingStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id}");
+            _aproConnect = new ConnectingStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id, ext_id}");
         }
 
         public Task Get()

@@ -5,21 +5,22 @@ namespace integration.Services.CheckUp.Services;
 
 public class ClientCheckUpService : ICheckUpService<ClientData>
 {
-    public bool Check(IntegrationStruct str)
+    public (bool, string) Check(IntegrationStruct str)
     {
         List<ClientData> clientDatas = str.contragentList;
 
         foreach (var client in clientDatas)
         {
             if (!Check(client))
-                return false;
+                return new (false, $"{client} not found");
         }
-        return true;
+        return (true, "Clients found");
     }
 
     private bool Check(ClientData client)
     {
-        if (client != null)
+        if (client == null)
+            
             return false;
             
         return true;

@@ -8,14 +8,19 @@ using integration.Factory.GET;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET;
 using integration.Factory.SET.Interfaces;
+using integration.Services.CheckUp;
+using integration.Services.CheckUp.Factory;
 using integration.Services.Client;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition;
 using integration.Services.ContractPosition.Storage;
+using integration.Services.Integration;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Services.Schedule;
 using integration.Services.Storage;
+using integration.Services.CheckUp;
+using integration.Services.CheckUp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +48,13 @@ builder.Services.AddTransient<IGetterService<ContractData>, ContractGetterServic
 builder.Services.AddTransient<IGetterServiceFactory<ClientData>, ClientGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ClientData>, ClientGetterService>();
 
+builder.Services.AddScoped<IIntegrationService, IntegrationService>();
+builder.Services.AddScoped<ICheckUpFactory<ClientData>, ClientCheckUpFactory>();
+builder.Services.AddScoped<ICheckUpService<ClientData>, ClientCheckUpService>();
+
+
+
+
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<LocationController>();
 builder.Services.AddSingleton<ScheduleController>();
@@ -54,6 +66,7 @@ builder.Services.AddSingleton<EmitterControllerMT>();
 builder.Services.AddSingleton<WasteSiteEntryController>();
 builder.Services.AddSingleton<EntryController>();
 builder.Services.AddSingleton<ScheduleController>();
+builder.Services.AddSingleton<IntegrationController>();
 builder.Services.AddHostedService<MainSyncService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -73,3 +86,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

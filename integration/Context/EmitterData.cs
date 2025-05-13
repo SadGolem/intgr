@@ -24,9 +24,10 @@ namespace integration.Context
         [JsonPropertyName("waste_source_categoty")]
         public EmitterCategory emitterCategory { get; set; }
 
-        public class EmitterCategory()
+        public class EmitterCategory
         {
-            [JsonPropertyName("name")] string name { get; set; }
+            [JsonPropertyName("name")] 
+            public string name { get; set; } // Добавлен public
         }
     }
 }

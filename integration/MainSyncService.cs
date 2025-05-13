@@ -1,8 +1,9 @@
 ﻿using integration.Controllers;
 using integration.Controllers.Apro;
 using integration.Controllers.MT;
+using integration.Services.Integration;
 using integration.Services.Storage;
-
+using integration.Structs;
 namespace integration
 {
     public class MainSyncService : IHostedService, IDisposable
@@ -10,14 +11,19 @@ namespace integration
         private readonly ILogger<MainSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private  IConverterToStorageService _converterToStorageService;
+        private  IStorageService _storageService;
+        private IntegrationController _integrationController;
         private Timer? _timer;
         private const int _updateTime = 30;
 
-        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, IConverterToStorageService converterToStorageService)
+        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, 
+            IConverterToStorageService converterToStorageService, IStorageService storageService, IntegrationController integrationController)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _converterToStorageService = converterToStorageService;
+            _storageService = storageService;
+            _integrationController = integrationController;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -53,6 +59,8 @@ namespace integration
                 await GetClient(contragentController);
                 await SetStruct(_converterToStorageService);
                // await StartEntry(wasteSiteEntryController, entryController);
+                await CheckAndSendIntegrationToAPRO();
+               
                 await SendAsync();
                 
                 EmailMessageBuilder.ClearList();
@@ -76,7 +84,7 @@ namespace integration
             }
         }
 
-        private async Task GetLocation( LocationController locationController)
+        private async Task GetLocation(LocationController locationController)
         {
             try
             {
@@ -127,6 +135,26 @@ namespace integration
             }
         }
         
+        private async Task CheckAndSendIntegrationToAPRO()
+        {
+            List<IntegrationStruct> _structs = _storageService.GetStructs();
+            foreach (var _struct in _structs)
+            {
+                try
+                {
+                    await _integrationController.Sync(_struct);
+                    _logger.LogInformation("Integration was finished");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                
+            }
+           
+        }
+
         private async Task StartEmitter(ContractController contractController)
         {
             /*try
@@ -151,11 +179,11 @@ namespace integration
                     _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
                     foreach (var wasteData in WasteSiteEntryController.newEntry)
                     {
-                        await ProcessWasteData(wasteData, entryController, true);
+                        await ProcessEntry(wasteData, entryController, true);
                     }
                     foreach (var wasteUpdateData in WasteSiteEntryController.updateEntry)
                     {
-                        await ProcessWasteData(wasteUpdateData, entryController, false);
+                        await ProcessEntry(wasteUpdateData, entryController, false);
                     }
                 }
                 else
@@ -169,7 +197,7 @@ namespace integration
             }
         }
 
-        private async Task ProcessWasteData(EntryData wasteData, EntryController entryController, bool isNew)
+        private async Task ProcessEntry(EntryData wasteData, EntryController entryController, bool isNew)
         {
             try
             {

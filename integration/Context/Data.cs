@@ -8,6 +8,7 @@ namespace integration.Context
         public DateTime datetime_create { get; set; }
         [JsonPropertyName("datetime_update")]
         public DateTime datetime_update { get; set; }
+        public int ext_id { get; set; }
 
         public class Container
         {

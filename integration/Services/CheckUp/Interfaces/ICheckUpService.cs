@@ -4,5 +4,5 @@ namespace integration.Services.CheckUp;
 
 public interface ICheckUpService<T>
 {
-    bool Check(IntegrationStruct str);
+    (bool, string) Check(IntegrationStruct str);
 }

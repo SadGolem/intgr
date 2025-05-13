@@ -5,7 +5,7 @@ namespace integration.Services.Storage;
 
 public interface IStorageService
 {
-    List<IntegrationStruct> GetStructIds();
+    List<IntegrationStruct> GetStructs();
     void SetNewStruct(IntegrationStruct data);
     void DeleteStruct(IntegrationStruct data);
     void Clear();
@@ -20,7 +20,7 @@ public class StorageService : IStorageService
         integrationDataList = new List<IntegrationStruct>();
     }
 
-    public List<IntegrationStruct> GetStructIds()
+    public List<IntegrationStruct> GetStructs()
     {
         return integrationDataList;
     }
