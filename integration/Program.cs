@@ -19,7 +19,6 @@ using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Services.Schedule;
 using integration.Services.Storage;
-using integration.Services.CheckUp;
 using integration.Services.CheckUp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
