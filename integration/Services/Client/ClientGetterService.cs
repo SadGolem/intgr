@@ -76,7 +76,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
 
         foreach (var con in contractsPosList)
         {
-            clients_id.Add((con.contract.client.id, con.contract.client.doc_type.name));
+            clients_id.Add((con.contract.client.idAsuPro, con.contract.client.doc_type.name));
         }
         
     }
@@ -125,10 +125,10 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
             List<ClientData> bik = new List<ClientData>();
             try
             {
-                bik = await Get(_httpClientFactory, _getBIK + cl.id);
+                bik = await Get(_httpClientFactory, _getBIK + cl.idAsuPro);
                 if (bik.Count > 0)
                 {
-                    var clientToUpdate = clients.FirstOrDefault(c => c.id == cl.id);
+                    var clientToUpdate = clients.FirstOrDefault(c => c.idAsuPro == cl.idAsuPro);
 
                     if (clientToUpdate != null)
                     {
@@ -136,7 +136,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
                     }
                     else
                     {
-                        Console.WriteLine($"Клиент с id {cl.id} не найден в списке clients.");
+                        Console.WriteLine($"Клиент с id {cl.idAsuPro} не найден в списке clients.");
                     }
                 }
             }
@@ -157,7 +157,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
             List<ClientData> mail = new List<ClientData>();
             try
             {
-                mail = await Get(_httpClientFactory, _getMailURL + cl.id);
+                mail = await Get(_httpClientFactory, _getMailURL + cl.idAsuPro);
                 if (mail.Count > 0)
                 {
                     clients[i].mail = mail.First().mail;

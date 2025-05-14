@@ -12,18 +12,18 @@ namespace integration
         private readonly IServiceProvider _serviceProvider;
         private  IConverterToStorageService _converterToStorageService;
         private  IStorageService _storageService;
-        private IntegrationController _integrationController;
+        private IntegrationController _multipartSetterController;
         private Timer? _timer;
         private const int _updateTime = 30;
 
         public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, 
-            IConverterToStorageService converterToStorageService, IStorageService storageService, IntegrationController integrationController)
+            IConverterToStorageService converterToStorageService, IStorageService storageService, IntegrationController multipartSetterController)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _converterToStorageService = converterToStorageService;
             _storageService = storageService;
-            _integrationController = integrationController;
+            _multipartSetterController = multipartSetterController;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -142,8 +142,8 @@ namespace integration
             {
                 try
                 {
-                    await _integrationController.Sync(_struct);
-                    _logger.LogInformation("Integration was finished");
+                    await _multipartSetterController.Sync(_struct);
+                    _logger.LogInformation("MultipartSetter was finished");
                 }
                 catch (Exception e)
                 {

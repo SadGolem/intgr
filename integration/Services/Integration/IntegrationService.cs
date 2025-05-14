@@ -1,23 +1,31 @@
 ﻿using System.Text;
 using System.Text.Json;
 using integration.Context;
+using integration.HelpClasses;
 using integration.Structs;
 
 namespace integration.Services.Integration;
 
-public class IntegrationService : IIntegrationService
+public class IntegrationService : ServiceBase, IIntegrationService
 {
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
-
-    public IntegrationService(HttpClient httpClient)
+    private ILogger<IntegrationService> _logger;
+    private IConfiguration _configuration;
+    private IHttpClientFactory _httpClientFactory;
+    private string _MTconnect = "";
+    public IntegrationService (IHttpClientFactory httpClientFactory,HttpClient httpClient, ILogger<IntegrationService> logger, IConfiguration configuration) : base(httpClientFactory, httpClient,logger,configuration)
     {
+        _httpClientFactory = httpClientFactory;
         _httpClient = httpClient;
+        _logger = logger;
+        _configuration = configuration;
         _jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
+        _MTconnect = configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl;
     }
 
     public async Task SendIntegrationDataAsync(IntegrationStruct integrationData)
@@ -88,6 +96,7 @@ public class IntegrationService : IIntegrationService
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         HttpResponseMessage response;
+        await Authorize(_httpClient, false);
         
         if (method == HttpMethod.Post)
         {
@@ -117,8 +126,8 @@ public class IntegrationService : IIntegrationService
 
         return methodName switch
         {
-            "POST" => postUrl.TrimEnd('/'),
-            "PATCH" => $"{patchUrl.TrimEnd('/')}/{GetEntityId(entity)}",
+            "POST" => _MTconnect + postUrl.TrimEnd('/'),
+            "PATCH" => _MTconnect + $"{patchUrl.TrimEnd('/')}/{GetEntityId(entity)}",
             _ => throw new NotSupportedException($"Unsupported method: {method}")
         };
     }
@@ -127,7 +136,7 @@ public class IntegrationService : IIntegrationService
     {
         return entity switch
         {
-            ClientData c => c.id,
+            ClientData c => c.idAsuPro,
             EmitterData e => e.id,
             ContractData c => c.id,
             LocationData l => l.id,
@@ -145,7 +154,7 @@ public class IntegrationService : IIntegrationService
         switch (source)
         {
             case ClientData c:
-                c.id = responseId;
+                c.idAsuPro = responseId;
                 break;
             case EmitterData e:
                 e.id = responseId;
@@ -160,5 +169,10 @@ public class IntegrationService : IIntegrationService
                 s.id_oob = responseId;
                 break;
         }
+    }
+
+    public override void Message(string ex)
+    {
+        throw new NotImplementedException();
     }
 }

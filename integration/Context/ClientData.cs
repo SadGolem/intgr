@@ -7,15 +7,15 @@ namespace integration.Context
         public new string nameFileTime = "contragent";
 
         [JsonPropertyName("id")]
-        public int id { get; set; }
+        public int idAsuPro { get; set; }
         [JsonPropertyName("name")]
-        public string name { get; set; }
+        public string consumerName { get; set; }
         [JsonPropertyName("bik")]
         public string bik { get; set; }
         [JsonPropertyName("value")]
         public string mail { get; set; }
         [JsonPropertyName("short_name")]
-        public string short_name { get; set; }
+        public string shortName { get; set; }
         [JsonPropertyName("inn")]
         public string inn { get; set; }
         [JsonPropertyName("kpp")]
