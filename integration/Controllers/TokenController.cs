@@ -90,7 +90,7 @@ namespace integration
             }
         }
 
-        private async Task<string> GetTokenFromFirstSystem()
+        private async Task<string> GetTokenFromFirstдSystem()
         {
             var requestBody = new
             {

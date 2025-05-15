@@ -61,6 +61,4 @@ public class ContractController : ControllerBase, IController
             await _getter.Get();
         }
     }
-
-   
 }

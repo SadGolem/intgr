@@ -25,7 +25,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
-        _MTconnect = configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl;
+        _MTconnect = _configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl.Replace("/auth", "/");
     }
 
     public async Task SendIntegrationDataAsync(IntegrationStruct integrationData)
@@ -33,22 +33,22 @@ public class IntegrationService : ServiceBase, IIntegrationService
         // 1. Обрабатываем контрагентов
         await ProcessEntitiesAsync(
             integrationData.contragentList,
-            postUrl: "/api/v2/consumer/create_from_asupro",
-            patchUrl: "/api/v2/consumer/update_from_asupro",
+            postUrl: "api/v2/consumer/create_from_asupro",
+            patchUrl: "api/v2/consumer/update_from_asupro",
             methodSelector: c => c.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
 
         // 2. Обрабатываем эмиттеры
         await ProcessEntitiesAsync(
             integrationData.emittersList,
-            postUrl: "/api/v2/garbage_maker/create_from_asupro", // пример для эмиттеров
-            patchUrl: "/api/v2/garbage_maker/update_from_asupro",
+            postUrl: "api/v2/garbage_maker/create_from_asupro", // пример для эмиттеров
+            patchUrl: "api/v2/garbage_maker/update_from_asupro",
             methodSelector: e => e.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
 
         /*// 3. Обрабатываем договоры
         await ProcessEntitiesAsync(
             integrationData.contractList,
-            postUrl: "/api/v2/contract/create_from_asupro",
-            patchUrl: "/api/v2/contract/update_from_asupro",
+            postUrl: "api/v2/contract/create_from_asupro",
+            patchUrl: "api/v2/contract/update_from_asupro",
             methodSelector: c => c.id == 0 ? HttpMethod.Post : HttpMethod.Patch);*/
 
         // 4. Обрабатываем локацию
@@ -56,16 +56,16 @@ public class IntegrationService : ServiceBase, IIntegrationService
         {
             await ProcessEntityAsync(
                 integrationData.location,
-                postUrl: "/api/v2/location/create_from_asupro",
-                patchUrl: "/api/v2/location/update_from_asupro",
+                postUrl: "api/v2/location/create_from_asupro",
+                patchUrl: "api/v2/location/update_from_asupro",
                 methodSelector: l => l.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
         }
 
         // 5. Обрабатываем расписания
         await ProcessEntitiesAsync(
             integrationData.schedulesList,
-            postUrl: "/api/v2/export_schedule/create_from_asupro",
-            patchUrl: "/api/v2/export_schedule/edit_from_asupro",
+            postUrl: "api/v2/export_schedule/create_from_asupro",
+            patchUrl: "api/v2/export_schedule/edit_from_asupro",
             methodSelector: s => s.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
     }
 

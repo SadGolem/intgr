@@ -160,7 +160,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
                 mail = await Get(_httpClientFactory, _getMailURL + cl.idAsuPro);
                 if (mail.Count > 0)
                 {
-                    clients[i].mail = mail.First().mail;
+                    clients[i].mailAddress = mail.First().mailAddress;
                 }
             }
             catch (Exception e)

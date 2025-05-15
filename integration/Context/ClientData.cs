@@ -13,7 +13,7 @@ namespace integration.Context
         [JsonPropertyName("bik")]
         public string bik { get; set; }
         [JsonPropertyName("value")]
-        public string mail { get; set; }
+        public string mailAddress { get; set; }
         [JsonPropertyName("short_name")]
         public string shortName { get; set; }
         [JsonPropertyName("inn")]
