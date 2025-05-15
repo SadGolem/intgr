@@ -26,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
+builder.Services.AddScoped<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
 builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();

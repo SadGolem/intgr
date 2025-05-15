@@ -44,8 +44,8 @@ namespace integration
         {
             try
             {
-                var token1 = await GetTokenFromSecondSystem();
-                var token2 = await GetTokenFromFirstSystem();
+                var token1 = await GetTokenAsync(_mtConnectSettings);
+                var token2 = await GetTokenAsync(_aproConnectSettings);
                 var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
                 var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
                 _logger.LogInformation($"Got new token: {token1}");
@@ -90,76 +90,19 @@ namespace integration
             }
         }
 
-        private async Task<string> GetTokenFromFirstдSystem()
+        private async Task<string> GetTokenAsync(AuthSettings authSettings)
         {
-            var requestBody = new
-            {
-                username = _aproConnectSettings.Login,
-                password = _aproConnectSettings.Password
-            };
-            var apiUrl = _aproConnectSettings.CallbackUrl;
-            var jsonBody = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-            try
-            {
-                using var response = await _httpClient.PostAsync(apiUrl, content);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"Ошибка при запросе к первой системе: {response.StatusCode}, {errorContent}");
-                }
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                if (string.IsNullOrEmpty(responseContent))
-                {
-                    throw new Exception("Не удалось получить токен от первой системы");
-                }
-
-                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent)?.Token;
-                return token;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Не удалось получить токен от первой системы");
-                return null;
-            }
-        }
-
-        private async Task<string> GetTokenFromSecondSystem()
-        {
-            var requestBody = new
-            {
-                username = _mtConnectSettings.Login,
-                password = _mtConnectSettings.Password
-            };
-            var apiUrl = _mtConnectSettings.CallbackUrl;
+            var requestBody = new { username = authSettings.Login, password = authSettings.Password };
             var jsonBody = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-            try
-            {
-                using var response = await _httpClient.PostAsync(apiUrl, content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"Ошибка при запросе ко второй системе: {response.StatusCode}, {errorContent}");
-                }
-                var responseContent = await response.Content.ReadAsStringAsync();
-                if (string.IsNullOrEmpty(responseContent))
-                {
-                    throw new Exception("Не удалось получить токен от второй системы");
-                }
-                var token = JsonSerializer.Deserialize<TokenResponse>(responseContent)?.Token;
-                return token;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Не удалось получить токен от второй системы");
-                return null;
-            }
-        }
+            using var response = await _httpClient.PostAsync(authSettings.CallbackUrl, content);
+            response.EnsureSuccessStatusCode();
 
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TokenResponse>(responseContent)?.Token;
+        }
+        
         private class TokenResponse
         {
             [JsonPropertyName("token")]
