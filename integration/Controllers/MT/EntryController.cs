@@ -28,6 +28,7 @@ namespace integration.Controllers.MT
             _logger.LogInformation("DataController initialized.");
         }
 
+        /*
         public async Task ProcessEntryPostData(EntryData wasteData)
         {
             try
@@ -65,7 +66,9 @@ namespace integration.Controllers.MT
                 _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
             }
         }
+        */
 
+        /*
         public async Task ProcessEntryPatchData(EntryData wasteData)
         {
             try
@@ -106,6 +109,7 @@ namespace integration.Controllers.MT
                 _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
             }
         }
+        */
 
         private object MapWasteDataToRequest(EntryData wasteData)
         {
