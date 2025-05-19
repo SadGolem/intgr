@@ -1,178 +1,201 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
 using integration.Structs;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace integration.Services.Integration;
 
-public class IntegrationService : ServiceBase, IIntegrationService
+
+public class IntegrationService : IIntegrationService
 {
-    private readonly HttpClient _httpClient;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<IntegrationService> _logger;
+    private readonly IApiClientService _apiClientService;
     private readonly JsonSerializerOptions _jsonOptions;
-    private ILogger<IntegrationService> _logger;
-    private IConfiguration _configuration;
-    private IHttpClientFactory _httpClientFactory;
-    private string _MTconnect = "";
-    public IntegrationService (IHttpClientFactory httpClientFactory,HttpClient httpClient, ILogger<IntegrationService> logger, IConfiguration configuration) : base(httpClientFactory, httpClient,logger,configuration)
+    private readonly string _mtBaseUrl;
+
+    public IntegrationService(
+        IHttpClientFactory httpClientFactory,
+        ILogger<IntegrationService> logger,
+        IOptions<AuthSettings> mtSettings,
+        IApiClientService apiClientService)
     {
         _httpClientFactory = httpClientFactory;
-        _httpClient = httpClient;
         _logger = logger;
-        _configuration = configuration;
+        _apiClientService = apiClientService;
+        _mtBaseUrl = mtSettings.Value.CallbackUrl.Replace("/auth", "/");
+        
         _jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
-        _MTconnect = _configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl.Replace("/auth", "/");
     }
 
     public async Task SendIntegrationDataAsync(IntegrationStruct integrationData)
     {
-        // 1. Обрабатываем контрагентов
-        await ProcessEntitiesAsync(
-            integrationData.contragentList,
-            postUrl: "api/v2/consumer/create_from_asupro",
-            patchUrl: "api/v2/consumer/update_from_asupro",
-            methodSelector: c => c.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
-
-        // 2. Обрабатываем эмиттеры
-        await ProcessEntitiesAsync(
-            integrationData.emittersList,
-            postUrl: "api/v2/garbage_maker/create_from_asupro", // пример для эмиттеров
-            patchUrl: "api/v2/garbage_maker/update_from_asupro",
-            methodSelector: e => e.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
-
-        /*// 3. Обрабатываем договоры
-        await ProcessEntitiesAsync(
-            integrationData.contractList,
-            postUrl: "api/v2/contract/create_from_asupro",
-            patchUrl: "api/v2/contract/update_from_asupro",
-            methodSelector: c => c.id == 0 ? HttpMethod.Post : HttpMethod.Patch);*/
-
-        // 4. Обрабатываем локацию
-        if (integrationData.location != null)
+        try
         {
-            await ProcessEntityAsync(
-                integrationData.location,
-                postUrl: "api/v2/location/create_from_asupro",
-                patchUrl: "api/v2/location/update_from_asupro",
-                methodSelector: l => l.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
+            await ProcessIntegrationData(integrationData);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing integration data");
+            throw;
+        }
+    }
 
-        // 5. Обрабатываем расписания
+    private async Task ProcessIntegrationData(IntegrationStruct integrationData)
+    {
+        var tasks = new List<Task>
+        {
+            ProcessContragents(integrationData.contragentList),
+            ProcessEmitters(integrationData.emittersList),
+            ProcessLocation(integrationData.location),
+            ProcessSchedules(integrationData.schedulesList)
+        };
+
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ProcessContragents(List<ClientData> contragents)
+    {
         await ProcessEntitiesAsync(
-            integrationData.schedulesList,
-            postUrl: "api/v2/export_schedule/create_from_asupro",
-            patchUrl: "api/v2/export_schedule/edit_from_asupro",
-            methodSelector: s => s.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
+            contragents,
+            "api/v2/consumer/create_from_asupro",
+            "api/v2/consumer/update_from_asupro",
+            c => c.GetIntegrationExtId() == null ? HttpMethod.Post : HttpMethod.Patch);
+    }
+
+    private async Task ProcessEmitters(List<EmitterData> emitters)
+    {
+        await ProcessEntitiesAsync(
+            emitters,
+            "api/v2/garbage_maker/create_from_asupro",
+            "api/v2/garbage_maker/update_from_asupro",
+            e => e.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
+    }
+
+    private async Task ProcessLocation(LocationData location)
+    {
+        if (location == null) return;
+        
+        await ProcessEntityAsync(
+            location,
+            "api/v2/location/create_from_asupro",
+            "api/v2/location/update_from_asupro",
+            l => l.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
+    }
+
+    private async Task ProcessSchedules(List<ScheduleData> schedules)
+    {
+        await ProcessEntitiesAsync(
+            schedules,
+            "api/v2/export_schedule/create_from_asupro",
+            "api/v2/export_schedule/edit_from_asupro",
+            s => s.ext_id == 0 ? HttpMethod.Post : HttpMethod.Patch);
     }
 
     private async Task ProcessEntitiesAsync<T>(
         List<T> entities,
-        string postUrl,
-        string patchUrl,
-        Func<T, HttpMethod> methodSelector) where T : class
+        string postEndpoint,
+        string patchEndpoint,
+        Func<T, HttpMethod> methodSelector) where T : class, IIntegratableEntity
     {
         if (entities == null || !entities.Any()) return;
 
         foreach (var entity in entities)
         {
-            await ProcessEntityAsync(entity, postUrl, patchUrl, methodSelector);
+            await ProcessEntityAsync(entity, postEndpoint, patchEndpoint, methodSelector);
         }
     }
 
     private async Task ProcessEntityAsync<T>(
         T entity,
-        string postUrl,
-        string patchUrl,
-        Func<T, HttpMethod> methodSelector)
+        string postEndpoint,
+        string patchEndpoint,
+        Func<T, HttpMethod> methodSelector) where T : class, IIntegratableEntity
     {
-        var method = methodSelector(entity);
-        var url = BuildUrl(entity, method, postUrl, patchUrl);
-        
-        var json = JsonSerializer.Serialize(entity, _jsonOptions);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        try
+        {
+            var method = methodSelector(entity);
+            var endpoint = method == HttpMethod.Post 
+                ? postEndpoint 
+                : $"{patchEndpoint}/{entity.GetIntegrationExtId()}";
 
-        HttpResponseMessage response;
-        await Authorize(_httpClient, false);
-        
-        if (method == HttpMethod.Post)
-        {
-            response = await _httpClient.PostAsync(url, content);
-        }
-        else if (method == HttpMethod.Patch)
-        {
-            response = await _httpClient.PatchAsync(url, content);
-        }
-        else
-        {
-            throw new NotSupportedException($"HTTP method {method} not supported");
-        }
+            var response = await _apiClientService.SendRequestAsync(
+                entity,
+                $"{_mtBaseUrl}{endpoint}",
+                method);
 
+            if (response.IsSuccessStatusCode && method == HttpMethod.Post)
+            {
+                var responseEntity = await response.Content.ReadFromJsonAsync<T>(_jsonOptions);
+                entity.UpdateIntegrationId(responseEntity.GetIntegrationExtId());
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error processing {typeof(T).Name} with ID: {entity.GetIntegrationExtId()}");
+            throw;
+        }
+    }
+}
+
+public interface IApiClientService
+{
+    Task<HttpResponseMessage> SendRequestAsync<T>(T entity, string url, HttpMethod method) where T : class;
+}
+
+public class ApiClientService : IApiClientService
+{
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<ApiClientService> _logger;
+    private readonly JsonSerializerOptions _jsonOptions;
+
+    public ApiClientService(
+        IHttpClientFactory httpClientFactory,
+        ILogger<ApiClientService> logger)
+    {
+        _httpClientFactory = httpClientFactory;
+        _logger = logger;
+        
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+    }
+
+    public async Task<HttpResponseMessage> SendRequestAsync<T>(T entity, string url, HttpMethod method) where T : class
+    {
+        using var client = _httpClientFactory.CreateClient();
+        using var request = CreateRequestMessage(entity, url, method);
+        
+        _logger.LogInformation($"Sending {method} request to {url}");
+        
+        var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         
-        if (method == HttpMethod.Post)
-        {
-            var responseContent = await response.Content.ReadFromJsonAsync<T>();
-            UpdateEntityId(entity, responseContent);
-        }
+        return response;
     }
 
-    private string BuildUrl<T>(T entity, HttpMethod method, string postUrl, string patchUrl)
+    private HttpRequestMessage CreateRequestMessage<T>(T entity, string url, HttpMethod method) where T : class
     {
-        var methodName = method.Method.ToUpper(); // Получаем название метода в верхнем регистре
-
-        return methodName switch
+        var json = JsonSerializer.Serialize(entity, _jsonOptions);
+        return new HttpRequestMessage(method, url)
         {
-            "POST" => _MTconnect + postUrl.TrimEnd('/'),
-            "PATCH" => _MTconnect + $"{patchUrl.TrimEnd('/')}/{GetEntityId(entity)}",
-            _ => throw new NotSupportedException($"Unsupported method: {method}")
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
         };
     }
+}
 
-    private int GetEntityId<T>(T entity)
-    {
-        return entity switch
-        {
-            ClientData c => c.idAsuPro,
-            EmitterData e => e.id,
-            ContractData c => c.id,
-            LocationData l => l.id,
-            ScheduleData s => s.id_oob,
-            _ => throw new NotSupportedException($"Unsupported type: {typeof(T)}")
-        };
-    }
-
-    private void UpdateEntityId<T>(T source, T response)
-    {
-        var sourceId = GetEntityId(source);
-        if (sourceId > 0) return;
-
-        var responseId = GetEntityId(response);
-        switch (source)
-        {
-            case ClientData c:
-                c.idAsuPro = responseId;
-                break;
-            case EmitterData e:
-                e.id = responseId;
-                break;
-            case ContractData c:
-                c.id = responseId;
-                break;
-            case LocationData l:
-                l.id = responseId;
-                break;
-            case ScheduleData s:
-                s.id_oob = responseId;
-                break;
-        }
-    }
-
-    public override void Message(string ex)
-    {
-        throw new NotImplementedException();
-    }
+public interface IIntegratableEntity
+{
+    int GetIntegrationExtId();
+    void UpdateIntegrationId(int newId);
 }

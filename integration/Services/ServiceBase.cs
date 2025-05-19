@@ -1,37 +1,69 @@
-﻿using integration.Context;
+﻿using System.Net.Http.Headers;
 using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
-using Microsoft.Net.Http;
+using Microsoft.Extensions.Options;
 namespace integration.Services
 {
     public abstract class ServiceBase : IService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly HttpClient _httpClient;
-        private readonly ILogger<ServiceBase> _logger;
-        private readonly IConfiguration _configuration;
-        private readonly string _stringConnect;
-        public ServiceBase (IHttpClientFactory httpClientFactory,HttpClient httpClient, ILogger<ServiceBase> logger, IConfiguration configuration)
+        protected readonly IHttpClientFactory _httpClientFactory;
+        protected readonly ILogger<ServiceBase> _logger;
+        protected readonly IAuthorizer _authorizer;
+        protected readonly string _apiBaseUrl;
+
+        protected ServiceBase(
+            IHttpClientFactory httpClientFactory,
+            ILogger<ServiceBase> logger,
+            IAuthorizer authorizer,
+            IOptions<AuthSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
-            _httpClient = httpClient;
             _logger = logger;
-            _configuration = configuration;
-            _stringConnect = configuration.GetSection("APROconnect").Get<AuthSettings>().CallbackUrl;
+            _authorizer = authorizer;
+            _apiBaseUrl = apiSettings.Value.CallbackUrl;
         }
-        public virtual async Task Authorize(HttpClient httpClient, bool isAPRO)
-        {
-            var token = "";
-            if (isAPRO)
-                token = await TokenController._authorizer.GetCachedTokenAPRO();
-            else
-            {
-                token = await TokenController._authorizer.GetCachedTokenMT();
-            }
 
-            httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        protected ServiceBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
-        public abstract void Message(string ex);
+
+        public virtual async Task<HttpClient> CreateAuthorizedClientAsync(AuthType authType = AuthType.APRO)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var token = await GetTokenAsync(authType);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            return client;
+        }
+
+        public void Message(string ex)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<string> GetTokenAsync(AuthType authType)
+        {
+            return authType switch
+            {
+                AuthType.APRO => await _authorizer.GetCachedTokenAPROAsync(),
+                AuthType.MT => await _authorizer.GetCachedTokenMTAsync(),
+                _ => throw new ArgumentOutOfRangeException(nameof(authType))
+            };
+        }
+
+        public abstract Task HandleErrorAsync(string errorMessage);
+
+        protected async Task Authorize(HttpClient client, bool useCache)
+        {
+            await GetTokenAsync(AuthType.APRO);
+        }
+    }
+
+    public enum AuthType
+    {
+        APRO,
+        MT
     }
 }

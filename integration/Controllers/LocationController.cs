@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using integration.Context;
-using System.Text;
-using integration.HelpClasses;
 using integration.Services.Interfaces;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET.Interfaces;

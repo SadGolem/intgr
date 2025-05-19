@@ -7,6 +7,7 @@ namespace integration.HelpClasses
         public string Login { get; set; }
         public string Password { get; set; }
         public string CallbackUrl { get; set; }
+        public string BaseUrl { get; set; }
     }
 
     public class ConnectingStringApro

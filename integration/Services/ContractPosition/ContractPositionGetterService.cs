@@ -1,18 +1,22 @@
 ﻿using integration.Context;
+using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Services.Storage;
+using Microsoft.Extensions.Options;
 
 namespace integration.Services.ContractPosition;
 
 public class ContractPositionGetterService(
     IHttpClientFactory httpClientFactory,
-    HttpClient httpClient,
     ILogger<ContractPositionGetterService> logger,
-    IConfiguration configuration,
-    ILocationIdService locationIdService, IContractPositionStorageService contractPositionStorageService )
-    : ServiceGetterBase<ContractPositionData>(httpClientFactory, httpClient, logger, configuration),
+    IAuthorizer authorizer,
+    IOptions<AuthSettings> apiSettings,
+    ILocationIdService locationIdService, 
+    IContractPositionStorageService contractPositionStorageService )
+    : ServiceGetterBase<ContractPositionData>(httpClientFactory, logger, authorizer, apiSettings),
         IGetterService<ContractPositionData>
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
@@ -54,7 +58,7 @@ public class ContractPositionGetterService(
     {
         _locationIdSList = locationIdService?.GetLocationIds() ?? _locationIdSList;
     }
-    public override void Message(string ex)
+    public void Message(string ex)
     {
         EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getall, ex);
     }

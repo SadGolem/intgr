@@ -8,6 +8,8 @@ using integration.Factory.GET;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET;
 using integration.Factory.SET.Interfaces;
+using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.CheckUp;
 using integration.Services.CheckUp.Factory;
 using integration.Services.Client;
@@ -20,12 +22,20 @@ using integration.Services.Location;
 using integration.Services.Schedule;
 using integration.Services.Storage;
 using integration.Services.CheckUp.Services;
+using integration.Services.Token;
+using integration.Services.Token.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
+builder.Services.Configure<AuthSettings>(
+    builder.Configuration.GetSection("APROconnect"));
+builder.Services.Configure<AuthSettings>(
+    builder.Configuration.GetSection("MTconnect"));
+
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
 builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();

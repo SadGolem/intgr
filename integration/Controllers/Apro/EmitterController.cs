@@ -28,7 +28,7 @@ namespace integration.Controllers.Apro
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetData()
+        /*public async Task<IActionResult> GetData()
         {
             _logger.LogInformation("Starting manual emitters sync...");
             try
@@ -46,9 +46,9 @@ namespace integration.Controllers.Apro
                 ToGetMessage(ex + "Error during emitters sync.");
                 return StatusCode(500, "Error during emitters sync.");
             }
-        }
+        }*/
 
-        private async Task<SyncResult> FetchAndProcess()
+        /*private async Task<SyncResult> FetchAndProcess()
         {
             _logger.LogInformation($"Fetching emitters from {_aproConnectSettings}...");
             List<EmitterData> emitters;
@@ -84,9 +84,9 @@ namespace integration.Controllers.Apro
                 }
             }
             return new SyncResult(newEmitter, updateEntries);
-        }
+        }*/
 
-        private async Task<List<EmitterData>> FetchData()
+        /*private async Task<List<EmitterData>> FetchData()
         {
             var emitters = new List<EmitterData>();
             var token = await TokenController._authorizer.GetCachedTokenAPRO();
@@ -116,6 +116,7 @@ namespace integration.Controllers.Apro
                 throw;
             }
         }
+        */
 
         void ToGetMessage(string ex)
         {

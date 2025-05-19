@@ -2,6 +2,6 @@
 
 public interface IService
 {
-    protected Task Authorize(HttpClient httpClient, bool isApro);
-    protected void Message(string ex);
+    public Task<HttpClient> CreateAuthorizedClientAsync(AuthType authType);
+    public void Message(string ex);
 }

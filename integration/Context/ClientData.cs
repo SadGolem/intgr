@@ -1,13 +1,16 @@
 ﻿using System.Text.Json.Serialization;
+using integration.Services.Integration;
 
 namespace integration.Context
 {
-    public class ClientData : Data
+    public class ClientData : Data, IIntegratableEntity
     {
         public new string nameFileTime = "contragent";
 
         [JsonPropertyName("id")]
         public int idAsuPro { get; set; }
+        [JsonPropertyName("ext_id")]
+        public int? ext_id { get; set; }
         [JsonPropertyName("name")]
         public string consumerName { get; set; }
         [JsonPropertyName("bik")]
@@ -42,6 +45,21 @@ namespace integration.Context
         {
             [JsonPropertyName("id")]
             public int id { get; set; }
+        }
+
+        public int GetIntegrationExtId()
+        {
+            if (ext_id != null)
+                return ext_id.Value;
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void UpdateIntegrationId(int newId)
+        {
+            idAsuPro = newId;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace integration.Controllers.Apro
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEntriesData()
+        /*public async Task<IActionResult> GetEntriesData()
         {
             _logger.LogInformation("Starting manual entry sync...");
             newEntry.Clear();
@@ -40,9 +40,9 @@ namespace integration.Controllers.Apro
                 _logger.LogError(ex, "Error during location sync.");
                 return StatusCode(500, "Error during location sync.");
             }
-        }
+        }*/
 
-        private async Task FetchEntry()
+        /*private async Task FetchEntry()
         {
             _logger.LogInformation($"Fetching locations from {_aproConnectSettings}...");
             List<EntryData> entries = new List<EntryData>();
@@ -75,7 +75,9 @@ namespace integration.Controllers.Apro
                 }
             }
         }
+        */
 
+        /*
         private async Task<List<EntryData>> FetchEntryData()
         {
             var entries = new List<EntryData>();
@@ -109,6 +111,7 @@ namespace integration.Controllers.Apro
                 throw;
             }
         }
+        */
 
         void ToMessage(string ex)
         {

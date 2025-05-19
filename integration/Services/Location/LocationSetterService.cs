@@ -2,7 +2,9 @@
 using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
+using Microsoft.Extensions.Options;
 
 
 namespace integration.Services.Location
@@ -15,7 +17,11 @@ namespace integration.Services.Location
         private readonly string _mtConnectCreate;
         private readonly string _mtConnectUpdate;
         
-        public LocationSetterService(IHttpClientFactory httpClientFactory, HttpClient httpClient, ILogger<LocationSetterService> logger, IConfiguration configuration) : base(httpClientFactory, httpClient, logger, configuration)
+        public LocationSetterService(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger, IAuthorizer authorizer, IOptions<AuthSettings> apiSettings) : base(httpClientFactory, logger, authorizer, apiSettings)
+        {
+        }
+        
+        /*public LocationSetterService(IHttpClientFactory httpClientFactory, IAuthorizer  ILogger<LocationSetterService> logger, IConfiguration configuration) : base(httpClientFactory, httpClient, logger, configuration)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
@@ -23,7 +29,7 @@ namespace integration.Services.Location
 
             _mtConnectCreate = _configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl.Replace("auth", "api/v2/location/create_from_asupro");
             _mtConnectUpdate = _configuration.GetSection("MTconnect").Get<AuthSettings>().CallbackUrl.Replace("auth", "api/v2/location/update_from_asupro");
-        }
+        }*/
         public bool Check(LocationData data)
         {
                 if (data.address == null || data.address == "")
@@ -165,9 +171,16 @@ namespace integration.Services.Location
                 address = location.address
             };
         }
-        public override void Message(string ex)
+        public void Message(string ex)
         {
            
         }
+
+        public override Task HandleErrorAsync(string errorMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+     
     }
 }

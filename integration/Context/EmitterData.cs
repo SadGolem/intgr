@@ -8,6 +8,8 @@ namespace integration.Context
 
         [JsonPropertyName("id")]
         public int id { get; set; }
+        [JsonPropertyName("external_id")]
+        public int ext_id { get; set; }
         [JsonPropertyName("name")]
         public string name { get; set; }
         [JsonPropertyName("participant")]

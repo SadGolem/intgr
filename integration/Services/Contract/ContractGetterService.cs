@@ -1,28 +1,24 @@
 ﻿using integration.Context;
+using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
+using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
-public class ContractGetterService(
-    IHttpClientFactory httpClientFactory,
-    HttpClient httpClient,
-    ILogger<ContractGetterService> logger,
-    IConfiguration configuration,
-    IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService)
-    : ServiceGetterBase<ContractData>(httpClientFactory, httpClient, logger, configuration),
+public class ContractGetterService
+
+    : ServiceGetterBase<ContractData>,
         IGetterService<ContractData>
 {
-    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly ILogger<ContractGetterService> _logger = logger;
-    private IContractStorageService _contractStorageService = contractStorageService;
-
-    private readonly IConfiguration _configuration = configuration;
-
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<ContractGetterService> _logger;
+    private IContractStorageService _contractStorageService;
     // private IConverterToStorageService _converterToStorageService = converterToStorageService;
-    private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
+    private IContractPositionStorageService _contractPositionStorageService;
     private List<int> _locationIdSList;
 
     private readonly string _aproConnect =
@@ -31,7 +27,16 @@ public class ContractGetterService(
         "v_order}&v_order=0&root_id=";
 
     private List<string> root_ids = new List<string>();
-
+    
+    public ContractGetterService(IHttpClientFactory httpClientFactory, ILogger<ContractGetterService> logger, 
+        IOptions<AuthSettings> apiSettings,IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService) : base(httpClientFactory, logger, authorizer, apiSettings)
+    {
+        _httpClientFactory = httpClientFactory;
+        _logger = logger;
+        _httpClientFactory = httpClientFactory;
+        _contractPositionStorageService = contractPositionStorageService;
+        _contractStorageService = contractStorageService;
+    }
     public async Task Get()
     {
         //сначала получить uuid 
@@ -70,4 +75,6 @@ public class ContractGetterService(
             }
         }
     }
+
+ 
 }

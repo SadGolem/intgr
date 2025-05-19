@@ -1,6 +1,7 @@
 ﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
 using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 
@@ -10,23 +11,21 @@ namespace integration.Factory.GET
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger;
-        private readonly IConfiguration _configuration;
-        private readonly ILocationIdService _locationIdService;
-        private readonly HttpClient _httpClient;
+        private readonly IAuthorizer _authorizer;
+        /*private readonly ILocationIdService _locationIdService;*/
         public LocationGetterServiceFactory(
             IHttpClientFactory httpClientFactory,
             ILogger<LocationGetterService> logger,
-            IConfiguration configuration, ILocationIdService locationIdService)
+            IAuthorizer authorizer, ILocationIdService locationIdService)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
-            _configuration = configuration;
-            _httpClient = new HttpClient();
-            _locationIdService = locationIdService;
+            _authorizer = authorizer;
+
         }
         public IGetterLocationService<LocationData> Create()
         {
-            return new LocationGetterService(_httpClientFactory, _logger, _configuration, _httpClient, _locationIdService);
+            return new LocationGetterService(_httpClientFactory, _logger, _authorizer, _);
         }
     }
 }

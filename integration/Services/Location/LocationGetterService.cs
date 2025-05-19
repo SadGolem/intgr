@@ -2,118 +2,168 @@
 using integration.HelpClasses;
 using integration.Services.Interfaces;
 using System.Text.Json;
+using integration.Helpers.Interfaces;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace integration.Services.Location
 {
     public class LocationGetterService : ServiceBase, IGetterLocationService<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<LocationGetterService> _logger; // Correct logger type
+        private readonly ILogger<LocationGetterService> _logger;
         private readonly ILocationIdService _locationIdService;
         private readonly ConnectingStringApro _aproConnect;
+        private readonly IConfiguration _configuration;
+        private readonly JsonSerializerOptions _jsonOptions;
 
-        public LocationGetterService(IHttpClientFactory httpClientFactory, ILogger<LocationGetterService> logger, IConfiguration configuration, HttpClient httpClient,ILocationIdService locationIdService) 
-            : base(httpClientFactory, httpClient, logger, configuration)
-        { 
+        public LocationGetterService(
+            IHttpClientFactory httpClientFactory,
+            ILogger<LocationGetterService> logger,
+            IAuthorizer authorizer,
+            IOptions<AuthSettings> apiSettings,
+            ILocationIdService locationIdService,
+            IConfiguration configuration)
+            : base(httpClientFactory, logger, authorizer, apiSettings)
+        {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _locationIdService = locationIdService;
-            _aproConnect = new ConnectingStringApro(configuration, "wf__waste_site__waste_site/?query={id,datetime_create, datetime_update,lon,  lat, address, status_id, ext_id}");
+            _configuration = configuration;
+            
+            _aproConnect = new ConnectingStringApro(
+                _configuration,
+                "wf__waste_site__waste_site/?query={id,datetime_create,datetime_update,lon,lat,address,status_id,ext_id}"
+            );
+
+            _jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
         }
 
-        public Task Get()
+        public async Task<List<(LocationData, bool IsNew)>> GetSync()
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<(LocationData, bool)>> FetchData()
-        {
-            _logger.LogInformation($"Try getting locations from {_aproConnect}...");
-            var data = new List<LocationData>();
-
             try
             {
-                using var httpClient = _httpClientFactory.CreateClient();
-                await Authorize(httpClient, true);
-                var response = await httpClient.GetAsync(_aproConnect.GetAproConnectSettings());
-
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                data = await JsonSerializer.DeserializeAsync<List<LocationData>>(
-                   await response.Content.ReadAsStreamAsync(), options);
-                Message("Got: " + content);
-                
-                return await ProcessLocationsByDate(data);
-            }
-            catch (HttpRequestException ex)
-            {
-                _logger.LogError(ex, $"Error during GET request to {_aproConnect}");
-                throw;
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, $"Error during JSON deserialization of response from {_aproConnect}");
-                throw;
+                var locations = await FetchData();
+                return await ProcessLocationsByDate(locations);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unexpected error while fetching data from {_aproConnect}");
+                _logger.LogError(ex, "Error getting location data");
                 throw;
             }
         }
-        public async Task<List<(LocationData, bool)>> ProcessLocationsByDate(List<LocationData> locations)
-        {
-            List<(LocationData, bool)> data = new List<(LocationData, bool)>();
 
-            if (locations.Count <= 0)
+        private async Task<List<LocationData>> FetchData()
+        {
+            _logger.LogInformation("Fetching locations from {Endpoint}", _aproConnect.GetAproConnectSettings());
+
+            using var httpClient = _httpClientFactory.CreateClient();
+            await AuthorizeClient(httpClient);
+
+            var response = await httpClient.GetAsync(_aproConnect.GetAproConnectSettings());
+            response.EnsureSuccessStatusCode();
+
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
+            var data = await JsonSerializer.DeserializeAsync<List<LocationData>>(responseStream, _jsonOptions);
+
+            LogResponseContent(response);
+            return data ?? new List<LocationData>();
+        }
+
+        private async Task AuthorizeClient(HttpClient client)
+        {
+            try
             {
-                TimeManager.SetLastUpdateTime("locations");
-                return data;
+                await base.Authorize(client, useCache: true);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Authorization failed");
+                throw;
+            }
+        }
+
+        private void LogResponseContent(HttpResponseMessage response)
+        {
+            try
+            {
+                var content = response.Content.ReadAsStringAsync().Result;
+                Message($"Received locations data: {content}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to read response content");
+            }
+        }
+
+        private async Task<List<(LocationData Location, bool IsNew)>> ProcessLocationsByDate(List<LocationData> locations)
+        {
+            if (!locations.Any())
+            {
+                _logger.LogInformation("No locations found in response");
+                TimeManager.SetLastUpdateTime("locations");
+                return new List<(LocationData, bool)>();
+            }
+
             var lastUpdate = TimeManager.GetLastUpdateTime("locations");
+            var result = new List<(LocationData, bool)>();
 
             foreach (var location in locations)
             {
-                if (location.datetime_create > lastUpdate || location.datetime_update > lastUpdate)
+                try
                 {
-                    if (location.datetime_create > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
+                    var isNew = DetermineIfNew(location, lastUpdate);
+                    if (isNew.HasValue)
                     {
-                        try
-                        {
-                            data.Add((location,true));
-                            _locationIdService.SetLocationIds(location.id);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            throw;
-                        }
-                    }
-                    else if (location.datetime_update > lastUpdate)
-                    {
-                        data.Add((location,false));
+                        result.Add((location, isNew.Value));
                         _locationIdService.SetLocationIds(location.id);
                     }
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing location {LocationId}", location.id);
+                }
             }
+
             TimeManager.SetLastUpdateTime("locations");
-            return data;
+            return result;
         }
-        public async Task<List<(LocationData,bool)>> GetSync()
+
+        private bool? DetermineIfNew(LocationData location, DateTime lastUpdate)
         {
-            return await FetchData();
+            if (location.datetime_create > lastUpdate)
+            {
+                return true;
+            }
+            
+            if (location.datetime_update > lastUpdate)
+            {
+                return false;
+            }
+            
+            return null;
         }
-        public bool Check(LocationData locationData)
+
+        public void Message(string message)
+        {
+            EmailMessageBuilder.PutInformation(
+                EmailMessageBuilder.ListType.getlocation, 
+                message
+            );
+        }
+
+        public override Task HandleErrorAsync(string errorMessage)
         {
             throw new NotImplementedException();
         }
-        public override void Message(string ex)
-        {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
-        }
+
+        // Реализация неиспользуемых методов интерфейса
+        public Task Get() => Task.CompletedTask;
+        public bool Check(LocationData locationData) => false;
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Authentication;
-using System.Text;
-using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
-using System.Text.Json.Serialization;
+using integration.Exceptions;
 using integration.HelpClasses;
+using integration.Services.Token.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace integration
 {
@@ -12,31 +11,24 @@ namespace integration
     [Route("api/[controller]")]
     public class TokenController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
         private readonly ILogger<TokenController> _logger;
-        private readonly IMemoryCache _memoryCache;
-        private readonly IConfiguration _configuration;
-        private AuthSettings _aproConnectSettings;
-        private AuthSettings _mtConnectSettings;
-        public static TokenController tokenController;
-        public static Authorizer _authorizer;
-        public static Dictionary<string, string> tokens = new Dictionary<string, string>();
+        private readonly ITokenService _tokenService;
+        private readonly IMemoryCache _cache;
+        private readonly AuthSettings _aproSettings;
+        private readonly AuthSettings _mtSettings;
 
-        public TokenController(ILogger<TokenController> logger, IMemoryCache memoryCache, IConfiguration configuration)
+        public TokenController(
+            ILogger<TokenController> logger,
+            ITokenService tokenService,
+            IMemoryCache cache,
+            IOptions<AuthSettings> aproSettings,
+            IOptions<AuthSettings> mtSettings)
         {
             _logger = logger;
-            _memoryCache = memoryCache;
-            _configuration = configuration;
-            _aproConnectSettings = _configuration.GetSection("APROconnect").Get<AuthSettings>();
-            _mtConnectSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
-            tokenController = this;
-            _authorizer = new Authorizer(_logger, _memoryCache, _configuration, tokenController);
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                SslProtocols = SslProtocols.Tls13
-            };
-            _httpClient = new HttpClient(httpClientHandler);
+            _tokenService = tokenService;
+            _cache = cache;
+            _aproSettings = aproSettings.Value;
+            _mtSettings = mtSettings.Value;
         }
 
         [HttpPost("getTokens")]
@@ -44,69 +36,50 @@ namespace integration
         {
             try
             {
-                var token1 = await GetTokenAsync(_mtConnectSettings);
-                var token2 = await GetTokenAsync(_aproConnectSettings);
-                var cacheKey = $"Token_{new Uri(_mtConnectSettings.CallbackUrl).Host}";
-                var cacheKey2 = $"Token_{new Uri(_aproConnectSettings.CallbackUrl).Host}";
-                _logger.LogInformation($"Got new token: {token1}");
-                _memoryCache.Set(cacheKey, token1, TimeSpan.FromHours(24));
-                _memoryCache.Set(cacheKey2, token2, TimeSpan.FromHours(24));
-                tokens.Clear();
-                tokens.Add(token1, token2);
-                return Ok(new { Token1 = token1, Token2 = token2 });
+                var (aproToken, mtToken) = await GetAndCacheTokensAsync();
+                return Ok(new { TokenAPRO = aproToken, TokenMT = mtToken });
             }
-            catch (HttpRequestException ex)
+            catch (ApiAuthException ex)
             {
-                _logger.LogError(ex, "Ошибка HTTP при получении токенов");
-                return StatusCode(500, new
+                _logger.LogError(ex, "Authorization error");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    Error = "Ошибка HTTP",
-                    Details = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
-                });
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogError(ex, "Ошибка JSON при обработке ответа");
-                return StatusCode(500, new
-                {
-                    Error = "Ошибка JSON",
-                    Details = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
+                    Error = "Authorization failed",
+                    Details = ex.Message
                 });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Непредвиденная ошибка");
-                return StatusCode(500, new
+                _logger.LogError(ex, "Unexpected error");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    Error = "Непредвиденная ошибка",
-                    Details = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    InnerException = ex.InnerException?.Message
+                    Error = "Internal server error"
                 });
             }
         }
 
-        private async Task<string> GetTokenAsync(AuthSettings authSettings)
+        private async Task<(string aproToken, string mtToken)> GetAndCacheTokensAsync()
         {
-            var requestBody = new { username = authSettings.Login, password = authSettings.Password };
-            var jsonBody = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-            using var response = await _httpClient.PostAsync(authSettings.CallbackUrl, content);
-            response.EnsureSuccessStatusCode();
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<TokenResponse>(responseContent)?.Token;
+            var aproToken = await GetAndCacheTokenAsync(_aproSettings);
+            var mtToken = await GetAndCacheTokenAsync(_mtSettings);
+            return (aproToken, mtToken);
         }
-        
-        private class TokenResponse
+
+        private async Task<string> GetAndCacheTokenAsync(AuthSettings settings)
         {
-            [JsonPropertyName("token")]
-            public string Token { get; set; }
+            var cacheKey = GetCacheKey(settings.CallbackUrl);
+            if (_cache.TryGetValue(cacheKey, out string token))
+            {
+                _logger.LogInformation("Using cached token for {Service}", cacheKey);
+                return token;
+            }
+
+            var newToken = await _tokenService.GetTokenAsync(settings);
+            _cache.Set(cacheKey, newToken, TimeSpan.FromMinutes(55));
+
+            return newToken;
         }
+
+        private static string GetCacheKey(string url) => $"Token_{new Uri(url).Host}";
     }
 }

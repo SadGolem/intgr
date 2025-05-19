@@ -1,18 +1,21 @@
 ﻿using System.Text;
 using System.Text.Json;
+using integration.HelpClasses;
+using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location;
 
 public class ServiceSetterBase<T> : ServiceBase
 {
     private readonly ILogger _logger;
-    public ServiceSetterBase(IHttpClientFactory httpClientFactory, HttpClient httpClient, ILogger<ServiceBase> logger, IConfiguration configuration) : base(httpClientFactory, httpClient, logger, configuration)
+    /*public ServiceSetterBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger,IAu, IConfiguration? configuration) : base(httpClientFactory, logger,authorizer, configuration)
     {
         _logger = logger;
-    }
+    }*/
     public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, object mappedData)
     {
         var client = _httpClientFactory.CreateClient();
@@ -74,8 +77,17 @@ public class ServiceSetterBase<T> : ServiceBase
             throw;
         }
     }
-    public override void Message(string ex)
+    public void Message(string ex)
     {
         throw new NotImplementedException();
+    }
+
+    public override Task HandleErrorAsync(string errorMessage)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ServiceSetterBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger, IAuthorizer authorizer, IOptions<AuthSettings> apiSettings) : base(httpClientFactory, logger, authorizer, apiSettings)
+    {
     }
 }
