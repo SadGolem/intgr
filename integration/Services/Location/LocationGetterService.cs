@@ -3,9 +3,7 @@ using integration.HelpClasses;
 using integration.Services.Interfaces;
 using System.Text.Json;
 using integration.Helpers.Interfaces;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
 
 namespace integration.Services.Location
 {
@@ -164,6 +162,5 @@ namespace integration.Services.Location
 
         // Реализация неиспользуемых методов интерфейса
         public Task Get() => Task.CompletedTask;
-        public bool Check(LocationData locationData) => false;
     }
 }
