@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using integration.Factory.GET.Interfaces;
 using integration.HelpClasses;
+using integration.Helpers;
+using integration.Helpers.Auth;
 using integration.Services.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace integration.Controllers.Apro
 {
@@ -20,7 +23,7 @@ namespace integration.Controllers.Apro
         public ScheduleController(
             IHttpClientFactory httpClientFactory,
             ILogger<ScheduleController> logger,
-            IConfiguration configuration, IGetterServiceFactory<ScheduleData> serviceGetter
+            IOptions<AuthSettings> configuration, IGetterServiceFactory<ScheduleData> serviceGetter
             )
         {
             _httpClientFactory = httpClientFactory;

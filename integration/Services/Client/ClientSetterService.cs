@@ -2,30 +2,32 @@
 using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers;
+using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Services.Storage;
+using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
 public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService<ClientData>
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly HttpClient _httpClient;
     private readonly ILogger<ClientSetterService> _logger;
     private IContractStorageService _contractStorageService;
     private IStorageService _storageService;
-    private readonly IConfiguration _configuration;
+    private readonly IOptions<AuthSettings> _configuration;
     private ConnectingStringApro _aproConnect;
 
-    public ClientSetterService(IHttpClientFactory httpClientFactory, HttpClient httpClient,
-        ILogger<ClientSetterService> logger, IConfiguration configuration,
-        IStorageService storageService) : base(httpClientFactory, httpClient, logger, configuration)
+    public ClientSetterService(IHttpClientFactory httpClientFactory,
+        ILogger<ClientSetterService> logger, IAuthorizer authorizer, IOptions<AuthSettings> configuration,
+        IStorageService storageService) : base(httpClientFactory, logger, authorizer, configuration)
     {
         _httpClientFactory = httpClientFactory;
-        _httpClient = httpClient;
         _logger = logger;
         _storageService = storageService;
         _configuration = configuration;

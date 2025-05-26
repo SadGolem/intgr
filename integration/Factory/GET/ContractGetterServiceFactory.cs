@@ -1,11 +1,10 @@
 ﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
-using integration.HelpClasses;
+using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
 using integration.Services.Client;
-using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
-using integration.Services.Location;
 using integration.Services.Storage;
 using Microsoft.Extensions.Options;
 
@@ -15,8 +14,8 @@ public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ContractGetterService> _logger;
+    private readonly IAuthorizer _authorizer;
     private readonly IOptions<AuthSettings> _configuration;
-    private readonly HttpClient _httpClient;
     private readonly IConverterToStorageService _converterToStorageService;
     private readonly IContractPositionStorageService _contractPositionStorageService;
     private readonly IStorageService _storageService;
@@ -25,10 +24,14 @@ public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
     public ContractGetterServiceFactory(
         IHttpClientFactory httpClientFactory,
         ILogger<ContractGetterService> logger,
-        IOptions<AuthSettings> configuration, IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService)
+        IAuthorizer authorizer,
+        IOptions<AuthSettings> configuration,
+        IContractPositionStorageService contractPositionStorageService,
+        IContractStorageService contractStorageService)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
+        _authorizer = authorizer;
         _configuration = configuration;
         _contractPositionStorageService = contractPositionStorageService;
         _contractStorageService = contractStorageService;
@@ -36,6 +39,6 @@ public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
 
     public IGetterService<ContractData> Create()
     {
-        return new ContractGetterService(_httpClientFactory, _logger, _configuration, _contractPositionStorageService, _contractStorageService);
+        return new ContractGetterService(_httpClientFactory, _logger, _authorizer, _configuration , _contractPositionStorageService, _contractStorageService);
     }
 }

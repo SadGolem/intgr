@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Headers;
-using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using Microsoft.Extensions.Options;
@@ -10,8 +10,14 @@ namespace integration.Services
         protected readonly IHttpClientFactory _httpClientFactory;
         protected readonly ILogger<ServiceBase> _logger;
         protected readonly IAuthorizer _authorizer;
-        protected readonly string _apiBaseUrl;
+        protected readonly IOptions<AuthSettings> _apiBaseUrl;
 
+        protected ServiceBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+        }
+        
         protected ServiceBase(
             IHttpClientFactory httpClientFactory,
             ILogger<ServiceBase> logger,
@@ -21,16 +27,12 @@ namespace integration.Services
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _authorizer = authorizer;
-            _apiBaseUrl = apiSettings.Value.CallbackUrl;
+            _apiBaseUrl = apiSettings;
         }
 
-        protected ServiceBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger)
-        {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
 
-        public virtual async Task<HttpClient> CreateAuthorizedClientAsync(AuthType authType = AuthType.APRO)
+
+        public virtual async Task<HttpClient> CreateAuthorizedClientAsync(AuthType authType)
         {
             var client = _httpClientFactory.CreateClient();
             var token = await GetTokenAsync(authType);
@@ -55,9 +57,13 @@ namespace integration.Services
 
         public abstract Task HandleErrorAsync(string errorMessage);
 
-        protected async Task Authorize(HttpClient client, bool useCache)
+        protected async Task<HttpClient> Authorize(bool isApro)
         {
-            await GetTokenAsync(AuthType.APRO);
+            if (isApro)
+            {
+                return await CreateAuthorizedClientAsync(AuthType.APRO);
+            }
+            return await CreateAuthorizedClientAsync(AuthType.MT);
         }
     }
 

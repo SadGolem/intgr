@@ -3,6 +3,9 @@ using integration.HelpClasses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using integration.Helpers;
+using integration.Helpers.Auth;
+using Microsoft.Extensions.Options;
 
 namespace integration.Controllers.Apro
 {
@@ -18,7 +21,7 @@ namespace integration.Controllers.Apro
         public EmitterController(
             IHttpClientFactory httpClientFactory,
             ILogger<EmitterController> logger,
-            IConfiguration configuration
+            IOptions<AuthSettings> configuration
             )
         {
             _httpClientFactory = httpClientFactory;

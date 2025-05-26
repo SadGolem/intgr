@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Structs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -27,7 +28,7 @@ public class IntegrationService : IIntegrationService
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _apiClientService = apiClientService;
-        _mtBaseUrl = mtSettings.Value.CallbackUrl.Replace("/auth", "/");
+        _mtBaseUrl = mtSettings.Value.MTconnect.CallbackUrl;
         
         _jsonOptions = new JsonSerializerOptions
         {

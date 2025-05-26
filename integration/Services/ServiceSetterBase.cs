@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -18,8 +19,7 @@ public class ServiceSetterBase<T> : ServiceBase
     }*/
     public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, object mappedData)
     {
-        var client = _httpClientFactory.CreateClient();
-        await Authorize(client, false);
+        var client = await Authorize(false);
         try
         {
             var jsonBody = JsonSerializer.Serialize(mappedData);
@@ -49,8 +49,7 @@ public class ServiceSetterBase<T> : ServiceBase
     
     public async Task Patch(IHttpClientFactory _httpClientFactory, string _connect, object mappedData)
     {
-        var client = _httpClientFactory.CreateClient();
-        await Authorize(client, false);
+        var client = await Authorize(false);
         try
         {
             var jsonBody = JsonSerializer.Serialize(mappedData);

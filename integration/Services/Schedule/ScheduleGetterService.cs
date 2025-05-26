@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
 using integration.Services;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
@@ -13,23 +15,24 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
     private readonly ILogger<ScheduleGetterService> _logger;
     private readonly IScheduleStorageService _scheduleStorage;
     private readonly IContractPositionStorageService _positionStorage;
-    private readonly AuthSettings _apiSettings;
+    private readonly APROconnectSettings _apiSettings;
     private readonly JsonSerializerOptions _jsonOptions;
 
     public ScheduleGetterService(
         IHttpClientFactory httpClientFactory,
         ILogger<ScheduleGetterService> logger,
+        IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
         IScheduleStorageService scheduleStorage,
         IContractPositionStorageService positionStorage
     )
-        : base(httpClientFactory, logger)
+        : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _scheduleStorage = scheduleStorage;
         _positionStorage = positionStorage;
-        _apiSettings = apiSettings.Value;
+        _apiSettings = apiSettings.Value.APROconnect;
 
         _jsonOptions = new JsonSerializerOptions
         {
@@ -68,8 +71,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
 
     private async Task<List<ScheduleData>> FetchSchedulesAsync(int positionId)
     {
-        using var client = _httpClientFactory.CreateClient();
-        await AuthorizeClient(client);
+        using var client  = await Authorize(true);
 
         var endpoint = BuildEndpointUrl(positionId);
         var response = await client.GetAsync(endpoint);
@@ -100,21 +102,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
             throw;
         }
     }
-
-    private async Task AuthorizeClient(HttpClient client)
-    {
-        try
-        {
-            // Реализация авторизации из базового класса
-            await base.Authorize(client, useCache: true);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Authorization failed");
-            throw;
-        }
-    }
-
+    
     public void Message(string message)
     {
         EmailMessageBuilder.PutInformation(

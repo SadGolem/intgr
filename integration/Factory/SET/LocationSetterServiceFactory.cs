@@ -1,6 +1,7 @@
 ﻿using integration.Context;
 using integration.Factory.SET.Interfaces;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using integration.Services.Location;

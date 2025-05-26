@@ -1,6 +1,8 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using integration.Exceptions;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Services.Token.Interfaces;
 
 namespace integration.Services.Token;
@@ -18,14 +20,29 @@ public class TokenService : ITokenService
         _logger = logger;
     }
 
-    public async Task<string> GetTokenAsync(AuthSettings settings)
+    public async Task<string> GetTokenAsync(IAuth settings)
     {
         try
         {
             using var client = _httpClientFactory.CreateClient();
-            var response = await client.PostAsJsonAsync(
-                settings.CallbackUrl, 
-                new { settings.Login, settings.Password });
+
+            var requestBody = new
+            {
+                username = settings.Login,
+                password = settings.Password
+            };
+
+            // Serialize to JSON and create HTTP content
+            var jsonContent = new StringContent(
+                JsonSerializer.Serialize(requestBody),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await client.PostAsync(
+                settings.CallbackUrl,
+                jsonContent // Pass the HttpContent here
+            );
 
             if (!response.IsSuccessStatusCode)
             {

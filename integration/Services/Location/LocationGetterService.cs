@@ -2,18 +2,20 @@
 using integration.HelpClasses;
 using integration.Services.Interfaces;
 using System.Text.Json;
+using integration.Helpers;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location
 {
-    public class LocationGetterService : ServiceBase, IGetterLocationService<LocationData>
+    public class LocationGetterService : ServiceGetterBase<LocationData>, IGetterLocationService<LocationData>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger;
         private readonly ILocationIdService _locationIdService;
         private readonly ConnectingStringApro _aproConnect;
-        private readonly IConfiguration _configuration;
+        private readonly IOptions<AuthSettings> _configuration;
         private readonly JsonSerializerOptions _jsonOptions;
 
         public LocationGetterService(
@@ -21,14 +23,13 @@ namespace integration.Services.Location
             ILogger<LocationGetterService> logger,
             IAuthorizer authorizer,
             IOptions<AuthSettings> apiSettings,
-            ILocationIdService locationIdService,
-            IConfiguration configuration)
+            ILocationIdService locationIdService)
             : base(httpClientFactory, logger, authorizer, apiSettings)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _locationIdService = locationIdService;
-            _configuration = configuration;
+            _configuration = apiSettings;
             
             _aproConnect = new ConnectingStringApro(
                 _configuration,
@@ -59,9 +60,8 @@ namespace integration.Services.Location
         private async Task<List<LocationData>> FetchData()
         {
             _logger.LogInformation("Fetching locations from {Endpoint}", _aproConnect.GetAproConnectSettings());
-
-            using var httpClient = _httpClientFactory.CreateClient();
-            await AuthorizeClient(httpClient);
+            
+            using var httpClient = await Authorize(true);
 
             var response = await httpClient.GetAsync(_aproConnect.GetAproConnectSettings());
             response.EnsureSuccessStatusCode();
@@ -72,20 +72,7 @@ namespace integration.Services.Location
             LogResponseContent(response);
             return data ?? new List<LocationData>();
         }
-
-        private async Task AuthorizeClient(HttpClient client)
-        {
-            try
-            {
-                await base.Authorize(client, useCache: true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Authorization failed");
-                throw;
-            }
-        }
-
+        
         private void LogResponseContent(HttpResponseMessage response)
         {
             try

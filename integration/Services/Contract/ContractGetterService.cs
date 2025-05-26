@@ -1,5 +1,6 @@
 ﻿using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
@@ -28,8 +29,12 @@ public class ContractGetterService
 
     private List<string> root_ids = new List<string>();
     
-    public ContractGetterService(IHttpClientFactory httpClientFactory, ILogger<ContractGetterService> logger, 
-        IOptions<AuthSettings> apiSettings,IContractPositionStorageService contractPositionStorageService, IContractStorageService contractStorageService) : base(httpClientFactory, logger, authorizer, apiSettings)
+    public ContractGetterService(IHttpClientFactory httpClientFactory, 
+        ILogger<ContractGetterService> logger,
+        IAuthorizer authorizer,
+        IOptions<AuthSettings> apiSettings,
+        IContractPositionStorageService contractPositionStorageService, 
+        IContractStorageService contractStorageService) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;

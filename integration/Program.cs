@@ -8,8 +8,9 @@ using integration.Factory.GET;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET;
 using integration.Factory.SET.Interfaces;
-using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
+using integration.Services;
 using integration.Services.CheckUp;
 using integration.Services.CheckUp.Factory;
 using integration.Services.Client;
@@ -30,11 +31,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
-builder.Services.Configure<AuthSettings>(
-    builder.Configuration.GetSection("APROconnect"));
-builder.Services.Configure<AuthSettings>(
-    builder.Configuration.GetSection("MTconnect"));
+builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
+builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
 
+
+builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
@@ -49,6 +50,8 @@ builder.Services.AddTransient<IGetterLocationServiceFactory<LocationData>, Locat
 builder.Services.AddTransient<IGetterLocationService<LocationData>, LocationGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationData>, LocationSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationData>, LocationSetterService>();
+builder.Services.AddScoped<ILocationMapper, LocationMapper>();
+builder.Services.AddScoped<ILocationValidator, LocationValidator>();
 builder.Services.AddTransient<IGetterServiceFactory<ScheduleData>, ScheduleGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ScheduleData>, ScheduleGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<ContractPositionData>, ContractPositionGetterServiceFactory>();
@@ -61,7 +64,6 @@ builder.Services.AddTransient<IGetterService<ClientData>, ClientGetterService>()
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddScoped<ICheckUpFactory<ClientData>, ClientCheckUpFactory>();
 builder.Services.AddScoped<ICheckUpService<ClientData>, ClientCheckUpService>();
-
 
 
 

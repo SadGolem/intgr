@@ -1,10 +1,15 @@
 ﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
+using integration.HelpClasses;
+using integration.Helpers;
+using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
 using integration.Services.Client;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Storage;
+using Microsoft.Extensions.Options;
 
 namespace integration.Factory;
 
@@ -12,8 +17,8 @@ public class ClientGetterServiceFactory : IGetterServiceFactory<ClientData>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ClientGetterService> _logger;
-    private readonly IConfiguration _configuration;
-    private readonly HttpClient _httpClient;
+    private readonly IOptions<AuthSettings> _configuration;
+    private readonly IAuthorizer _authorizer;
     private readonly IConverterToStorageService _converterToStorageService;
     private readonly IContractPositionStorageService _contractPositionStorageService;
     private readonly IStorageService _storageService;
@@ -22,13 +27,16 @@ public class ClientGetterServiceFactory : IGetterServiceFactory<ClientData>
     public ClientGetterServiceFactory(
         IHttpClientFactory httpClientFactory,
         ILogger<ClientGetterService> logger,
-        IConfiguration configuration, IConverterToStorageService converterToStorageService, IContractPositionStorageService contractPositionStorageService, 
+        IAuthorizer authorizer,
+        IOptions<AuthSettings> configuration, 
+        IConverterToStorageService converterToStorageService, 
+        IContractPositionStorageService contractPositionStorageService, 
         IClientStorageService storageClientService)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
+        _authorizer = authorizer;
         _configuration = configuration;
-        _httpClient = new HttpClient();
         _converterToStorageService = converterToStorageService;
         _contractPositionStorageService = contractPositionStorageService;
         _storageClientService = storageClientService;
@@ -36,6 +44,6 @@ public class ClientGetterServiceFactory : IGetterServiceFactory<ClientData>
 
     public IGetterService<ClientData> Create()
     {
-        return new ClientGetterService(_httpClientFactory, _httpClient, _logger, _configuration, _contractPositionStorageService, _storageClientService);
+        return new ClientGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _contractPositionStorageService, _storageClientService);
     }
 }

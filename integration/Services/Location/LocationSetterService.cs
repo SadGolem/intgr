@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using Microsoft.Extensions.Options;
@@ -13,7 +14,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LocationSetterService> _logger;
-    private readonly AuthSettings _apiSettings;
+    private readonly IAuth _apiSettings;
     private readonly ILocationMapper _mapper;
     private readonly ILocationValidator _validator;
 
@@ -28,15 +29,14 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
-        _apiSettings = apiSettings.Value;
+        _apiSettings = apiSettings.Value.MTconnect;
         _mapper = mapper;
         _validator = validator;
     }
 
     public async Task PostAndPatch(IEnumerable<(LocationData Data, bool IsNew)> locations)
     {
-        using var client = _httpClientFactory.CreateClient();
-        await AuthorizeClient(client);
+        using var client = await Authorize(false);
 
         var tasks = locations.Select(l => 
             ProcessLocationAsync(client, l.Data, l.IsNew));
@@ -55,8 +55,8 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
             }
 
             var endpoint = isNew 
-                ? _apiSettings.CreateLocationEndpoint 
-                : $"{_apiSettings.UpdateLocationEndpoint}/{data.id}";
+                ? _apiSettings.ApiClientSettings.CreateLocationEndpoint 
+                : $"{_apiSettings.ApiClientSettings.UpdateLocationEndpoint}/{data.id}";
 
             var response = await SendRequestAsync(
                 client,
@@ -106,19 +106,6 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
 
         _logger.LogInformation("Successfully {Action} location {LocationId}. Response: {Response}",
             action, locationId, content);
-    }
-
-    private async Task AuthorizeClient(HttpClient client)
-    {
-        try
-        {
-            await base.Authorize(client, useCache: true);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Authorization failed");
-            throw new AuthorizationException("Location service authorization failed", ex);
-        }
     }
 
     public override Task HandleErrorAsync(string errorMessage)

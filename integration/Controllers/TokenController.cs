@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using integration.Exceptions;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Services.Token.Interfaces;
 using Microsoft.Extensions.Options;
 
@@ -14,8 +15,8 @@ namespace integration
         private readonly ILogger<TokenController> _logger;
         private readonly ITokenService _tokenService;
         private readonly IMemoryCache _cache;
-        private readonly AuthSettings _aproSettings;
-        private readonly AuthSettings _mtSettings;
+        private readonly APROconnectSettings _aproSettings;
+        private readonly MTconnectSettings _mtSettings;
 
         public TokenController(
             ILogger<TokenController> logger,
@@ -27,8 +28,8 @@ namespace integration
             _logger = logger;
             _tokenService = tokenService;
             _cache = cache;
-            _aproSettings = aproSettings.Value;
-            _mtSettings = mtSettings.Value;
+            _aproSettings = aproSettings.Value.APROconnect;
+            _mtSettings = mtSettings.Value.MTconnect;
         }
 
         [HttpPost("getTokens")]
@@ -65,7 +66,7 @@ namespace integration
             return (aproToken, mtToken);
         }
 
-        private async Task<string> GetAndCacheTokenAsync(AuthSettings settings)
+        private async Task<string> GetAndCacheTokenAsync(IAuth settings)
         {
             var cacheKey = GetCacheKey(settings.CallbackUrl);
             if (_cache.TryGetValue(cacheKey, out string token))

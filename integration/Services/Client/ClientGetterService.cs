@@ -1,173 +1,168 @@
 ﻿using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers;
+using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
+using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
 public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService<ClientData>
 {
-    private readonly IHttpClientFactory _httpClientFactory;
- //   private IContractStorageService _contractStorageService;
+   private readonly IContractPositionStorageService _positionStorage;
+    private readonly IClientStorageService _clientStorage;
+    private readonly APROconnectSettings _apiSettings;
+    private readonly ILogger<ClientGetterService> _logger;
+    private IHttpClientFactory _httpClientFactory;
 
-    private readonly IConfiguration _configuration;
-
-    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
-    private IContractPositionStorageService _contractPositionStorageService;
-    private IClientStorageService _clientStorage;
-    private List<int> _locationIdSList;
-
-    private string _aproConnectUrlit =
-        "wf__participant__legal_entity/?query={id,datetime_create,datetime_update,name, full_name, inn,kpp, chief{id,name}}&id=";
-
-    private string _aproConnectUrlitURL = "";
-    private string _aproConnectPhysicsURL = "";
-    private string _getBIKURL = "";
-    private string _getMailURL = "";
-    private string _getBossURL = "";
-    private readonly string _aproConnectPhysics =
-        "wf__participant__fl/?query={id,datetime_create,datetime_update,name, full_name, inn,kpp, chief{id,name}}&id=";
-    private readonly string _getBIK =
-        "wf__account__bank_account_details/?query={bik}&participant_id=";
-    private readonly string _getMail =
-        "wf__contact__counterparties_contacts/?&query={id,contact_type{id,name},value}&contact_type_id=3&participant=";
-    private readonly string _getBoss =
-        "wf__employee__employee/?&query={id,name,position}&participant=";
-    
-    private List<(int,string)> clients_id = new List<(int,string)>();
-    List<ClientData> clients = new List<ClientData>();
-
-    public ClientGetterService(IHttpClientFactory httpClientFactory,
-        HttpClient httpClient,
+    public ClientGetterService(
+        IHttpClientFactory httpClientFactory,
         ILogger<ClientGetterService> logger,
-        IConfiguration configuration,
-        IContractPositionStorageService contractPositionStorageService, IClientStorageService clientStorage) : base(httpClientFactory, httpClient, logger, configuration)
+        IAuthorizer authorizer,
+        IOptions<AuthSettings> apiSettings,
+        IContractPositionStorageService positionStorage,
+        IClientStorageService clientStorage)
+        : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
-        _configuration = configuration;
-        _contractPositionStorageService = contractPositionStorageService;
+        _logger = logger;
+        _apiSettings = apiSettings.Value.APROconnect;
+        _positionStorage = positionStorage;
         _clientStorage = clientStorage;
-        
-        _aproConnectUrlitURL = new ConnectingStringApro(configuration, _aproConnectUrlit).ReplaceStringUrlWithoutDate("&id=","&id=");
-        _aproConnectPhysicsURL = new ConnectingStringApro(configuration, _aproConnectPhysics).ReplaceStringUrlWithoutDate("id=","id=");
-        _getBIK = new ConnectingStringApro(configuration, _getBIK).ReplaceStringUrlWithoutDate("participant_id=","participant_id=");
-        _getMailURL = new ConnectingStringApro(configuration, _getMail).ReplaceStringUrlWithoutDate("participant=","participant=");
-        _getBossURL =
-            new ConnectingStringApro(configuration, _getBoss).ReplaceStringUrlWithoutDate("query={id,name,position}",
-                "query={id,name,position}");
     }
+
     public async Task Get()
     {
-        //сначала получить uuid 
-        await GetContractsToList();
-        await GetClientsDataFromAPRO();
-        await GetBik();
-        await GetMail();
-        //передать список в сторэйдж
-        await ToSetClient();
-        
-    }
-
-    private async Task GetContractsToList()
-    {
-        List<ContractPositionData> contractsPosList = _contractPositionStorageService.GetPosition();
-
-        foreach (var con in contractsPosList)
+        try
         {
-            clients_id.Add((con.contract.client.idAsuPro, con.contract.client.doc_type.name));
+            var clientIds = await GetClientIdentifiers();
+            var clients = await ProcessClientsAsync(clientIds);
+            await EnrichClientDataAsync(clients); 
+            _clientStorage.SetClients(clients);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Client synchronization failed");
+            throw;
         }
         
+        
     }
 
-    private async Task GetClientsDataFromAPRO()
+    private async Task<IEnumerable<ClientIdentifier>> GetClientIdentifiers()
     {
-        List<ClientData> client = new List<ClientData>();
-        
-        foreach (var cl in clients_id)
-        {
-            try
-            {
-                if (cl.Item2 != "Юридические лица")
-                    client = await Get(_httpClientFactory, _aproConnectPhysicsURL + cl.Item1);
-                else
-                {
-                    client = await Get(_httpClientFactory, _aproConnectUrlitURL + cl.Item1);
-                }
+        var positions = _positionStorage.GetPosition();
+        return positions.Select(p => new ClientIdentifier(
+            p.contract.client.idAsuPro,
+            p.contract.client.doc_type.name
+        )).Distinct();
+    }
 
-                if (client.Count > 0)
-                {
-                    clients.Add(client.First());
-                }
-            }
-            catch (Exception e)
+    private async Task<List<ClientData>> ProcessClientsAsync(IEnumerable<ClientIdentifier> clientIds)
+    {
+        var clients = new List<ClientData>();
+        
+        foreach (var clientId in clientIds)
+        {
+            var client = await FetchClientDataAsync(clientId);
+            if (client != null)
             {
-                Console.WriteLine(e);
-                throw;
+                clients.Add(client);
             }
+        }
+        
+        return clients;
+    }
+
+    private async Task<ClientData> FetchClientDataAsync(ClientIdentifier clientId)
+    {
+        try
+        {
+            var endpoint = BuildClientEndpoint(clientId);
+            var response = await Get(_httpClientFactory, endpoint);
+            return response.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to fetch client {ClientId}", clientId.Id);
+            return null;
         }
     }
 
-    private async Task ToSetClient()
+    private string BuildClientEndpoint(ClientIdentifier clientId)
+    {
+        var basePath = clientId.IsLegalEntity 
+            ? _apiSettings.ApiClientSettings.LegalEntitiesEndpoint
+            : _apiSettings.ApiClientSettings.IndividualsEndpoint;
+            
+        return $"{basePath}{clientId.Id}";
+    }
+
+    private async Task EnrichClientDataAsync(List<ClientData> clients)
+    {
+        var tasks = new List<Task>
+        {
+            EnrichWithBankDetailsAsync(clients),
+            EnrichWithContactDetailsAsync(clients)
+        };
+
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task EnrichWithBankDetailsAsync(List<ClientData> clients)
     {
         foreach (var client in clients)
         {
-            _clientStorage.SetClient(client);
+            var bik = await FetchBankDetailsAsync(client.idAsuPro);
+            client.bik = bik;
         }
     }
 
-    //добавление бик
-    private async Task GetBik()
+    private async Task<string> FetchBankDetailsAsync(int clientId)
     {
-        foreach (var cl in clients)
+        try
         {
-            List<ClientData> bik = new List<ClientData>();
-            try
-            {
-                bik = await Get(_httpClientFactory, _getBIK + cl.idAsuPro);
-                if (bik.Count > 0)
-                {
-                    var clientToUpdate = clients.FirstOrDefault(c => c.idAsuPro == cl.idAsuPro);
-
-                    if (clientToUpdate != null)
-                    {
-                        clientToUpdate.bik = bik.First().bik;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Клиент с id {cl.idAsuPro} не найден в списке clients.");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var endpoint = $"{_apiSettings.ApiClientSettings.BankDetailsEndpoint}{clientId}";
+            var response = await Get(_httpClientFactory, endpoint);
+            return response.FirstOrDefault()?.bik;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to fetch BIK for client {ClientId}", clientId);
+            return null;
         }
     }
-    //получение электронной почты
-    private async Task GetMail()
-    {
-        for (int i = 0; i < clients.Count; i++)
-        {
-            var cl = clients[i];
 
-            List<ClientData> mail = new List<ClientData>();
-            try
-            {
-                mail = await Get(_httpClientFactory, _getMailURL + cl.idAsuPro);
-                if (mail.Count > 0)
-                {
-                    clients[i].mailAddress = mail.First().mailAddress;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+    private async Task EnrichWithContactDetailsAsync(List<ClientData> clients)
+    {
+        foreach (var client in clients)
+        {
+            var email = await FetchContactEmailAsync(client.idAsuPro);
+            client.mailAddress = email;
         }
+    }
+
+    private async Task<string> FetchContactEmailAsync(int clientId)
+    {
+        try
+        {
+            var endpoint = $"{_apiSettings.ApiClientSettings.ContactsEndpoint}{clientId}";
+            var response = await Get(_httpClientFactory, endpoint);
+            return response.FirstOrDefault()?.mailAddress;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to fetch email for client {ClientId}", clientId);
+            return null;
+        }
+    }
+
+    private record ClientIdentifier(int Id, string DocumentType)
+    {
+        public bool IsLegalEntity => DocumentType == "Юридические лица";
     }
 }

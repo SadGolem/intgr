@@ -1,28 +1,28 @@
 ﻿using System.Globalization;
-using integration.HelpClasses;
 using integration.Helpers.Auth;
+using Microsoft.Extensions.Options;
 
 namespace integration.Helpers;
 
-public class ConnectionStringMT
+public class ConnectingStringApro
 {
-    private readonly IConfiguration _configuration;
-    private string _mtConnectSettings;
+    private readonly APROconnectSettings _aproSettings;
+    private string _aproConnectSettings;
 
-    public ConnectionStringMT(IConfiguration configuration, string url)
+    public ConnectingStringApro(IOptions<AuthSettings> authSettings, string url)
     {
-        _configuration = configuration;
+        _aproSettings = authSettings.Value.APROconnect;
         InitializeAproConnectSettings(url);
     }
 
-    public string ReplaceStringUrl(string old, string newString)
+    public string ReplaceStringUtl(string old, string newString)
     {
-        return _mtConnectSettings.Replace(old, newString);
+        return _aproConnectSettings.Replace(old, newString);
     }
 
-    public string ReplaceStringUtlWithoutDate(string old, string newString)
+    public string ReplaceStringUrlWithoutDate(string old, string newString)
     {
-        string replaced = _mtConnectSettings.Replace(old, newString); // Заменяем old на newString
+        string replaced = _aproConnectSettings.Replace(old, newString); // Заменяем old на newString
         int index = replaced.IndexOf(newString); // Находим индекс вхождения newString
         if (index != -1)
         {
@@ -37,8 +37,7 @@ public class ConnectionStringMT
 
     private void InitializeAproConnectSettings(string url)
     {
-        var authSettings = _configuration.GetSection("MTconnect").Get<AuthSettings>();
-        string callbackUrl = authSettings.MTconnect.CallbackUrl;
+
         
 
         // Получаем текущее время в UTC
@@ -52,12 +51,12 @@ public class ConnectionStringMT
         string endDate = nowUtc.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
 
-        _mtConnectSettings = callbackUrl
+        _aproConnectSettings = _aproSettings.CallbackUrl
             .Replace("token-auth/", $"{url}&datetime_update__gte={startDate}&datetime_update_It={endDate}");
     }
 
     public string GetAproConnectSettings()
     {
-        return _mtConnectSettings;
+        return _aproConnectSettings;
     }
 }

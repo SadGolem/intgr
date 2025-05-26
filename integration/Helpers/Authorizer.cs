@@ -1,4 +1,5 @@
 ﻿using integration.HelpClasses;
+using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Token.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
@@ -11,21 +12,21 @@ namespace integration
         private readonly ILogger<Authorizer> _logger;
         private readonly IMemoryCache _cache;
         private readonly ITokenService _tokenService;
-        private readonly AuthSettings _aproSettings;
-        private readonly AuthSettings _mtSettings;
+        private readonly APROconnectSettings _aproSettings;
+        private readonly MTconnectSettings _mtSettings;
 
         public Authorizer(
             ILogger<Authorizer> logger,
             IMemoryCache cache,
             ITokenService tokenService,
-            IOptions<AuthSettings> aproSettings,
-            IOptions<AuthSettings> mtSettings)
+            IOptions<AuthSettings> authSettings
+            )
         {
             _logger = logger;
             _cache = cache;
             _tokenService = tokenService;
-            _aproSettings = aproSettings.Value;
-            _mtSettings = mtSettings.Value;
+            _aproSettings = authSettings.Value.APROconnect;
+            _mtSettings = authSettings.Value.MTconnect;
         }
 
         public async Task<string> GetCachedTokenMTAsync()
@@ -34,7 +35,7 @@ namespace integration
         public async Task<string> GetCachedTokenAPROAsync()
             => await GetTokenAsync(_aproSettings);
 
-        private async Task<string> GetTokenAsync(AuthSettings settings)
+        private async Task<string> GetTokenAsync(IAuth settings)
         {
             var cacheKey = $"Token_{new Uri(settings.CallbackUrl).Host}";
 

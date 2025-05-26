@@ -1,6 +1,9 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using integration.HelpClasses;
+using integration.Helpers;
+using integration.Helpers.Auth;
+using Microsoft.Extensions.Options;
 
 namespace integration.Controllers.Apro
 {
@@ -9,19 +12,15 @@ namespace integration.Controllers.Apro
     public class WasteSiteEntryController : ControllerBase
     {
         private string _aproConnectSettings;
-        private readonly HttpClient _httpClient;
         private readonly ILogger<WasteSiteEntryController> _logger;
-        private readonly IConfiguration _configuration;
         public static List<EntryData> newEntry = new List<EntryData>();
         public static List<EntryData> updateEntry = new List<EntryData>();
         private string url = "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{id},type{id,name},ext_id, comment, containers{id}}";
 
-        public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IConfiguration configuration)
+        public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IOptions<AuthSettings> configuration)
         {
-            _httpClient = httpClient;
             _logger = logger;
-            _configuration = configuration;
-            ConnectingStringApro connectingStringApro = new ConnectingStringApro(_configuration, url);
+            ConnectingStringApro connectingStringApro = new ConnectingStringApro(configuration, url);
             _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
         }
 

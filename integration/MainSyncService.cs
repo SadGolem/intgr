@@ -172,7 +172,7 @@ namespace integration
             try
             {
                 Console.WriteLine(wasteSiteEntryController.GetType());
-                var newWasteData = await wasteSiteEntryController.GetEntriesData();
+                //var newWasteData = await wasteSiteEntryController.GetEntriesData();
                 TimeManager.SetLastUpdateTime("entry");
                 if (WasteSiteEntryController.newEntry.Any() || WasteSiteEntryController.updateEntry.Any())
                 {
@@ -206,9 +206,11 @@ namespace integration
                     _logger.LogError($"No ID found: {wasteData.BtNumber}");
                     return;
                 }
+                /*
                 if (isNew)
-                    await entryController.ProcessEntryPostData(wasteData);
+                    await entryController.ProcessEntryPatchData(wasteData);
                 else { await entryController.ProcessEntryPatchData(wasteData); }
+                */
 
             }
             catch (Exception ex)

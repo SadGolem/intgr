@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using System.Text.Json;
+using integration.Helpers.Auth;
 using static integration.Context.Data;
 
 namespace integration.Controllers.MT

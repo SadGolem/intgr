@@ -5,6 +5,8 @@ using Microsoft.Extensions.Caching.Memory;
 using integration.Controllers.Apro;
 using integration.Context;
 using integration.HelpClasses;
+using integration.Helpers.Auth;
+
 namespace integration.Controllers.MT
 {
     [ApiController]
@@ -28,7 +30,7 @@ namespace integration.Controllers.MT
             _logger.LogInformation("DataController initialized.");
         }
 
-        /*
+     /*
         public async Task ProcessEntryPostData(EntryData wasteData)
         {
             try
@@ -66,8 +68,7 @@ namespace integration.Controllers.MT
                 _logger.LogError(ex, $"Unexpected Exception while sending data with ID: {wasteData.BtNumber}");
             }
         }
-        */
-
+       */
         /*
         public async Task ProcessEntryPatchData(EntryData wasteData)
         {

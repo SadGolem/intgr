@@ -1,8 +1,8 @@
-﻿using integration.HelpClasses;
+﻿using integration.Helpers.Auth;
 
 namespace integration.Services.Token.Interfaces;
 
 public interface ITokenService
 {
-    Task<string> GetTokenAsync(AuthSettings settings);
+    Task<string> GetTokenAsync(IAuth settings);
 }
