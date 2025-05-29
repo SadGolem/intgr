@@ -4,9 +4,9 @@ namespace integration.Services.Client.Storage;
 
 public interface IClientStorageService
 {
-    List<ClientData> GetClients();
-    void SetClient(ClientData client);
-    void SetClients(List<ClientData> clients);
-    void ClearList(ClientData client);
+    List<ClientDataResponseResponse> GetClients();
+    void SetClient(ClientDataResponseResponse client);
+    void SetClients(List<ClientDataResponseResponse> clients);
+    void ClearList(ClientDataResponseResponse client);
     void ClearList();
 }

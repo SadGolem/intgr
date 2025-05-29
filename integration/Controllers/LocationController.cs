@@ -12,15 +12,15 @@ namespace integration.Controllers
     public class LocationController : ControllerBase, IController
     {
         private readonly ILogger<LocationController> _logger;
-        private readonly IGetterLocationServiceFactory<LocationData> _serviceGetter;
-        private readonly ISetterServiceFactory<LocationData> _serviceSetter;
-        private IGetterLocationService<LocationData> _locationServiceGetter;
-        private ISetterService<LocationData> _locationServiceSetter;
+        private readonly IGetterLocationServiceFactory<LocationDataResponse> _serviceGetter;
+        private readonly ISetterServiceFactory<LocationDataResponse> _serviceSetter;
+        private IGetterLocationService<LocationDataResponse> _locationServiceGetter;
+        private ISetterService<LocationDataResponse> _locationServiceSetter;
         private ILocationIdService _locationIdService;
         
         public LocationController(ILogger<LocationController> logger, 
-            IGetterLocationServiceFactory<LocationData> serviceGetter,
-            ISetterServiceFactory<LocationData> serviceSetter,
+            IGetterLocationServiceFactory<LocationDataResponse> serviceGetter,
+            ISetterServiceFactory<LocationDataResponse> serviceSetter,
             ILocationIdService locationIdService
         )
         {
@@ -47,7 +47,7 @@ namespace integration.Controllers
         }
         private async Task FetchtLocations()
         {
-            List<(LocationData,bool)> locations = new List<(LocationData,bool)>();
+            List<(LocationDataResponse,bool)> locations = new List<(LocationDataResponse,bool)>();
             _locationServiceGetter = _serviceGetter.Create();
             locations = await _locationServiceGetter.GetSync();
 
@@ -55,7 +55,7 @@ namespace integration.Controllers
             _locationIdService.SetLocation(locations);
             _logger.LogInformation($"Received {locations.Count} locations");
         }
-        public async Task PostOrPatch(List<(LocationData, bool)> locations)
+        public async Task PostOrPatch(List<(LocationDataResponse, bool)> locations)
         {
             _locationServiceSetter = _serviceSetter.Create();
             await _locationServiceSetter.PostAndPatch(locations);

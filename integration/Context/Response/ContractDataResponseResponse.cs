@@ -2,7 +2,7 @@
 
 namespace integration.Context;
 
-public class ContractData : Data
+public class ContractDataResponseResponse : DataResponse
 {
     [JsonPropertyName("id")] //id договора (возможно допника)
     public int id { get; set; }
@@ -13,7 +13,7 @@ public class ContractData : Data
     [JsonPropertyName("root_id")]
     public string root_id { get; set; }
     [JsonPropertyName("participant")]
-    public ClientData client { get; set; }
+    public ClientDataResponseResponse client { get; set; }
     [JsonPropertyName("contract_type")]
     public ContractType contractType { get; set; }
 

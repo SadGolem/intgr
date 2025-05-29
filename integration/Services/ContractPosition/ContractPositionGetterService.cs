@@ -17,8 +17,8 @@ public class ContractPositionGetterService(
     IOptions<AuthSettings> apiSettings,
     ILocationIdService locationIdService, 
     IContractPositionStorageService contractPositionStorageService )
-    : ServiceGetterBase<ContractPositionData>(httpClientFactory, logger, authorizer, apiSettings),
-        IGetterService<ContractPositionData>
+    : ServiceGetterBase<ContractPositionDataResponse>(httpClientFactory, logger, authorizer, apiSettings),
+        IGetterService<ContractPositionDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
@@ -49,7 +49,7 @@ public class ContractPositionGetterService(
     }
     async Task GetPosition(int id)
     {
-        List<ContractPositionData> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("2085591", id.ToString())); //по позициям получаем всю инфу
+        List<ContractPositionDataResponse> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("2085591", id.ToString())); //по позициям получаем всю инфу
             //_contractPositionStorageService.SetPositions(postionsList); // тут мы отправляем данные в сторэйдж
         _contractPositionStorageService.SetPositions(postionsList);
        

@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using integration.Services.Integration;
+using integration.Services.Integration.Interfaces;
 
 namespace integration.Context
 {
-    public abstract class Data : IIntegratableEntity
+    public abstract class DataResponse : IIntegratableEntity
     {
         [JsonPropertyName("datetime_create")] public DateTime datetime_create { get; set; }
         [JsonPropertyName("datetime_update")] public DateTime datetime_update { get; set; }

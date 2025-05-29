@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET;
 
-public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
+public class ContractGetterServiceFactory : IGetterServiceFactory<ContractDataResponseResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ContractGetterService> _logger;
@@ -37,7 +37,7 @@ public class ContractGetterServiceFactory : IGetterServiceFactory<ContractData>
         _contractStorageService = contractStorageService;
     }
 
-    public IGetterService<ContractData> Create()
+    public IGetterService<ContractDataResponseResponse> Create()
     {
         return new ContractGetterService(_httpClientFactory, _logger, _authorizer, _configuration , _contractPositionStorageService, _contractStorageService);
     }

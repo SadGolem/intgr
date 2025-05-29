@@ -5,14 +5,14 @@ namespace integration.Structs;
 public struct IntegrationStruct
 {
     public int _idPosition;
-    public List<EmitterData> emittersList;
-    public List<ClientData> contragentList;
-    public List<ScheduleData> schedulesList;
-    public List<ContractData> contractList;
-    public LocationData location;
+    public List<EmitterDataResponse> emittersList;
+    public List<ClientDataResponseResponse> contragentList;
+    public List<ScheduleDataResponse> schedulesList;
+    public List<ContractDataResponseResponse> contractList;
+    public LocationDataResponse location;
 
-    public IntegrationStruct(int idPosition, List<EmitterData> emittersList, List<ClientData> contragentList, 
-        List<ScheduleData> schedulesList, List<ContractData> contractList, LocationData location)
+    public IntegrationStruct(int idPosition, List<EmitterDataResponse> emittersList, List<ClientDataResponseResponse> contragentList, 
+        List<ScheduleDataResponse> schedulesList, List<ContractDataResponseResponse> contractList, LocationDataResponse location)
     {
         _idPosition = idPosition;
         this.emittersList = emittersList;

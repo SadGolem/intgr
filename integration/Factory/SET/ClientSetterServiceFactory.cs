@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.SET;
 
-public class ClientSetterServiceFactory : ISetterServiceFactory<ClientData>
+public class ClientSetterServiceFactory : ISetterServiceFactory<ClientDataResponseResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ClientSetterService> _logger;
@@ -32,7 +32,7 @@ public class ClientSetterServiceFactory : ISetterServiceFactory<ClientData>
         _configuration = configuration;
         _storageService = storageService;
     }
-    public ISetterService<ClientData> Create()
+    public ISetterService<ClientDataResponseResponse> Create()
     {
         return new ClientSetterService(_httpClientFactory, _logger, _authorizer, _configuration, _storageService);
     }

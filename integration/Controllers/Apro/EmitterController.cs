@@ -54,7 +54,7 @@ namespace integration.Controllers.Apro
         /*private async Task<SyncResult> FetchAndProcess()
         {
             _logger.LogInformation($"Fetching emitters from {_aproConnectSettings}...");
-            List<EmitterData> emitters;
+            List<EmitterDataResponse> emitters;
             try
             {
                 emitters = await FetchData();
@@ -69,8 +69,8 @@ namespace integration.Controllers.Apro
             _logger.LogInformation($"Received {emitters.Count} emitters");
             ToGetMessage($"Received {emitters.Count} emitters");
             var lastUpdate = TimeManager.GetLastUpdateTime("emitter");
-            var newEmitter = new List<EmitterData>();
-            var updateEntries = new List<EmitterData>();
+            var newEmitter = new List<EmitterDataResponse>();
+            var updateEntries = new List<EmitterDataResponse>();
 
             foreach (var emitter in emitters)
             {
@@ -89,9 +89,9 @@ namespace integration.Controllers.Apro
             return new SyncResult(newEmitter, updateEntries);
         }*/
 
-        /*private async Task<List<EmitterData>> FetchData()
+        /*private async Task<List<EmitterDataResponse>> FetchData()
         {
-            var emitters = new List<EmitterData>();
+            var emitters = new List<EmitterDataResponse>();
             var token = await TokenController._authorizer.GetCachedTokenAPRO();
             using var httpClient = _httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -101,7 +101,7 @@ namespace integration.Controllers.Apro
 
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
-                emitters = JsonSerializer.Deserialize<List<EmitterData>>(content);
+                emitters = JsonSerializer.Deserialize<List<EmitterDataResponse>>(content);
                 TimeManager.SetLastUpdateTime("emitter");
                 ToGetMessage(content);
                 return emitters;
@@ -126,7 +126,7 @@ namespace integration.Controllers.Apro
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getemitter, ex);
         }
     }
-    public record SyncResult(List<EmitterData> NewEntries, List<EmitterData> UpdateEntries);
+    public record SyncResult(List<EmitterDataResponse> NewEntries, List<EmitterDataResponse> UpdateEntries);
 }
 
         

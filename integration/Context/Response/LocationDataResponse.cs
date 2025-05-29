@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public partial class LocationData : Data
+    public partial class LocationDataResponse : DataResponse
     {
         [JsonPropertyName("id")] public int id { get; set; }
         [JsonPropertyName("status_id")] public int status { get; set; }

@@ -3,11 +3,11 @@ using integration.Structs;
 
 namespace integration.Services.CheckUp.Services;
 
-public class ClientCheckUpService : ICheckUpService<ClientData>
+public class ClientCheckUpService : ICheckUpService<ClientDataResponseResponse>
 {
     public (bool, string) Check(IntegrationStruct str)
     {
-        List<ClientData> clientDatas = str.contragentList;
+        List<ClientDataResponseResponse> clientDatas = str.contragentList;
 
         foreach (var client in clientDatas)
         {
@@ -17,7 +17,7 @@ public class ClientCheckUpService : ICheckUpService<ClientData>
         return (true, "Clients found");
     }
 
-    private bool Check(ClientData client)
+    private bool Check(ClientDataResponseResponse client)
     {
         if (client == null)
             

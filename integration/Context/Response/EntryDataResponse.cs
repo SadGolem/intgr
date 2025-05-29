@@ -1,7 +1,7 @@
 ﻿using integration.Context;
 using System.Text.Json.Serialization;
 
-public class EntryData: Data
+public class EntryDataResponse: DataResponse
 {
     [JsonPropertyName("client_contact")]
     public ClientContact? ConsumerName { get; set; } // Может быть null

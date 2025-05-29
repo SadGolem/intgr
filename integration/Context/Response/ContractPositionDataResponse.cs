@@ -2,7 +2,7 @@
 
 namespace integration.Context;
 
-public class ContractPositionData : Data
+public class ContractPositionDataResponse : DataResponse
 {
     [JsonPropertyName("id")] //позиция договора
     public int id { get; set; }
@@ -14,10 +14,10 @@ public class ContractPositionData : Data
     public Status status { get; set; }
 
     [JsonPropertyName("waste_source")]
-    public EmitterData waste_source { get; set; } // Тип изменен на WasteSource
+    public EmitterDataResponse waste_source { get; set; } // Тип изменен на WasteSource
 
     [JsonPropertyName("waste_site")]
-    public LocationData waste_site { get; set; }
+    public LocationDataResponse waste_site { get; set; }
 
     [JsonPropertyName("value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -28,7 +28,7 @@ public class ContractPositionData : Data
     public string value_manual { get; set; } // Может быть nullable string (string?), если может отсутствовать
 
     [JsonPropertyName("contract")]
-    public ContractData contract { get; set; }
+    public ContractDataResponseResponse contract { get; set; }
 
     [JsonPropertyName("estimation_value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET
 {
-    public class LocationGetterServiceFactory : IGetterLocationServiceFactory<LocationData>
+    public class LocationGetterServiceFactory : IGetterLocationServiceFactory<LocationDataResponse>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger;
@@ -29,7 +29,7 @@ namespace integration.Factory.GET
             _authorizer = authorizer;
             _locationIdService = locationIdService;
         }
-        public IGetterLocationService<LocationData> Create()
+        public IGetterLocationService<LocationDataResponse> Create()
         {
             return new LocationGetterService(_httpClientFactory, _logger, _authorizer, _apiSettings, _locationIdService);
         }

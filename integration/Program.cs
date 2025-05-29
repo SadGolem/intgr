@@ -23,6 +23,8 @@ using integration.Services.Location;
 using integration.Services.Schedule;
 using integration.Services.Storage;
 using integration.Services.CheckUp.Services;
+using integration.Services.Integration.Interfaces;
+using integration.Services.Integration.Processors;
 using integration.Services.Token;
 using integration.Services.Token.Interfaces;
 
@@ -45,26 +47,31 @@ builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
 builder.Services.AddSingleton<IContractStorageService, ContractStorageService>();
 builder.Services.AddSingleton<IStorageService, StorageService>();
 builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
-builder.Services.AddTransient<IGetterServiceFactory<Data>, DataGetterServiceFactory>(); 
-builder.Services.AddTransient<IGetterLocationServiceFactory<LocationData>, LocationGetterServiceFactory>();
-builder.Services.AddTransient<IGetterLocationService<LocationData>, LocationGetterService>();
-builder.Services.AddTransient<ISetterServiceFactory<LocationData>, LocationSetterServiceFactory>();
-builder.Services.AddTransient<ISetterService<LocationData>, LocationSetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<DataResponse>, DataGetterServiceFactory>(); 
+builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse>, LocationGetterServiceFactory>();
+builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
+builder.Services.AddTransient<ISetterServiceFactory<LocationDataResponse>, LocationSetterServiceFactory>();
+builder.Services.AddTransient<ISetterService<LocationDataResponse>, LocationSetterService>();
 builder.Services.AddScoped<ILocationMapper, LocationMapper>();
 builder.Services.AddScoped<ILocationValidator, LocationValidator>();
-builder.Services.AddTransient<IGetterServiceFactory<ScheduleData>, ScheduleGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ScheduleData>, ScheduleGetterService>();
-builder.Services.AddTransient<IGetterServiceFactory<ContractPositionData>, ContractPositionGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ContractPositionData>, ContractPositionGetterService>();
-builder.Services.AddTransient<IGetterServiceFactory<ContractData>, ContractGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ContractData>, ContractGetterService>();
-builder.Services.AddTransient<IGetterServiceFactory<ClientData>, ClientGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ClientData>, ClientGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ScheduleDataResponse>, ScheduleGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ScheduleDataResponse>, ScheduleGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ContractPositionDataResponse>, ContractPositionGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ContractPositionDataResponse>, ContractPositionGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ContractDataResponseResponse>, ContractGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ContractDataResponseResponse>, ContractGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ClientDataResponseResponse>, ClientGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ClientDataResponseResponse>, ClientGetterService>();
 
+builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponseResponse>, ContragentProcessor>();
+builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();
+builder.Services.AddScoped<IIntegrationProcessor<LocationDataResponse>, LocationProcessor>();
+builder.Services.AddScoped<IIntegrationProcessor<ScheduleDataResponse>, ScheduleProcessor>();
+
+builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
-builder.Services.AddScoped<ICheckUpFactory<ClientData>, ClientCheckUpFactory>();
-builder.Services.AddScoped<ICheckUpService<ClientData>, ClientCheckUpService>();
-
+builder.Services.AddScoped<ICheckUpFactory<ClientDataResponseResponse>, ClientCheckUpFactory>();
+builder.Services.AddScoped<ICheckUpService<ClientDataResponseResponse>, ClientCheckUpService>();
 
 
 builder.Services.AddSingleton<TokenController>();

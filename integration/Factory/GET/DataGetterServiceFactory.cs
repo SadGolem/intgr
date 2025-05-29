@@ -4,9 +4,9 @@ using integration.Services.Interfaces;
 
 namespace integration.Factory.GET
 {
-    public class DataGetterServiceFactory : IGetterServiceFactory<Data>
+    public class DataGetterServiceFactory : IGetterServiceFactory<DataResponse>
     {
-        public IGetterService<Data> Create()
+        public IGetterService<DataResponse> Create()
         {
             throw new NotImplementedException();
         }

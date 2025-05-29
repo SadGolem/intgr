@@ -9,12 +9,12 @@ namespace integration.Controllers.Apro;
 public class ContractPositionController : ControllerBase, IController
 {
     private readonly ILogger<ContractPositionController> _logger;
-    private readonly IGetterServiceFactory<ContractPositionData> _serviceGetter;
-    private IGetterService<ContractPositionData> _getter;
+    private readonly IGetterServiceFactory<ContractPositionDataResponse> _serviceGetter;
+    private IGetterService<ContractPositionDataResponse> _getter;
     private ILocationIdService _locationIdService;
         
     public ContractPositionController(ILogger<ContractPositionController> logger, 
-        IGetterServiceFactory<ContractPositionData> serviceGetter,
+        IGetterServiceFactory<ContractPositionDataResponse> serviceGetter,
         ILocationIdService locationIdService
     )
     {

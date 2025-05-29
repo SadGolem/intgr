@@ -9,12 +9,12 @@ namespace integration.Services.Integration;
 [Route("api/[controller]")]
 public class IntegrationControllerBase : ControllerBase
 {
-    private readonly ICheckUpService<ClientData> _checkUpService; // Change to ClientData
-    private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientData
+    private readonly ICheckUpService<ClientDataResponseResponse> _checkUpService; // Change to ClientDataResponseResponse
+    private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientDataResponseResponse
 
     public IntegrationControllerBase(
         ILogger<IntegrationControllerBase> logger,
-        ICheckUpFactory<ClientData> checkUpFactory) // Change to ClientData
+        ICheckUpFactory<ClientDataResponseResponse> checkUpFactory) // Change to ClientDataResponseResponse
     {
         _checkUpService = checkUpFactory.Create();
         _logger = logger;

@@ -8,7 +8,7 @@ namespace integration.Services.Storage;
 
 public interface IConverterToStorageService
 {
-    //IntegrationStruct Mapping(List<ContractPositionData> context);
+    //IntegrationStruct Mapping(List<ContractPositionDataResponse> context);
     Task ToStorage();
 }
 
@@ -20,10 +20,10 @@ public class ConverterToStorageService : IConverterToStorageService
     private IClientStorageService _clientStorageService;
     private IStorageService _storageService;
     private IContractPositionStorageService _contractPositionStorageService;
-    private List<ContractData> contracts = new List<ContractData>();
-    private List<ScheduleData> schedules = new List<ScheduleData>();
-    private List<ClientData> clients = new List<ClientData>();
-    private List<ContractPositionData> contractPositions = new List<ContractPositionData>();
+    private List<ContractDataResponseResponse> contracts = new List<ContractDataResponseResponse>();
+    private List<ScheduleDataResponse> schedules = new List<ScheduleDataResponse>();
+    private List<ClientDataResponseResponse> clients = new List<ClientDataResponseResponse>();
+    private List<ContractPositionDataResponse> contractPositions = new List<ContractPositionDataResponse>();
     
     public ConverterToStorageService(IScheduleStorageService scheduleStorage, IContractStorageService contractStorageService,
         IClientStorageService clientStorageService, IContractPositionStorageService contractPositionStorageService, IStorageService storageService)
@@ -57,25 +57,25 @@ public class ConverterToStorageService : IConverterToStorageService
         }
     }
 
-    private IntegrationStruct CreateStruct(ContractPositionData context)
+    private IntegrationStruct CreateStruct(ContractPositionDataResponse context)
     {
         int idLocation = context.waste_site.id;
         contracts = _contractStorageService.GetContracts();
         schedules = _scheduleStorage.GetScheduls();
-        List<ContractData> contractDatas = new List<ContractData>();
-        List<EmitterData> emitterDatas = new List<EmitterData>();
-        List<ClientData> clientDatas = new List<ClientData>();
-        List<ScheduleData> scheduleDatas = new List<ScheduleData>();
-        LocationData locationDatas = new LocationData();
+        List<ContractDataResponseResponse> contractDatas = new List<ContractDataResponseResponse>();
+        List<EmitterDataResponse> emitterDatas = new List<EmitterDataResponse>();
+        List<ClientDataResponseResponse> clientDatas = new List<ClientDataResponseResponse>();
+        List<ScheduleDataResponse> scheduleDatas = new List<ScheduleDataResponse>();
+        LocationDataResponse locationDatasResponse = new LocationDataResponse();
 
         int idPos = context.id;
         contractDatas.Add(context.contract);
         emitterDatas.Add(context.waste_source);
         clientDatas.Add(context.contract.client);
-        locationDatas = context.waste_site;
+        locationDatasResponse = context.waste_site;
         foreach (var schedule in scheduleDatas)
         {
-            if (locationDatas.id == schedule.location.id)
+            if (locationDatasResponse.id == schedule.location.id)
             {
                 scheduleDatas.Add(schedule);
                 break;
@@ -91,6 +91,6 @@ public class ConverterToStorageService : IConverterToStorageService
             }
         }
 
-    return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatas);
+    return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatasResponse);
     }
 }

@@ -7,11 +7,11 @@ using integration.Services.Location;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClientController : BaseSyncController<ClientData>
+public class ClientController : BaseSyncController<ClientDataResponseResponse>
 {
     public ClientController(
         ILogger<ClientController> logger,
-        IGetterServiceFactory<ClientData> serviceGetter)
+        IGetterServiceFactory<ClientDataResponseResponse> serviceGetter)
         : base(logger, serviceGetter) { }
     
     public async Task<IActionResult> Sync()

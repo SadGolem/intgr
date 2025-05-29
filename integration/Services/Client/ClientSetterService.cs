@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
-public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService<ClientData>
+public class ClientSetterService : ServiceSetterBase<ClientDataResponseResponse>, ISetterService<ClientDataResponseResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ClientSetterService> _logger;
@@ -33,7 +33,7 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
         _configuration = configuration;
     }
 
-  /*   private async Task PostOrPatch(List<EmitterData> emitters)
+  /*   private async Task PostOrPatch(List<EmitterDataResponse> emitters)
     {
         var lastUpdate = TimeManager.GetLastUpdateTime("locations");
 
@@ -56,9 +56,9 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
 
     }
 
-      private async Task<List<ClientData>> FetchEmitterData()
+      private async Task<List<ClientDataResponseResponse>> FetchEmitterData()
     {
-        var locations = new List<EmitterData>();
+        var locations = new List<EmitterDataResponse>();
        // var token = await TokenController._authorizer.GetCachedTokenAPRO();
        // _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         try
@@ -71,7 +71,7 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
             {
                 PropertyNameCaseInsensitive = true
             };
-            locations = await JsonSerializer.DeserializeAsync<List<EmitterData>>(
+            locations = await JsonSerializer.DeserializeAsync<List<EmitterDataResponse>>(
                await response.Content.ReadAsStreamAsync(), options);
             ToGetMessage("Got emitters: " + content);
 
@@ -94,7 +94,7 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
         }
     }
 
-    private async Task PostAndPatch(EmitterData emitter, bool isNew)
+    private async Task PostAndPatch(EmitterDataResponse emitter, bool isNew)
     {
         var client = _httpClientFactory.CreateClient();
        // var token = await TokenController._authorizer.GetCachedTokenAPRO();
@@ -135,7 +135,7 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
         }
     }
 
-    private object MapLocationData(EmitterData emitter)
+    private object MapLocationData(EmitterDataResponse emitter)
     {
         return new
         {
@@ -160,7 +160,7 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
         
     }
 
-    private bool CheckEmitter(EmitterData emitter)
+    private bool CheckEmitter(EmitterDataResponse emitter)
     {
         if (emitter.address == null || emitter.address == "")
         {
@@ -171,27 +171,27 @@ public class ClientSetterService : ServiceSetterBase<ClientData>, ISetterService
     }
 
 */
-  public Task PostAndPatch(List<(ClientData, bool)> data)
+  public Task PostAndPatch(List<(ClientDataResponseResponse, bool)> data)
   {
       throw new NotImplementedException();
   }
 
-  public Task Post(ClientData data)
+  public Task Post(ClientDataResponseResponse dataResponseResponse)
   {
       throw new NotImplementedException();
   }
 
-  public Task Patch(ClientData data)
+  public Task Patch(ClientDataResponseResponse dataResponseResponse)
   {
       throw new NotImplementedException();
   }
 
-  public object MappingData(ClientData data)
+  public object MappingData(ClientDataResponseResponse dataResponseResponse)
   {
       throw new NotImplementedException();
   }
 
-  public bool Check(ClientData data)
+  public bool Check(ClientDataResponseResponse dataResponseResponse)
   {
       throw new NotImplementedException();
   }

@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public class ScheduleData : Data
+    public class ScheduleDataResponse : DataResponse
     {
         public new string nameFileTime = "schedule";
 

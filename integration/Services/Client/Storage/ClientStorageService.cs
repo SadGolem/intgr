@@ -4,23 +4,23 @@ namespace integration.Services.Client.Storage;
 
 public class ClientStorageService : IClientStorageService
 {
-    private static List<ClientData> ClientDatas = new List<ClientData>();
-    public List<ClientData> GetClients()
+    private static List<ClientDataResponseResponse> ClientDatas = new List<ClientDataResponseResponse>();
+    public List<ClientDataResponseResponse> GetClients()
     {
         return ClientDatas;
     }
 
-    public void SetClient(ClientData client)
+    public void SetClient(ClientDataResponseResponse client)
     {
         ClientDatas.Add(client);
     }
 
-    public void SetClients(List<ClientData> clients)
+    public void SetClients(List<ClientDataResponseResponse> clients)
     {
         ClientDatas = clients;
     }
 
-    public void ClearList(ClientData client)
+    public void ClearList(ClientDataResponseResponse client)
     {
         ClientDatas.Remove(client);
     }
