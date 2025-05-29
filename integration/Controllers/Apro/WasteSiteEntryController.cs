@@ -13,8 +13,8 @@ namespace integration.Controllers.Apro
     {
         private string _aproConnectSettings;
         private readonly ILogger<WasteSiteEntryController> _logger;
-        public static List<EntryData> newEntry = new List<EntryData>();
-        public static List<EntryData> updateEntry = new List<EntryData>();
+        public static List<EntryDataResponse> newEntry = new List<EntryDataResponse>();
+        public static List<EntryDataResponse> updateEntry = new List<EntryDataResponse>();
         private string url = "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{id},type{id,name},ext_id, comment, containers{id}}";
 
         public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IOptions<AuthSettings> configuration)
@@ -44,7 +44,7 @@ namespace integration.Controllers.Apro
         /*private async Task FetchEntry()
         {
             _logger.LogInformation($"Fetching locations from {_aproConnectSettings}...");
-            List<EntryData> entries = new List<EntryData>();
+            List<EntryDataResponse> entries = new List<EntryDataResponse>();
             try
             {
                 entries = await FetchEntryData();
@@ -77,9 +77,9 @@ namespace integration.Controllers.Apro
         */
 
         /*
-        private async Task<List<EntryData>> FetchEntryData()
+        private async Task<List<EntryDataResponse>> FetchEntryData()
         {
-            var entries = new List<EntryData>();
+            var entries = new List<EntryDataResponse>();
             var token = await TokenController._authorizer.GetCachedTokenAPRO();
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             try
@@ -89,7 +89,7 @@ namespace integration.Controllers.Apro
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
                 ToMessage(content);
-                entries = JsonSerializer.Deserialize<List<EntryData>>(content);
+                entries = JsonSerializer.Deserialize<List<EntryDataResponse>>(content);
 
                 return entries;
             }

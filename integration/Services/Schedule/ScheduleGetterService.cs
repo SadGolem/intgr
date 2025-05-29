@@ -9,7 +9,7 @@ using integration.Services.Interfaces;
 using integration.Services.Schedule;
 using Microsoft.Extensions.Options;
 
-public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
+public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ScheduleGetterService> _logger;
@@ -56,7 +56,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
         await Task.WhenAll(tasks);
     }
 
-    private async Task ProcessPositionAsync(ContractPositionData position)
+    private async Task ProcessPositionAsync(ContractPositionDataResponse position)
     {
         try
         {
@@ -69,7 +69,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
         }
     }
 
-    private async Task<List<ScheduleData>> FetchSchedulesAsync(int positionId)
+    private async Task<List<ScheduleDataResponse>> FetchSchedulesAsync(int positionId)
     {
         using var client  = await Authorize(true);
 
@@ -88,13 +88,13 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
                "&query={id,waste_site{id},containers{id},schedule,dates}";
     }
 
-    private async Task<List<ScheduleData>> DeserializeResponseAsync(HttpResponseMessage response)
+    private async Task<List<ScheduleDataResponse>> DeserializeResponseAsync(HttpResponseMessage response)
     {
         try
         {
             await using var stream = await response.Content.ReadAsStreamAsync();
-            var result = await JsonSerializer.DeserializeAsync<List<ScheduleData>>(stream, _jsonOptions);
-            return result ?? new List<ScheduleData>();
+            var result = await JsonSerializer.DeserializeAsync<List<ScheduleDataResponse>>(stream, _jsonOptions);
+            return result ?? new List<ScheduleDataResponse>();
         }
         catch (JsonException ex)
         {

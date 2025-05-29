@@ -4,9 +4,9 @@ namespace integration.Services.ContractPosition.Storage;
 
 public interface IContractPositionStorageService
 {
-    List<ContractPositionData> GetPosition();
-    void SetPosition(ContractPositionData dates);
-    void SetPositions(List<ContractPositionData> dates);
-    void ClearList(ContractPositionData date);
+    List<ContractPositionDataResponse> GetPosition();
+    void SetPosition(ContractPositionDataResponse dates);
+    void SetPositions(List<ContractPositionDataResponse> dates);
+    void ClearList(ContractPositionDataResponse date);
     void ClearList();
 }

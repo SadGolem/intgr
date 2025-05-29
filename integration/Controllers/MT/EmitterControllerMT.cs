@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 using System.Text.Json;
 using integration.Helpers.Auth;
-using static integration.Context.Data;
+using static integration.Context.DataResponse;
 
 namespace integration.Controllers.MT
 {
@@ -32,7 +32,7 @@ namespace integration.Controllers.MT
         }
  
 /*
-public async Task ProcessEntryPostData(EmitterData emitter)
+public async Task ProcessEntryPostData(EmitterDataResponse emitter)
 {
     try
     {
@@ -70,7 +70,7 @@ public async Task ProcessEntryPostData(EmitterData emitter)
     }
 }
 
-public async Task ProcessEntryPatchData(EmitterData emitter)
+public async Task ProcessEntryPatchData(EmitterDataResponse emitter)
 {
     try
     {
@@ -111,7 +111,7 @@ public async Task ProcessEntryPatchData(EmitterData emitter)
     }
 }
 
-private object MapWasteDataToRequest(EmitterData wasteData)
+private object MapWasteDataToRequest(EmitterDataResponse wasteData)
 {
     return new
     {
@@ -131,7 +131,7 @@ private object MapWasteDataToRequest(EmitterData wasteData)
     };
 }
 
-bool CheckRequestBody(EmitterData emitter)
+bool CheckRequestBody(EmitterDataResponse emitter)
 {
     if (emitter.author == null )
     {

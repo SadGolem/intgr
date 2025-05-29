@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
-public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService<ClientData>
+public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>, IGetterService<ClientDataResponseResponse>
 {
    private readonly IContractPositionStorageService _positionStorage;
     private readonly IClientStorageService _clientStorage;
@@ -62,9 +62,9 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         )).Distinct();
     }
 
-    private async Task<List<ClientData>> ProcessClientsAsync(IEnumerable<ClientIdentifier> clientIds)
+    private async Task<List<ClientDataResponseResponse>> ProcessClientsAsync(IEnumerable<ClientIdentifier> clientIds)
     {
-        var clients = new List<ClientData>();
+        var clients = new List<ClientDataResponseResponse>();
         
         foreach (var clientId in clientIds)
         {
@@ -78,7 +78,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         return clients;
     }
 
-    private async Task<ClientData> FetchClientDataAsync(ClientIdentifier clientId)
+    private async Task<ClientDataResponseResponse> FetchClientDataAsync(ClientIdentifier clientId)
     {
         try
         {
@@ -102,7 +102,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         return $"{basePath}{clientId.Id}";
     }
 
-    private async Task EnrichClientDataAsync(List<ClientData> clients)
+    private async Task EnrichClientDataAsync(List<ClientDataResponseResponse> clients)
     {
         var tasks = new List<Task>
         {
@@ -113,7 +113,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         await Task.WhenAll(tasks);
     }
 
-    private async Task EnrichWithBankDetailsAsync(List<ClientData> clients)
+    private async Task EnrichWithBankDetailsAsync(List<ClientDataResponseResponse> clients)
     {
         foreach (var client in clients)
         {
@@ -137,7 +137,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
         }
     }
 
-    private async Task EnrichWithContactDetailsAsync(List<ClientData> clients)
+    private async Task EnrichWithContactDetailsAsync(List<ClientDataResponseResponse> clients)
     {
         foreach (var client in clients)
         {

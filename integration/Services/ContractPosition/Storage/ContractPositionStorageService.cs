@@ -4,18 +4,18 @@ namespace integration.Services.ContractPosition.Storage;
 
 public class ContractPositionStorageService : IContractPositionStorageService
 {
-    public static List<ContractPositionData> ContractPositionList = new List<ContractPositionData>();
-    public List<ContractPositionData> GetPosition()
+    public static List<ContractPositionDataResponse> ContractPositionList = new List<ContractPositionDataResponse>();
+    public List<ContractPositionDataResponse> GetPosition()
     {
         return ContractPositionList;
     }
 
-    public void SetPosition(ContractPositionData dates)
+    public void SetPosition(ContractPositionDataResponse dates)
     {
         ContractPositionList.Add(dates);
     }
 
-    public void SetPositions(List<ContractPositionData> dates)
+    public void SetPositions(List<ContractPositionDataResponse> dates)
     {
         foreach (var data in dates)
         {
@@ -23,7 +23,7 @@ public class ContractPositionStorageService : IContractPositionStorageService
         }
     }
 
-    public void ClearList(ContractPositionData date)
+    public void ClearList(ContractPositionDataResponse date)
     {
         ContractPositionList.Remove(date);
     }

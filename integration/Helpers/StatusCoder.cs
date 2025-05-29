@@ -106,9 +106,9 @@ namespace integration.Context
             (19, 163), (19, 100), (19, 144), (4, 147)
         };
 
-        public static string ToCorrectStatus(EntryData wasteData)
+        public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
         {
-            int status = wasteData.Status?.Id ?? 0;
+            int status = wasteDataResponse.Status?.Id ?? 0;
             if (status == 0)
                 return "";
             else if (status != 179 && status != 302 && status != 282)
@@ -120,11 +120,11 @@ namespace integration.Context
             return "";
         }
 
-        public static int ToCorrectContainer(EntryData wasteData) //Возвращаем список
+        public static int ToCorrectContainer(EntryDataResponse wasteDataResponse) //Возвращаем список
         {
-            if (wasteData.IdContainerType == null) return -1 ; // или null, если хотите
+            if (wasteDataResponse.IdContainerType == null) return -1 ; // или null, если хотите
 
-            int containerId = wasteData.IdContainerType.Id;
+            int containerId = wasteDataResponse.IdContainerType.Id;
             int results = 0;
             foreach (var item in _containersMapping)
             {

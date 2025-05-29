@@ -1,9 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using integration.Services.Integration;
 
 namespace integration.Context
 {
-    public class ClientData : Data, IIntegratableEntity
+    public class ClientDataResponseResponse : DataResponse
     {
         public new string nameFileTime = "contragent";
 

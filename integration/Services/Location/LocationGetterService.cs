@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location
 {
-    public class LocationGetterService : ServiceGetterBase<LocationData>, IGetterLocationService<LocationData>
+    public class LocationGetterService : ServiceGetterBase<LocationDataResponse>, IGetterLocationService<LocationDataResponse>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LocationGetterService> _logger;
@@ -43,7 +43,7 @@ namespace integration.Services.Location
             };
         }
 
-        public async Task<List<(LocationData, bool IsNew)>> GetSync()
+        public async Task<List<(LocationDataResponse, bool IsNew)>> GetSync()
         {
             try
             {
@@ -57,7 +57,7 @@ namespace integration.Services.Location
             }
         }
 
-        private async Task<List<LocationData>> FetchData()
+        private async Task<List<LocationDataResponse>> FetchData()
         {
             _logger.LogInformation("Fetching locations from {Endpoint}", _aproConnect.GetAproConnectSettings());
             
@@ -67,10 +67,10 @@ namespace integration.Services.Location
             response.EnsureSuccessStatusCode();
 
             await using var responseStream = await response.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<List<LocationData>>(responseStream, _jsonOptions);
+            var data = await JsonSerializer.DeserializeAsync<List<LocationDataResponse>>(responseStream, _jsonOptions);
 
             LogResponseContent(response);
-            return data ?? new List<LocationData>();
+            return data ?? new List<LocationDataResponse>();
         }
         
         private void LogResponseContent(HttpResponseMessage response)
@@ -86,17 +86,17 @@ namespace integration.Services.Location
             }
         }
 
-        private async Task<List<(LocationData Location, bool IsNew)>> ProcessLocationsByDate(List<LocationData> locations)
+        private async Task<List<(LocationDataResponse Location, bool IsNew)>> ProcessLocationsByDate(List<LocationDataResponse> locations)
         {
             if (!locations.Any())
             {
                 _logger.LogInformation("No locations found in response");
                 TimeManager.SetLastUpdateTime("locations");
-                return new List<(LocationData, bool)>();
+                return new List<(LocationDataResponse, bool)>();
             }
 
             var lastUpdate = TimeManager.GetLastUpdateTime("locations");
-            var result = new List<(LocationData, bool)>();
+            var result = new List<(LocationDataResponse, bool)>();
 
             foreach (var location in locations)
             {
@@ -119,7 +119,7 @@ namespace integration.Services.Location
             return result;
         }
 
-        private bool? DetermineIfNew(LocationData location, DateTime lastUpdate)
+        private bool? DetermineIfNew(LocationDataResponse location, DateTime lastUpdate)
         {
             if (location.datetime_create > lastUpdate)
             {

@@ -16,14 +16,14 @@ namespace integration.Controllers.Apro
         private readonly string _aproConnectSettings;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<ScheduleController> _logger;
-        private IGetterService<ScheduleData> _scheduleGetterService;
-        private readonly IGetterServiceFactory<ScheduleData> _serviceGetter;
+        private IGetterService<ScheduleDataResponse> _scheduleGetterService;
+        private readonly IGetterServiceFactory<ScheduleDataResponse> _serviceGetter;
         private string url = "wf__waste_site_schedule_set__waste_site_schedule_set/?query={id,waste_site{id},datetime_create, datetime_update, dates, schedule, containers{id, type {id}}}";
 
         public ScheduleController(
             IHttpClientFactory httpClientFactory,
             ILogger<ScheduleController> logger,
-            IOptions<AuthSettings> configuration, IGetterServiceFactory<ScheduleData> serviceGetter
+            IOptions<AuthSettings> configuration, IGetterServiceFactory<ScheduleDataResponse> serviceGetter
             )
         {
             _httpClientFactory = httpClientFactory;

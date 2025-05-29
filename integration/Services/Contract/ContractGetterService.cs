@@ -12,8 +12,8 @@ namespace integration.Services.Client;
 
 public class ContractGetterService
 
-    : ServiceGetterBase<ContractData>,
-        IGetterService<ContractData>
+    : ServiceGetterBase<ContractDataResponseResponse>,
+        IGetterService<ContractDataResponseResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ContractGetterService> _logger;
@@ -52,7 +52,7 @@ public class ContractGetterService
 
     private async Task GetContractsToList()
     {
-        List<ContractPositionData> contractsPosList = _contractPositionStorageService.GetPosition();
+        List<ContractPositionDataResponse> contractsPosList = _contractPositionStorageService.GetPosition();
 
         foreach (var con in contractsPosList)
         {
@@ -64,7 +64,7 @@ public class ContractGetterService
 
     private async Task GetContractsDataFromAPRO()
     {
-        List<ContractData> contractsList = new List<ContractData>();
+        List<ContractDataResponseResponse> contractsList = new List<ContractDataResponseResponse>();
         foreach (var id in root_ids)
         {
             try

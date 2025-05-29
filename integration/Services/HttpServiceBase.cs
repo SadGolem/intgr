@@ -80,7 +80,7 @@ public abstract class HttpServiceBase : ServiceBase
             _ => "Unexpected error"
         };
 
-        _logger.LogError(ex, $"{errorType} during {method} request to {url}. Data: {data ?? "null"}");
+        _logger.LogError(ex, $"{errorType} during {method} request to {url}. DataResponse: {data ?? "null"}");
         return false;
     }
 

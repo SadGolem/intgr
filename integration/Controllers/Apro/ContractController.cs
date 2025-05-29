@@ -14,13 +14,13 @@ using integration.Services.Location;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContractController : BaseSyncController<ContractData>
+public class ContractController : BaseSyncController<ContractDataResponseResponse>
 {
     private readonly ILogger<ContractController> _logger;
-    private readonly IGetterServiceFactory<ContractData> _serviceGetter;
-    private IGetterService<ContractData> _getter;
+    private readonly IGetterServiceFactory<ContractDataResponseResponse> _serviceGetter;
+    private IGetterService<ContractDataResponseResponse> _getter;
     public ContractController(ILogger<ContractController> logger, 
-        IGetterServiceFactory<ContractData> serviceGetter
+        IGetterServiceFactory<ContractDataResponseResponse> serviceGetter
       ) : base(logger, serviceGetter) {}
 
     [HttpGet("syncEmitters")] // This endpoint can be used for manual triggers

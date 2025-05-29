@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET;
 
-public class ScheduleGetterServiceFactory : IGetterServiceFactory<ScheduleData>
+public class ScheduleGetterServiceFactory : IGetterServiceFactory<ScheduleDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ScheduleGetterService> _logger;
@@ -37,7 +37,7 @@ public class ScheduleGetterServiceFactory : IGetterServiceFactory<ScheduleData>
         _contractPositionStorageService = contractPositionStorageService;
     }
 
-    public IGetterService<ScheduleData> Create()
+    public IGetterService<ScheduleDataResponse> Create()
     {
         return new ScheduleGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _scheduleStorageService, _contractPositionStorageService);
     }

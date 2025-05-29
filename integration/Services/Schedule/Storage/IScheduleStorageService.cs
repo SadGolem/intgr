@@ -4,9 +4,9 @@ namespace integration.Services.Schedule;
 
 public interface IScheduleStorageService
 {
-    List<ScheduleData> GetScheduls();
-    void SetSchedules(ScheduleData dates);
-    void SetSchedules(List<ScheduleData> dates);
-    void ClearList(ScheduleData date);
+    List<ScheduleDataResponse> GetScheduls();
+    void SetSchedules(ScheduleDataResponse dates);
+    void SetSchedules(List<ScheduleDataResponse> dates);
+    void ClearList(ScheduleDataResponse date);
     void ClearList();
 }

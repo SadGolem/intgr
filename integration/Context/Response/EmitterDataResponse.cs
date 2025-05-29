@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public class EmitterData : Data
+    public class EmitterDataResponse : DataResponse
     {
         public new string nameFileTime = "emitter";
 

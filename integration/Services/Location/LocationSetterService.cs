@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location;
 
-public class LocationSetterService : ServiceBase, ISetterService<LocationData>
+public class LocationSetterService : ServiceBase, ISetterService<LocationDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LocationSetterService> _logger;
@@ -34,7 +34,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
         _validator = validator;
     }
 
-    public async Task PostAndPatch(IEnumerable<(LocationData Data, bool IsNew)> locations)
+    public async Task PostAndPatch(IEnumerable<(LocationDataResponse Data, bool IsNew)> locations)
     {
         using var client = await Authorize(false);
 
@@ -44,32 +44,32 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
         await Task.WhenAll(tasks);
     }
 
-    private async Task ProcessLocationAsync(HttpClient client, LocationData data, bool isNew)
+    private async Task ProcessLocationAsync(HttpClient client, LocationDataResponse dataResponse, bool isNew)
     {
         try
         {
-            if (!_validator.Validate(data))
+            if (!_validator.Validate(dataResponse))
             {
-                _logger.LogWarning("Validation failed for location {LocationId}", data.id);
+                _logger.LogWarning("Validation failed for location {LocationId}", dataResponse.id);
                 return;
             }
 
             var endpoint = isNew 
                 ? _apiSettings.ApiClientSettings.CreateLocationEndpoint 
-                : $"{_apiSettings.ApiClientSettings.UpdateLocationEndpoint}/{data.id}";
+                : $"{_apiSettings.ApiClientSettings.UpdateLocationEndpoint}/{dataResponse.id}";
 
             var response = await SendRequestAsync(
                 client,
                 endpoint,
-                _mapper.MapToRequest(data),
+                _mapper.MapToRequest(dataResponse),
                 isNew ? HttpMethod.Post : HttpMethod.Patch);
 
-            await HandleResponseAsync(response, data.id, isNew);
+            await HandleResponseAsync(response, dataResponse.id, isNew);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing location {LocationId}", data.id);
-            throw new IntegrationException($"Location {data.id} processing failed", ex);
+            _logger.LogError(ex, "Error processing location {LocationId}", dataResponse.id);
+            throw new IntegrationException($"Location {dataResponse.id} processing failed", ex);
         }
     }
 
@@ -108,7 +108,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
             action, locationId, content);
     }
     
-    public Task PostAndPatch(List<(LocationData, bool)> data)
+    public Task PostAndPatch(List<(LocationDataResponse, bool)> data)
     {
         throw new NotImplementedException();
     }
@@ -117,12 +117,12 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
 // Дополнительные классы
 public interface ILocationMapper
 {
-    LocationRequest MapToRequest(LocationData location);
+    LocationRequest MapToRequest(LocationDataResponse location);
 }
 
 public class LocationMapper : ILocationMapper
 {
-    public LocationRequest MapToRequest(LocationData location) => new(
+    public LocationRequest MapToRequest(LocationDataResponse location) => new(
         IdBT: location.id,
         Longitude: (decimal)location.lon,
         Latitude: (decimal)location.lat,
@@ -133,12 +133,12 @@ public class LocationMapper : ILocationMapper
 
 public interface ILocationValidator
 {
-    bool Validate(LocationData location);
+    bool Validate(LocationDataResponse location);
 }
 
 public class LocationValidator : ILocationValidator
 {
-    public bool Validate(LocationData location)
+    public bool Validate(LocationDataResponse location)
     {
         if (string.IsNullOrWhiteSpace(location.address))
         {

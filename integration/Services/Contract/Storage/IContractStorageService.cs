@@ -2,9 +2,9 @@
 
 public interface IContractStorageService
 {
-    List<ContractData> GetContracts();
-    void SetContracts(ContractData dates);
-    void SetContracts(List<ContractData> dates);
-    void ClearList(ContractData date);
+    List<ContractDataResponseResponse> GetContracts();
+    void SetContracts(ContractDataResponseResponse dates);
+    void SetContracts(List<ContractDataResponseResponse> dates);
+    void ClearList(ContractDataResponseResponse date);
     void ClearList();
 }

@@ -5,7 +5,7 @@ namespace integration.Services.Schedule;
 
 public class ScheduleStorageService : IScheduleStorageService
 {
-    public static List<ScheduleData> _SchedulesList = new List<ScheduleData>();
+    public static List<ScheduleDataResponse> _SchedulesList = new List<ScheduleDataResponse>();
     private readonly ILocationIdService _locationIdService;
     private List<int> ids = new List<int>();
 
@@ -14,20 +14,20 @@ public class ScheduleStorageService : IScheduleStorageService
         _locationIdService = locationIdService;
     }
 
-    public List<ScheduleData> GetScheduls()
+    public List<ScheduleDataResponse> GetScheduls()
     {
         return _SchedulesList;
     }
-    public List<ScheduleData> GetScheduls(int idPositionData)
+    public List<ScheduleDataResponse> GetScheduls(int idPositionData)
     {
         return _SchedulesList;
     }
-    public void SetSchedules(ScheduleData dates)
+    public void SetSchedules(ScheduleDataResponse dates)
     {
         _SchedulesList.Add(dates);
     }
 
-    public void SetSchedules(List<ScheduleData> datas)
+    public void SetSchedules(List<ScheduleDataResponse> datas)
     {
         ids = _locationIdService.GetLocationIds(); 
         foreach (var data in datas)
@@ -37,9 +37,9 @@ public class ScheduleStorageService : IScheduleStorageService
         }
     }
 
-    public void ClearList(ScheduleData data)
+    public void ClearList(ScheduleDataResponse dataResponse)
     {
-        _SchedulesList.Remove(data);
+        _SchedulesList.Remove(dataResponse);
     }
     
     public void ClearList()

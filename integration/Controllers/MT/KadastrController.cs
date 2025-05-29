@@ -33,7 +33,7 @@ namespace integration.Controllers.MT
             _logger.LogInformation("DataController initialized.");
         }
 
-        /*public async Task ProcessEntryPostData(EntryData wasteData)
+        /*public async Task ProcessEntryPostData(EntryDataResponse wasteData)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace integration.Controllers.MT
             }
         }
 
-        public async Task ProcessEntryPatchData(EntryData wasteData)
+        public async Task ProcessEntryPatchData(EntryDataResponse wasteData)
         {
             try
             {
@@ -112,46 +112,46 @@ namespace integration.Controllers.MT
             }
         }*/
 
-        private object MapWasteDataToRequest(EntryData wasteData)
+        private object MapWasteDataToRequest(EntryDataResponse wasteDataResponse)
         {
             return new
             {
-                consumerName = wasteData.ConsumerName?.name ?? "",
-                idBT = wasteData.BtNumber,
-                creator = wasteData.AuthorName,
-                status = StatusCoder.ToCorrectStatus(wasteData),
-                idLocation = wasteData.location?.id ?? 0,
-                amount = wasteData.Containers?.Count,
-                volume = StatusCoder.ToCorrectCapacity(wasteData.Capacity.id),
-                creationDate = wasteData.datetime_create.ToString("yyyy-MM-dd"),
-                planDateRO = wasteData.PlanDateRO,
-                commentByRO = wasteData.CommentByRO ?? "",
-                type = wasteData.EntryType, //тип заявки
-                idContainerType = StatusCoder.ToCorrectContainer(wasteData),
+                consumerName = wasteDataResponse.ConsumerName?.name ?? "",
+                idBT = wasteDataResponse.BtNumber,
+                creator = wasteDataResponse.AuthorName,
+                status = StatusCoder.ToCorrectStatus(wasteDataResponse),
+                idLocation = wasteDataResponse.location?.id ?? 0,
+                amount = wasteDataResponse.Containers?.Count,
+                volume = StatusCoder.ToCorrectCapacity(wasteDataResponse.Capacity.id),
+                creationDate = wasteDataResponse.datetime_create.ToString("yyyy-MM-dd"),
+                planDateRO = wasteDataResponse.PlanDateRO,
+                commentByRO = wasteDataResponse.CommentByRO ?? "",
+                type = wasteDataResponse.EntryType, //тип заявки
+                idContainerType = StatusCoder.ToCorrectContainer(wasteDataResponse),
                 /*idMtUser = _configuration.GetSection("idMtUser")*/
             };
         }
 
-        bool CheckRequestBody(EntryData wasteData)
+        bool CheckRequestBody(EntryDataResponse wasteDataResponse)
         {
-            if (wasteData.ConsumerName == null || wasteData.ConsumerName?.name == "")
+            if (wasteDataResponse.ConsumerName == null || wasteDataResponse.ConsumerName?.name == "")
             {
-                ToMessage($" ConsumerName is empty: {wasteData.BtNumber}");
+                ToMessage($" ConsumerName is empty: {wasteDataResponse.BtNumber}");
                 return false;
             }
-            else if (wasteData.Status == null || (wasteData.Status.Id != 302 && wasteData.Status.Id != 282 && wasteData.Status.Id != 179))
+            else if (wasteDataResponse.Status == null || (wasteDataResponse.Status.Id != 302 && wasteDataResponse.Status.Id != 282 && wasteDataResponse.Status.Id != 179))
             {
-                ToMessage($" Status is empty or incorrect: {wasteData.BtNumber}");
+                ToMessage($" Status is empty or incorrect: {wasteDataResponse.BtNumber}");
                 return false;
             }
-            else if (wasteData.Containers == null || wasteData.Containers.Count == 0)
+            else if (wasteDataResponse.Containers == null || wasteDataResponse.Containers.Count == 0)
             {
-                ToMessage($" Containers is empty or incorrect: {wasteData.BtNumber}");
+                ToMessage($" Containers is empty or incorrect: {wasteDataResponse.BtNumber}");
                 return false;
             }
-            else if (wasteData.Capacity == null || wasteData.Capacity?.id == 0)
+            else if (wasteDataResponse.Capacity == null || wasteDataResponse.Capacity?.id == 0)
             {
-                ToMessage($" Volume is empty or incorrect: {wasteData.BtNumber}");
+                ToMessage($" Volume is empty or incorrect: {wasteDataResponse.BtNumber}");
                 return false;
             }
             else

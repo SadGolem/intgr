@@ -198,25 +198,25 @@ namespace integration
             }
         }
 
-        private async Task ProcessEntry(EntryData wasteData, EntryController entryController, bool isNew)
+        private async Task ProcessEntry(EntryDataResponse wasteDataResponse, EntryController entryController, bool isNew)
         {
             try
             {
-                if (wasteData.BtNumber == 0)
+                if (wasteDataResponse.BtNumber == 0)
                 {
-                    _logger.LogError($"No ID found: {wasteData.BtNumber}");
+                    _logger.LogError($"No ID found: {wasteDataResponse.BtNumber}");
                     return;
                 }
                 /*
                 if (isNew)
-                    await entryController.ProcessEntryPatchData(wasteData);
-                else { await entryController.ProcessEntryPatchData(wasteData); }
+                    await entryController.ProcessEntryPatchData(wasteDataResponse);
+                else { await entryController.ProcessEntryPatchData(wasteDataResponse); }
                 */
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error processing data with id: {wasteData.BtNumber}");
+                _logger.LogError(ex, $"Error processing data with id: {wasteDataResponse.BtNumber}");
             }
         }
 

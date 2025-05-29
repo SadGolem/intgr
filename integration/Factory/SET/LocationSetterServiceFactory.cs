@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.SET;
 
-public class LocationSetterServiceFactory :  ISetterServiceFactory<LocationData>
+public class LocationSetterServiceFactory :  ISetterServiceFactory<LocationDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LocationSetterService> _logger;
@@ -34,7 +34,7 @@ public class LocationSetterServiceFactory :  ISetterServiceFactory<LocationData>
         _validator = validator;
     }
 
-    public ISetterService<LocationData> Create()
+    public ISetterService<LocationDataResponse> Create()
     {
         return new LocationSetterService(_httpClientFactory, _logger, _authorizer, _apiSettings, _mapper, _validator );
     }

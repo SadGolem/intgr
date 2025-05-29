@@ -5,14 +5,14 @@ using integration.Services.Interfaces;
 
 namespace integration.Factory.SET
 {
-    public class DataSetterServiceFactory : ISetterServiceFactory<Data>
+    public class DataSetterServiceFactory : ISetterServiceFactory<DataResponse>
     {
-        public ISetterService<Data> Create()
+        public ISetterService<DataResponse> Create()
         {
             throw new NotImplementedException();
         }
 
-        ISetterService<Data> ISetterServiceFactory<Data>.Create()
+        ISetterService<DataResponse> ISetterServiceFactory<DataResponse>.Create()
         {
             throw new NotImplementedException();
         }

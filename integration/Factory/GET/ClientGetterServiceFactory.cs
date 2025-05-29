@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory;
 
-public class ClientGetterServiceFactory : IGetterServiceFactory<ClientData>
+public class ClientGetterServiceFactory : IGetterServiceFactory<ClientDataResponseResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ClientGetterService> _logger;
@@ -42,7 +42,7 @@ public class ClientGetterServiceFactory : IGetterServiceFactory<ClientData>
         _storageClientService = storageClientService;
     }
 
-    public IGetterService<ClientData> Create()
+    public IGetterService<ClientDataResponseResponse> Create()
     {
         return new ClientGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _contractPositionStorageService, _storageClientService);
     }
