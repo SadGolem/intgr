@@ -54,9 +54,6 @@ namespace integration.Services
                 _ => throw new ArgumentOutOfRangeException(nameof(authType))
             };
         }
-
-        public abstract Task HandleErrorAsync(string errorMessage);
-
         protected async Task<HttpClient> Authorize(bool isApro)
         {
             if (isApro)

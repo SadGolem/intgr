@@ -142,11 +142,6 @@ namespace integration.Services.Location
             );
         }
 
-        public override Task HandleErrorAsync(string errorMessage)
-        {
-            throw new NotImplementedException();
-        }
-
         // Реализация неиспользуемых методов интерфейса
         public Task Get() => Task.CompletedTask;
     }

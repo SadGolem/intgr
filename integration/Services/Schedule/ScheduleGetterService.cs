@@ -110,9 +110,4 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleData>
             $"Schedule sync message: {message[..50]}..." // Обрезаем длинные сообщения
         );
     }
-
-    public override Task HandleErrorAsync(string errorMessage)
-    {
-        throw new NotImplementedException();
-    }
 }

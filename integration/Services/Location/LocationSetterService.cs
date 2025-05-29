@@ -107,12 +107,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationData>
         _logger.LogInformation("Successfully {Action} location {LocationId}. Response: {Response}",
             action, locationId, content);
     }
-
-    public override Task HandleErrorAsync(string errorMessage)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public Task PostAndPatch(List<(LocationData, bool)> data)
     {
         throw new NotImplementedException();

@@ -1,34 +1,32 @@
-﻿using System.Net;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using integration.Context;
-using integration.HelpClasses;
 using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
 using integration.Structs;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Integration;
 
 
-public class IntegrationService : IIntegrationService
+public class IntegrationService : ServiceBase,IIntegrationService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<IntegrationService> _logger;
-    private readonly IApiClientService _apiClientService;
+    private IApiClientService _apiClientService;
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly string _mtBaseUrl;
 
     public IntegrationService(
         IHttpClientFactory httpClientFactory,
         ILogger<IntegrationService> logger,
+        IAuthorizer authorizer,
         IOptions<AuthSettings> mtSettings,
-        IApiClientService apiClientService)
+        IApiClientService apiClientService) : base(httpClientFactory, logger, authorizer, mtSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _apiClientService = apiClientService;
-        _mtBaseUrl = mtSettings.Value.MTconnect.CallbackUrl;
+        _mtBaseUrl = mtSettings.Value.MTconnect.BaseUrl;
         
         _jsonOptions = new JsonSerializerOptions
         {
@@ -126,9 +124,11 @@ public class IntegrationService : IIntegrationService
             var method = methodSelector(entity);
             var endpoint = method == HttpMethod.Post 
                 ? postEndpoint 
-                : $"{patchEndpoint}/{entity.GetIntegrationExtId()}";
+                : patchEndpoint;
 
-            var response = await _apiClientService.SendRequestAsync(
+            _apiClientService = Authorize(false);
+
+            var response = await _apiClientService.SendAsync(
                 entity,
                 $"{_mtBaseUrl}{endpoint}",
                 method);
@@ -144,54 +144,6 @@ public class IntegrationService : IIntegrationService
             _logger.LogError(ex, $"Error processing {typeof(T).Name} with ID: {entity.GetIntegrationExtId()}");
             throw;
         }
-    }
-}
-
-public interface IApiClientService
-{
-    Task<HttpResponseMessage> SendRequestAsync<T>(T entity, string url, HttpMethod method) where T : class;
-}
-
-public class ApiClientService : IApiClientService
-{
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<ApiClientService> _logger;
-    private readonly JsonSerializerOptions _jsonOptions;
-
-    public ApiClientService(
-        IHttpClientFactory httpClientFactory,
-        ILogger<ApiClientService> logger)
-    {
-        _httpClientFactory = httpClientFactory;
-        _logger = logger;
-        
-        _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-    }
-
-    public async Task<HttpResponseMessage> SendRequestAsync<T>(T entity, string url, HttpMethod method) where T : class
-    {
-        using var client = _httpClientFactory.CreateClient();
-        using var request = CreateRequestMessage(entity, url, method);
-        
-        _logger.LogInformation($"Sending {method} request to {url}");
-        
-        var response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        
-        return response;
-    }
-
-    private HttpRequestMessage CreateRequestMessage<T>(T entity, string url, HttpMethod method) where T : class
-    {
-        var json = JsonSerializer.Serialize(entity, _jsonOptions);
-        return new HttpRequestMessage(method, url)
-        {
-            Content = new StringContent(json, Encoding.UTF8, "application/json")
-        };
     }
 }
 

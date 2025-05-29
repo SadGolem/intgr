@@ -95,9 +95,9 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
 
     private string BuildClientEndpoint(ClientIdentifier clientId)
     {
-        var basePath = clientId.IsLegalEntity 
+        var basePath = _apiSettings.BaseUrl + (clientId.IsLegalEntity 
             ? _apiSettings.ApiClientSettings.LegalEntitiesEndpoint
-            : _apiSettings.ApiClientSettings.IndividualsEndpoint;
+            : _apiSettings.ApiClientSettings.IndividualsEndpoint);
             
         return $"{basePath}{clientId.Id}";
     }
@@ -126,7 +126,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
     {
         try
         {
-            var endpoint = $"{_apiSettings.ApiClientSettings.BankDetailsEndpoint}{clientId}";
+            var endpoint = $"{_apiSettings.BaseUrl+_apiSettings.ApiClientSettings.BankDetailsEndpoint}{clientId}";
             var response = await Get(_httpClientFactory, endpoint);
             return response.FirstOrDefault()?.bik;
         }
@@ -150,7 +150,7 @@ public class ClientGetterService : ServiceGetterBase<ClientData>, IGetterService
     {
         try
         {
-            var endpoint = $"{_apiSettings.ApiClientSettings.ContactsEndpoint}{clientId}";
+            var endpoint = $"{_apiSettings.BaseUrl+_apiSettings.ApiClientSettings.ContactsEndpoint}{clientId}";
             var response = await Get(_httpClientFactory, endpoint);
             return response.FirstOrDefault()?.mailAddress;
         }

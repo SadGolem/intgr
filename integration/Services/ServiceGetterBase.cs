@@ -45,9 +45,4 @@ public class ServiceGetterBase<T> : ServiceBase
     {
         throw new NotImplementedException();
     }
-
-    public override Task HandleErrorAsync(string errorMessage)
-    {
-        throw new NotImplementedException();
-    }
 }

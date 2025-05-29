@@ -136,6 +136,7 @@ namespace integration
         }
         
         private async Task CheckAndSendIntegrationToAPRO()
+        
         {
             List<IntegrationStruct> _structs = _storageService.GetStructs();
             foreach (var _struct in _structs)

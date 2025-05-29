@@ -1,11 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
-using integration.HelpClasses;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location;
@@ -77,11 +73,6 @@ public class ServiceSetterBase<T> : ServiceBase
         }
     }
     public void Message(string ex)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override Task HandleErrorAsync(string errorMessage)
     {
         throw new NotImplementedException();
     }
