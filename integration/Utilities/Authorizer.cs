@@ -1,5 +1,4 @@
-﻿using integration.HelpClasses;
-using integration.Helpers.Auth;
+﻿using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Token.Interfaces;
 using Microsoft.Extensions.Caching.Memory;

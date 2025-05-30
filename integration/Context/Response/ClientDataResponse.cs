@@ -2,7 +2,7 @@
 
 namespace integration.Context
 {
-    public class ClientDataResponseResponse : DataResponse
+    public class ClientDataResponse : DataResponse
     {
         public new string nameFileTime = "contragent";
 
@@ -25,9 +25,9 @@ namespace integration.Context
         [JsonPropertyName("ogrn")]
         public string ogrn { get; set; }
         [JsonPropertyName("root_company")]
-        public string root_company { get; set; }
-       /* [JsonPropertyName("cheif")]
-        public Boss boss { get; set; }*/
+        public RootCompany root_company { get; set; }
+       [JsonPropertyName("cheif")]
+        public Boss boss { get; set; }
         [JsonPropertyName("waste_person")]
         public string person_id {get; set;}
         [JsonPropertyName("doc_type")]
@@ -37,6 +37,12 @@ namespace integration.Context
         {
             [JsonPropertyName("name")]
             public string name { get; set; }
+
+        }
+        public class RootCompany
+        {
+            [JsonPropertyName("id")]
+            public int id { get; set; }
 
         }
 

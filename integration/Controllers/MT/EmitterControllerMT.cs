@@ -1,11 +1,5 @@
-﻿using integration.Context;
-using integration.HelpClasses;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using System.Text;
-using System.Text.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using integration.Helpers.Auth;
-using static integration.Context.DataResponse;
 
 namespace integration.Controllers.MT
 {

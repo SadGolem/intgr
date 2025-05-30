@@ -126,3 +126,5 @@ C:\Projects\intgr\integration\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Projects\intgr\integration\obj\Debug\net8.0\integrat.B273CC60.Up2Date
 C:\Projects\intgr\integration\obj\Debug\net8.0\integration.genruntimeconfig.cache
 C:\Projects\intgr\integration\obj\Debug\net8.0\ref\integration.dll
+C:\Projects\intgr\integration\bin\Debug\net8.0\AutoMapper.dll
+C:\Projects\intgr\integration\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

@@ -1,8 +1,5 @@
 ﻿using integration.Context;
-using integration.HelpClasses;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using integration.Helpers;
 using integration.Helpers.Auth;
 using Microsoft.Extensions.Options;

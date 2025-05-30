@@ -1,14 +1,10 @@
 ﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
-using integration.HelpClasses;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.ContractPosition;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
-using integration.Services.Location;
 using integration.Services.Schedule;
-using integration.Services.Storage;
 using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET;

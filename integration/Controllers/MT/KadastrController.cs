@@ -1,9 +1,6 @@
 ﻿using integration.Context;
-using integration.HelpClasses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.Text;
-using System.Text.Json;
 using integration.Helpers.Auth;
 
 namespace integration.Controllers.MT
