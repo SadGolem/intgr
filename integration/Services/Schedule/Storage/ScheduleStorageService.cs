@@ -14,20 +14,20 @@ public class ScheduleStorageService : IScheduleStorageService
         _locationIdService = locationIdService;
     }
 
-    public List<ScheduleDataResponse> GetScheduls()
+    public List<ScheduleDataResponse> Get()
     {
         return _SchedulesList;
     }
-    public List<ScheduleDataResponse> GetScheduls(int idPositionData)
+    public List<ScheduleDataResponse> GetS(int idPositionData)
     {
         return _SchedulesList;
     }
-    public void SetSchedules(ScheduleDataResponse dates)
+    public void Set(ScheduleDataResponse dates)
     {
         _SchedulesList.Add(dates);
     }
 
-    public void SetSchedules(List<ScheduleDataResponse> datas)
+    public void Set(List<ScheduleDataResponse> datas)
     {
         ids = _locationIdService.GetLocationIds(); 
         foreach (var data in datas)

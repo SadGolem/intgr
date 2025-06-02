@@ -16,6 +16,8 @@ public class ContractDataResponse : DataResponse
     public ClientDataResponse client { get; set; }
     [JsonPropertyName("contract_type")]
     public ContractType contractType { get; set; }
+    [JsonPropertyName("assignee")]
+    public Assignee assignee { get; set; }
 
     public class ContractType
     {

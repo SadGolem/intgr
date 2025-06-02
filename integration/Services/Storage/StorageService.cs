@@ -1,17 +1,9 @@
-﻿using integration.Context;
+﻿using integration.Services.Storage.Interfaces;
 using integration.Structs;
 
 namespace integration.Services.Storage;
 
-public interface IStorageService
-{
-    List<IntegrationStruct> GetStructs();
-    void SetNewStruct(IntegrationStruct data);
-    void DeleteStruct(IntegrationStruct data);
-    void Clear();
-}
-
-public class StorageService : IStorageService
+public class StorageService : IIntegrationStructStorageService
 {
     public static List<IntegrationStruct> integrationDataList;
 
@@ -20,16 +12,27 @@ public class StorageService : IStorageService
         integrationDataList = new List<IntegrationStruct>();
     }
 
-    public List<IntegrationStruct> GetStructs()
+    public List<IntegrationStruct> Get()
     {
         return integrationDataList;
     }
 
-    public void SetNewStruct(IntegrationStruct data)
+    public void Set(IntegrationStruct data)
     {
         integrationDataList.Add(data);
     }
-    public void DeleteStruct(IntegrationStruct data)
+
+    public void Set(List<IntegrationStruct> datas)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ClearList()
+    {
+        integrationDataList.Clear();
+    }
+
+    public void ClearList(IntegrationStruct data)
     {
         integrationDataList.Remove(data);
     }

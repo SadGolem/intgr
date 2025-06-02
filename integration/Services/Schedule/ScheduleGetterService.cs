@@ -44,7 +44,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
     {
         _logger.LogInformation("Starting schedules synchronization");
 
-        var positions = _positionStorage.GetPosition();
+        var positions = _positionStorage.Get();
         if (!positions.Any())
         {
             _logger.LogWarning("No contract positions found for schedules sync");
@@ -60,7 +60,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
         try
         {
             var schedules = await FetchSchedulesAsync(position.id);
-            _scheduleStorage.SetSchedules(schedules);
+            _scheduleStorage.Set(schedules);
         }
         catch (Exception ex)
         {

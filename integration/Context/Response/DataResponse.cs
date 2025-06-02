@@ -42,6 +42,12 @@ namespace integration.Context
         [JsonPropertyName("id")] public int? id { get; set; }
         [JsonPropertyName("name")] public string? name { get; set; }
     }
+    
+    public class Assignee
+    {
+        [JsonPropertyName("id")] public int? id { get; set; }
+        [JsonPropertyName("name")] public string? name { get; set; }
+    }
 
     public class Location
     {

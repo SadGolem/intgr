@@ -22,7 +22,13 @@ namespace integration.Context
         public Status status { get; set; }
         [JsonPropertyName("author")]
         public Author? author { get; set; }
-
+        public string amount { get; set; }
+        public string contractNumber { get; set; }
+        public int location_mt_id { get; set; }
+        public string executorName { get; set; }
+        public int idContract { get; set; }
+        public string contractStatus { get; set; }
+        public string typeConsumer { get; set; }
         [JsonPropertyName("waste_source_categoty")]
         public EmitterCategory emitterCategory { get; set; }
 

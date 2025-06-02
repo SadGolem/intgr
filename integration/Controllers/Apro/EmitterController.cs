@@ -1,33 +1,23 @@
 ﻿using integration.Context;
+using integration.Factory.GET.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using integration.Helpers;
-using integration.Helpers.Auth;
-using Microsoft.Extensions.Options;
+
 
 namespace integration.Controllers.Apro
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmitterController : ControllerBase
+    public class EmitterController : BaseSyncController<EmitterDataResponse>
     {
-        private readonly string _aproConnectSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<EmitterController> _logger;
-        private string url = "wf__wastesource__waste_source/?query={id, datetime_create, datetime_update,participant{id,name}, address, name, normative_unit_value_exist, status{id,name},waste_source_category{id}, author{name}}";
-
         public EmitterController(
-            IHttpClientFactory httpClientFactory,
             ILogger<EmitterController> logger,
-            IOptions<AuthSettings> configuration
-            )
+            IGetterServiceFactory<EmitterDataResponse> serviceGetter)
+            : base(logger, serviceGetter) { }
+    
+        public async Task<IActionResult> Sync()
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-            ConnectingStringApro connectingStringApro = new ConnectingStringApro(configuration, url);
-            _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
+            return await base.Sync();
         }
-
-        [HttpGet]
         /*public async Task<IActionResult> GetData()
         {
             _logger.LogInformation("Starting manual emitters sync...");
@@ -123,7 +113,6 @@ namespace integration.Controllers.Apro
             EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getemitter, ex);
         }
     }
-    public record SyncResult(List<EmitterDataResponse> NewEntries, List<EmitterDataResponse> UpdateEntries);
 }
 
         

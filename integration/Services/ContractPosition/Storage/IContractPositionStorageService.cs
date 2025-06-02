@@ -1,12 +1,9 @@
 ﻿using integration.Context;
+using integration.Services.Storage.Interfaces;
 
 namespace integration.Services.ContractPosition.Storage;
 
-public interface IContractPositionStorageService
+public interface IContractPositionStorageService : IStorageService<ContractPositionDataResponse>
 {
-    List<ContractPositionDataResponse> GetPosition();
-    void SetPosition(ContractPositionDataResponse dates);
-    void SetPositions(List<ContractPositionDataResponse> dates);
-    void ClearList(ContractPositionDataResponse date);
-    void ClearList();
+    public ContractPositionDataResponse GetPosOnRoot_ID(string root_id);
 }

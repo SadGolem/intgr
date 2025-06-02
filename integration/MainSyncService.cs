@@ -3,6 +3,7 @@ using integration.Controllers.Apro;
 using integration.Controllers.MT;
 using integration.Services.Integration;
 using integration.Services.Storage;
+using integration.Services.Storage.Interfaces;
 using integration.Structs;
 namespace integration
 {
@@ -11,13 +12,13 @@ namespace integration
         private readonly ILogger<MainSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private  IConverterToStorageService _converterToStorageService;
-        private  IStorageService _storageService;
+        private  IStorageService<IntegrationStruct> _storageService;
         private IntegrationController _multipartSetterController;
         private Timer? _timer;
         private const int _updateTime = 30;
 
         public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, 
-            IConverterToStorageService converterToStorageService, IStorageService storageService, IntegrationController multipartSetterController)
+            IConverterToStorageService converterToStorageService, IStorageService<IntegrationStruct> storageService, IntegrationController multipartSetterController)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
@@ -48,6 +49,7 @@ namespace integration
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
                 var contractController = scope.ServiceProvider.GetRequiredService<ContractController>();
                 var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
+                var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>();
 
               //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
             //    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
@@ -57,6 +59,7 @@ namespace integration
                 await GetSchedule(scheduleController);
                 await GetContract(contractController);
                 await GetClient(contragentController);
+                await GetEmitter(emitterController);
                 await SetStruct(_converterToStorageService);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await CheckAndSendIntegrationToAPRO();
@@ -81,6 +84,17 @@ namespace integration
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing schedule.");
+            }
+        }
+        private async Task GetEmitter(EmitterController emitterController)
+        {
+            try
+            {
+                await emitterController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing emitter.");
             }
         }
 
@@ -138,7 +152,7 @@ namespace integration
         private async Task CheckAndSendIntegrationToAPRO()
         
         {
-            List<IntegrationStruct> _structs = _storageService.GetStructs();
+            List<IntegrationStruct> _structs = _storageService.Get();
             foreach (var _struct in _structs)
             {
                 try

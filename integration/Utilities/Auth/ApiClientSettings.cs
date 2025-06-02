@@ -8,4 +8,5 @@ public class ApiClientSettings
         public string ContactsEndpoint { get; set; }
         public string CreateLocationEndpoint { get; set; }
         public string UpdateLocationEndpoint { get; set; }
+        public string EmitterEndopint { get; set; }
 }
