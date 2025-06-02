@@ -9,7 +9,7 @@ namespace integration.Context
         [JsonPropertyName("lon")] public decimal lon { get; set; }
         [JsonPropertyName("lat")] public decimal lat { get; set; }
         [JsonPropertyName("address")] public string address { get; set; }
-        [JsonPropertyName("ext_id")] public int ext_id { get; set; }
+        [JsonPropertyName("ext_id")] public int? ext_id { get; set; }
         
         [JsonPropertyName("participant")] public Participant participant { get; set; }
 
