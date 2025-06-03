@@ -4,17 +4,17 @@ using integration.Structs;
 
 namespace integration.Services.Integration;
 
-public class IntegrationController : IntegrationControllerBase
+public class IntegrationController : IntegrationControllerBase where T : class
 {
-    private readonly ICheckUpFactory<ClientDataResponse> _checkUpFactory; // Change to ClientDataResponse
+    private readonly ICheckUpFactory<T> _checkUpFactory; // Change to ClientDataResponse
     private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientDataResponse
     private readonly IIntegrationService _integrationService; // Change to ClientDataResponse
 
     public IntegrationController(
         ILogger<IntegrationControllerBase> logger,
-        ICheckUpFactory<ClientDataResponse> checkUpFactory, // Change to ClientDataResponse
+        ICheckUpFactory<T> checkUpFactory, // Change to ClientDataResponse
         IIntegrationService integrationService)
-        : base(logger, checkUpFactory)
+        : base(logger, checkUpFactory<T>)
     {
         _checkUpFactory = checkUpFactory;
         _logger = logger;
