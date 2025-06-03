@@ -1,7 +1,9 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using AutoMapper;
 using integration.Context;
+using integration.Context.Request;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
@@ -14,7 +16,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationDataRes
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LocationSetterService> _logger;
     private readonly IAuth _apiSettings;
-    private readonly ILocationMapper _mapper;
+    private readonly IMapper _mapper;
     private readonly ILocationValidator _validator;
 
     public LocationSetterService(
@@ -22,7 +24,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationDataRes
         ILogger<LocationSetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
-        ILocationMapper mapper,
+        IMapper mapper,
         ILocationValidator validator)
         : base(httpClientFactory,logger, authorizer, apiSettings)
     {
@@ -60,7 +62,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationDataRes
             var response = await SendRequestAsync(
                 client,
                 endpoint,
-                _mapper.MapToRequest(dataResponse),
+                _mapper.Map<LocationDataResponse, LocationRequest>(dataResponse),
                 isNew ? HttpMethod.Post : HttpMethod.Patch);
 
             await HandleResponseAsync(response, dataResponse.id, isNew);
@@ -114,12 +116,14 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationDataRes
 }
 
 // Дополнительные классы
+/*
 public interface ILocationMapper
 {
     LocationRequest MapToRequest(LocationDataResponse location);
 }
+*/
 
-public class LocationMapper : ILocationMapper
+/*public class LocationMapper : ILocationMapper
 {
     public LocationRequest MapToRequest(LocationDataResponse location) => new(
         IdBT: location.id,
@@ -128,7 +132,7 @@ public class LocationMapper : ILocationMapper
         Status: StatusCoder.ToCorrectLocationStatus(location.status),
         Address: location.address
     );
-}
+}*/
 
 public interface ILocationValidator
 {
@@ -146,13 +150,6 @@ public class LocationValidator : ILocationValidator
         return true;
     }
 }
-
-public record LocationRequest(
-    int IdBT,
-    decimal Longitude,
-    decimal Latitude,
-    string Status,
-    string Address);
 
 // Исключения
 public class IntegrationException : Exception

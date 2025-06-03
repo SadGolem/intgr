@@ -56,10 +56,10 @@ namespace integration
             
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
-                await GetSchedule(scheduleController);
                 await GetContract(contractController);
                 await GetClient(contragentController);
                 await GetEmitter(emitterController);
+                await GetSchedule(scheduleController);
                 await SetStruct(_converterToStorageService);
                // await StartEntry(wasteSiteEntryController, entryController);
                 await CheckAndSendIntegrationToAPRO();

@@ -29,6 +29,7 @@ namespace integration.Context
         public int idContract { get; set; }
         public string contractStatus { get; set; }
         public string typeConsumer { get; set; }
+        public string nameConsumer { get; set; }
         [JsonPropertyName("waste_source_categoty")]
         public EmitterCategory emitterCategory { get; set; }
 

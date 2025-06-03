@@ -57,7 +57,6 @@ builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationDataResponse>, LocationSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationDataResponse>, LocationSetterService>();
-builder.Services.AddScoped<ILocationMapper, LocationMapper>();
 builder.Services.AddScoped<ILocationValidator, LocationValidator>();
 builder.Services.AddTransient<IGetterServiceFactory<ScheduleDataResponse>, ScheduleGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ScheduleDataResponse>, ScheduleGetterService>();

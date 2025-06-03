@@ -11,19 +11,28 @@ public class ClientCheckUpService : ICheckUpService<ClientDataResponse>
 
         foreach (var client in clientDatas)
         {
-            if (!Check(client))
+            
+            if (!Check(client, str.location.id))
                 return new (false, $"{client} not found");
         }
         return (true, "Clients found");
     }
 
-    private bool Check(ClientDataResponse client)
+    private bool Check(ClientDataResponse client, int idLocation)
     {
         if (client == null)
-            
+        {
+            Message($"{idLocation} - client is not found");
             return false;
-            
+        }
+
         return true;
     }
-
+    private void Message(string message)
+    {
+        EmailMessageBuilder.PutInformation(
+            EmailMessageBuilder.ListType.getemitter, 
+            message
+        );
+    }
 }

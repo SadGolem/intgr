@@ -37,13 +37,25 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.contractNumber, opt => opt.MapFrom(src => src.contractNumber))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location_mt_id))
             .ForMember(dest => dest.executorName, opt => opt.MapFrom(src => src.executorName))
-            .ForMember(dest => dest.executorName, opt => opt.MapFrom(src => src.executorName))
             .ForMember(dest => dest.idContract, opt => opt.MapFrom(src => src.idContract))
             .ForMember(dest => dest.contractStatus, opt => opt.MapFrom(src => src.contractStatus))
             .ForMember(dest => dest.addressBT, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.executorName));
+            .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.nameConsumer));
 
+        CreateMap<LocationDataResponse, LocationRequest>()
+            .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
+            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
+            .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.status))
+            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src => src.lat))
+            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => src.lon));
 
+        CreateMap<ScheduleDataResponse, ScheduleRequest>()
+            .ForMember(dest => dest.idGabrageMaker, opt => opt.MapFrom(src => src.emitter.id))
+            .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
+            .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.emitter.amount))
+            .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
+            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.LocationDataResponse.address))
+            .ForMember(dest => dest.exportSchedule, opt => opt.MapFrom(src => src.gr_w));
     }
 
     private long SafeParseLong(string value)

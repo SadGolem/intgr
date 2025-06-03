@@ -1,4 +1,5 @@
-﻿using integration.Context;
+﻿using AutoMapper;
+using integration.Context;
 using integration.Factory.SET.Interfaces;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
@@ -14,7 +15,7 @@ public class LocationSetterServiceFactory :  ISetterServiceFactory<LocationDataR
     private readonly ILogger<LocationSetterService> _logger;
     private readonly IAuthorizer _authorizer;
     private readonly IOptions<AuthSettings> _apiSettings;
-    private readonly ILocationMapper _mapper;
+    private readonly IMapper _mapper;
     private readonly ILocationValidator _validator;
 
     public LocationSetterServiceFactory(
@@ -22,7 +23,7 @@ public class LocationSetterServiceFactory :  ISetterServiceFactory<LocationDataR
         ILogger<LocationSetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
-        ILocationMapper mapper,
+        IMapper mapper,
         ILocationValidator validator)
     {
         _httpClientFactory = httpClientFactory;

@@ -16,6 +16,10 @@ namespace integration.Context
         public string gr_w { get; set; }
         [JsonPropertyName("dates")]
         public string[] dates { get; set; }
+
+        public EmitterDataResponse? emitter { get; set; }
+        public LocationDataResponse? LocationDataResponse { get; set; }
+        public int idContainerType { get; set; }
     }
 }
 
