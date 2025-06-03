@@ -3,7 +3,7 @@ using integration.Structs;
 
 namespace integration.Services.CheckUp.Services;
 
-public class ClientCheckUpService : ICheckUpService<ClientDataResponse>
+public class ClientCheckUpService : IClientCheckUpService
 {
     public (bool, string) Check(IntegrationStruct str)
     {
