@@ -3,7 +3,7 @@ using integration.Structs;
 
 namespace integration.Services.CheckUp.Services;
 
-public class EmitterCheckUpService : ICheckUpService<EmitterDataResponse>
+public class EmitterCheckUpService : IEmitterCheckUpService
 {
     public (bool, string) Check(IntegrationStruct str)
     {
