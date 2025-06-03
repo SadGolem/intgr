@@ -28,7 +28,7 @@ public class ContractPositionDataResponse : DataResponse
     public string value_manual { get; set; } // Может быть nullable string (string?), если может отсутствовать
 
     [JsonPropertyName("contract")]
-    public ContractDataResponseResponse contract { get; set; }
+    public ContractDataResponse contract { get; set; }
 
     [JsonPropertyName("estimation_value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

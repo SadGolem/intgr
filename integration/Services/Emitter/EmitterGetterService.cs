@@ -22,7 +22,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
     private IClientStorageService _clientStorage;
     private IEmitterStorageService _emitterStorage;
 
-    private List<string> root_ids = new List<string>();
+    private List<int> ids = new List<int>();
     
     public EmitterGetterService(IHttpClientFactory httpClientFactory, 
         ILogger<EmitterGetterService> logger,
@@ -44,7 +44,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
         {
             // ?/*var clientIds = await GetClientIdentifiers();
             // var clients = await ProcessClientsAsync(clientIds);*/
-
+            GetClientIdentifiers();
             FetchEmitterDataAsync();
 
 
@@ -58,35 +58,31 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
 
     }
 
-    private async Task<IEnumerable<ClientIdentifier>> GetClientIdentifiers()
+    private async Task GetClientIdentifiers()
     {
         var positions = _positionStorage.Get();
         foreach (var pos in positions)
         {
-            root_ids.Add(pos.contract.root_id);
+            ids.Add(pos.id);
         }
-        return positions.Select(p => new ClientIdentifier(
-            p.contract.client.idAsuPro,
-            p.contract.client.doc_type.name
-        )).Distinct();
     }
 
     private async Task FetchEmitterDataAsync()
     {
         try
         {
-            foreach (var id in root_ids)
+            foreach (var id in ids)
             {
-                var endpoint = BuildEmitterEndpoint(id);
+                var endpoint = BuildEmitterEndpoint(id.ToString());
                 var response = await Get(_httpClientFactory, endpoint);
                 var emitter = response.FirstOrDefault();
-                emitter.amount = _positionStorage.GetPosOnRoot_ID(id).value;
-                emitter.contractNumber = _positionStorage.GetPosOnRoot_ID(id).number;
-                emitter.location_mt_id = _positionStorage.GetPosOnRoot_ID(id).waste_site.ext_id == null ? 0 : _positionStorage.GetPosOnRoot_ID(id).waste_site.ext_id;
-                emitter.executorName = _positionStorage.GetPosOnRoot_ID(id).contract.assignee.name;
-                emitter.idContract = _positionStorage.GetPosOnRoot_ID(id).contract.id;
-                emitter.contractStatus = _positionStorage.GetPosOnRoot_ID(id).contract.status.Name;
-                emitter.contractStatus = _positionStorage.GetPosOnRoot_ID(id).contract.status.Name;
+                emitter.amount = _positionStorage.GetPosOn_ID(id).value;
+                emitter.contractNumber = _positionStorage.GetPosOn_ID(id).number;
+                emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null ? 0 : _positionStorage.GetPosOn_ID(id).waste_site.ext_id;
+                emitter.executorName = _positionStorage.GetPosOn_ID(id)?.contract?.assignee?.name;
+                emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
+                emitter.contractStatus = _positionStorage.GetPosOn_ID(id).contract?.status?.Name;
+                
                 _emitterStorage.Set(emitter);
             }
         }

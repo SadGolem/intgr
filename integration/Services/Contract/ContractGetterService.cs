@@ -1,8 +1,6 @@
 ﻿using integration.Context;
-using integration.HelpClasses;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
@@ -12,28 +10,30 @@ namespace integration.Services.Client;
 
 public class ContractGetterService
 
-    : ServiceGetterBase<ContractDataResponseResponse>,
-        IGetterService<ContractDataResponseResponse>
+    : ServiceGetterBase<ContractDataResponse>,
+        IGetterService<ContractDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ContractGetterService> _logger;
+
     private IContractStorageService _contractStorageService;
+
     // private IConverterToStorageService _converterToStorageService = converterToStorageService;
     private IContractPositionStorageService _contractPositionStorageService;
     private List<int> _locationIdSList;
 
     private readonly string _aproConnect =
         "https://test.asu2.big3.ru/api/wf__contract__contract_takeout/?query={id,name,status{id,name},contract_type{name}," +
-        " root_id,participant{id,name,short_name, inn,kpp, ogrn, root_company ,waste_person,doc_type{name}}, " +
+        " root_id,participant{id,name,short_name, inn,kpp, ogrn, root_company ,waste_person,doc_type{name}, assignee{id,name}}, " +
         "v_order}&v_order=0&root_id=";
 
     private List<string> root_ids = new List<string>();
-    
-    public ContractGetterService(IHttpClientFactory httpClientFactory, 
+
+    public ContractGetterService(IHttpClientFactory httpClientFactory,
         ILogger<ContractGetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
-        IContractPositionStorageService contractPositionStorageService, 
+        IContractPositionStorageService contractPositionStorageService,
         IContractStorageService contractStorageService) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
@@ -42,6 +42,7 @@ public class ContractGetterService
         _contractPositionStorageService = contractPositionStorageService;
         _contractStorageService = contractStorageService;
     }
+
     public async Task Get()
     {
         //сначала получить uuid 
@@ -52,7 +53,7 @@ public class ContractGetterService
 
     private async Task GetContractsToList()
     {
-        List<ContractPositionDataResponse> contractsPosList = _contractPositionStorageService.GetPosition();
+        List<ContractPositionDataResponse> contractsPosList = _contractPositionStorageService.Get();
 
         foreach (var con in contractsPosList)
         {
@@ -64,14 +65,14 @@ public class ContractGetterService
 
     private async Task GetContractsDataFromAPRO()
     {
-        List<ContractDataResponseResponse> contractsList = new List<ContractDataResponseResponse>();
+        List<ContractDataResponse> contractsList = new List<ContractDataResponse>();
         foreach (var id in root_ids)
         {
             try
             {
                 contractsList = await Get(_httpClientFactory, _aproConnect + id);
                 if (contractsList.Count() > 0)
-                    _contractStorageService.SetContracts(contractsList.First());
+                    _contractStorageService.Set(contractsList.First());
             }
             catch (Exception e)
             {
@@ -80,6 +81,4 @@ public class ContractGetterService
             }
         }
     }
-
- 
 }

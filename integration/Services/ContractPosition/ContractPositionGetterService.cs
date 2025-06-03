@@ -21,7 +21,7 @@ public class ContractPositionGetterService(
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
     private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
-    private List<int> _locationIdSList; 
+    private List<int> _locationIdSList = new List<int>(); 
     private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125" +
                                           "&query={id,number,status{id,name},contract{id,name,status{id,name},root_id,participant{id,name,short_name," +
                                           " inn,kpp,ogrn,root_company ,waste_person, doc_type{name}}},waste_source{id,name,waste_source_category{name},address, " +
@@ -47,7 +47,7 @@ public class ContractPositionGetterService(
     }
     async Task GetPosition(int id)
     {
-        List<ContractPositionDataResponse> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("2085591", id.ToString())); //по позициям получаем всю инфу
+        List<ContractPositionDataResponse> postionsList = await Get(_httpClientFactory, _aproConnect.Replace("1270125", id.ToString())); //по позициям получаем всю инфу
             //_contractPositionStorageService.Set(postionsList); // тут мы отправляем данные в сторэйдж
         _contractPositionStorageService.Set(postionsList);
        

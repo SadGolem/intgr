@@ -6,13 +6,13 @@ public struct IntegrationStruct
 {
     public int _idPosition;
     public List<EmitterDataResponse> emittersList;
-    public List<ClientDataResponseResponse> contragentList;
+    public List<ClientDataResponse> contragentList;
     public List<ScheduleDataResponse> schedulesList;
-    public List<ContractDataResponseResponse> contractList;
+    public List<ContractDataResponse> contractList;
     public LocationDataResponse location;
 
-    public IntegrationStruct(int idPosition, List<EmitterDataResponse> emittersList, List<ClientDataResponseResponse> contragentList, 
-        List<ScheduleDataResponse> schedulesList, List<ContractDataResponseResponse> contractList, LocationDataResponse location)
+    public IntegrationStruct(int idPosition, List<EmitterDataResponse> emittersList, List<ClientDataResponse> contragentList, 
+        List<ScheduleDataResponse> schedulesList, List<ContractDataResponse> contractList, LocationDataResponse location)
     {
         _idPosition = idPosition;
         this.emittersList = emittersList;

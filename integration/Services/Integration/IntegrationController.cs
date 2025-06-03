@@ -6,13 +6,13 @@ namespace integration.Services.Integration;
 
 public class IntegrationController : IntegrationControllerBase
 {
-    private readonly ICheckUpFactory<ClientDataResponseResponse> _checkUpFactory; // Change to ClientDataResponseResponse
-    private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientDataResponseResponse
-    private readonly IIntegrationService _integrationService; // Change to ClientDataResponseResponse
+    private readonly ICheckUpFactory<ClientDataResponse> _checkUpFactory; // Change to ClientDataResponse
+    private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientDataResponse
+    private readonly IIntegrationService _integrationService; // Change to ClientDataResponse
 
     public IntegrationController(
         ILogger<IntegrationControllerBase> logger,
-        ICheckUpFactory<ClientDataResponseResponse> checkUpFactory, // Change to ClientDataResponseResponse
+        ICheckUpFactory<ClientDataResponse> checkUpFactory, // Change to ClientDataResponse
         IIntegrationService integrationService)
         : base(logger, checkUpFactory)
     {

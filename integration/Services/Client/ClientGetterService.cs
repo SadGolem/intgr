@@ -1,6 +1,4 @@
 ﻿using integration.Context;
-using integration.HelpClasses;
-using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
@@ -11,9 +9,9 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
-public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>, IGetterService<ClientDataResponseResponse>
+public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGetterService<ClientDataResponse>
 {
-   private readonly IContractPositionStorageService _positionStorage;
+    private readonly IContractPositionStorageService _positionStorage;
     private readonly IClientStorageService _clientStorage;
     private readonly APROconnectSettings _apiSettings;
     private readonly ILogger<ClientGetterService> _logger;
@@ -41,31 +39,31 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
         {
             var clientIds = await GetClientIdentifiers();
             var clients = await ProcessClientsAsync(clientIds);
-            await EnrichClientDataAsync(clients); 
-            _clientStorage.SetClients(clients);
+            await EnrichClientDataAsync(clients);
+            _clientStorage.Set(clients);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Client synchronization failed");
             throw;
         }
-        
-        
+
+
     }
 
     private async Task<IEnumerable<ClientIdentifier>> GetClientIdentifiers()
     {
-        var positions = _positionStorage.GetPosition();
+        var positions = _positionStorage.Get();
         return positions.Select(p => new ClientIdentifier(
             p.contract.client.idAsuPro,
             p.contract.client.doc_type.name
         )).Distinct();
     }
 
-    private async Task<List<ClientDataResponseResponse>> ProcessClientsAsync(IEnumerable<ClientIdentifier> clientIds)
+    private async Task<List<ClientDataResponse>> ProcessClientsAsync(IEnumerable<ClientIdentifier> clientIds)
     {
-        var clients = new List<ClientDataResponseResponse>();
-        
+        var clients = new List<ClientDataResponse>();
+
         foreach (var clientId in clientIds)
         {
             var client = await FetchClientDataAsync(clientId);
@@ -74,11 +72,11 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
                 clients.Add(client);
             }
         }
-        
+
         return clients;
     }
 
-    private async Task<ClientDataResponseResponse> FetchClientDataAsync(ClientIdentifier clientId)
+    private async Task<ClientDataResponse> FetchClientDataAsync(ClientIdentifier clientId)
     {
         try
         {
@@ -95,14 +93,14 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
 
     private string BuildClientEndpoint(ClientIdentifier clientId)
     {
-        var basePath = _apiSettings.BaseUrl + (clientId.IsLegalEntity 
+        var basePath = _apiSettings.BaseUrl + (clientId.IsLegalEntity
             ? _apiSettings.ApiClientSettings.LegalEntitiesEndpoint
             : _apiSettings.ApiClientSettings.IndividualsEndpoint);
-            
+
         return $"{basePath}{clientId.Id}";
     }
 
-    private async Task EnrichClientDataAsync(List<ClientDataResponseResponse> clients)
+    private async Task EnrichClientDataAsync(List<ClientDataResponse> clients)
     {
         var tasks = new List<Task>
         {
@@ -112,8 +110,8 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
 
         await Task.WhenAll(tasks);
     }
-
-    private async Task EnrichWithBankDetailsAsync(List<ClientDataResponseResponse> clients)
+  
+    private async Task EnrichWithBankDetailsAsync(List<ClientDataResponse> clients)
     {
         foreach (var client in clients)
         {
@@ -126,7 +124,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
     {
         try
         {
-            var endpoint = $"{_apiSettings.BaseUrl+_apiSettings.ApiClientSettings.BankDetailsEndpoint}{clientId}";
+            var endpoint = $"{_apiSettings.BaseUrl + _apiSettings.ApiClientSettings.BankDetailsEndpoint}{clientId}";
             var response = await Get(_httpClientFactory, endpoint);
             return response.FirstOrDefault()?.bik;
         }
@@ -137,7 +135,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
         }
     }
 
-    private async Task EnrichWithContactDetailsAsync(List<ClientDataResponseResponse> clients)
+    private async Task EnrichWithContactDetailsAsync(List<ClientDataResponse> clients)
     {
         foreach (var client in clients)
         {
@@ -150,7 +148,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponseResponse>
     {
         try
         {
-            var endpoint = $"{_apiSettings.BaseUrl+_apiSettings.ApiClientSettings.ContactsEndpoint}{clientId}";
+            var endpoint = $"{_apiSettings.BaseUrl + _apiSettings.ApiClientSettings.ContactsEndpoint}{clientId}";
             var response = await Get(_httpClientFactory, endpoint);
             return response.FirstOrDefault()?.mailAddress;
         }

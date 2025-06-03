@@ -2,6 +2,7 @@
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Schedule;
+using integration.Services.Storage.Interfaces;
 using integration.Structs;
 
 namespace integration.Services.Storage;
@@ -18,15 +19,15 @@ public class ConverterToStorageService : IConverterToStorageService
     private IScheduleStorageService _scheduleStorage;
     private IContractStorageService _contractStorageService;
     private IClientStorageService _clientStorageService;
-    private IStorageService _storageService;
+    private IStorageService<IntegrationStruct> _storageService;
     private IContractPositionStorageService _contractPositionStorageService;
-    private List<ContractDataResponseResponse> contracts = new List<ContractDataResponseResponse>();
+    private List<ContractDataResponse> contracts = new List<ContractDataResponse>();
     private List<ScheduleDataResponse> schedules = new List<ScheduleDataResponse>();
-    private List<ClientDataResponseResponse> clients = new List<ClientDataResponseResponse>();
+    private List<ClientDataResponse> clients = new List<ClientDataResponse>();
     private List<ContractPositionDataResponse> contractPositions = new List<ContractPositionDataResponse>();
     
     public ConverterToStorageService(IScheduleStorageService scheduleStorage, IContractStorageService contractStorageService,
-        IClientStorageService clientStorageService, IContractPositionStorageService contractPositionStorageService, IStorageService storageService)
+        IClientStorageService clientStorageService, IContractPositionStorageService contractPositionStorageService, IStorageService<IntegrationStruct> storageService)
     {
         _scheduleStorage = scheduleStorage;
         _contractStorageService = contractStorageService;
@@ -37,10 +38,10 @@ public class ConverterToStorageService : IConverterToStorageService
 
     public async Task GetAll()
     {
-        contractPositions = _contractPositionStorageService.GetPosition();
-        contracts = _contractStorageService.GetContracts();
-        schedules = _scheduleStorage.GetScheduls();
-        clients = _clientStorageService.GetClients();
+        contractPositions = _contractPositionStorageService.Get();
+        contracts = _contractStorageService.Get();
+        schedules = _scheduleStorage.Get();
+        clients = _clientStorageService.Get();
     }
     
     public async Task ToStorage()
@@ -53,18 +54,18 @@ public class ConverterToStorageService : IConverterToStorageService
     {
         foreach (var position in contractPositions)
         {
-            _storageService.SetNewStruct(CreateStruct(position));
+            _storageService.Set(CreateStruct(position));
         }
     }
 
     private IntegrationStruct CreateStruct(ContractPositionDataResponse context)
     {
         int idLocation = context.waste_site.id;
-        contracts = _contractStorageService.GetContracts();
-        schedules = _scheduleStorage.GetScheduls();
-        List<ContractDataResponseResponse> contractDatas = new List<ContractDataResponseResponse>();
+        contracts = _contractStorageService.Get();
+        schedules = _scheduleStorage.Get();
+        List<ContractDataResponse> contractDatas = new List<ContractDataResponse>();
         List<EmitterDataResponse> emitterDatas = new List<EmitterDataResponse>();
-        List<ClientDataResponseResponse> clientDatas = new List<ClientDataResponseResponse>();
+        List<ClientDataResponse> clientDatas = new List<ClientDataResponse>();
         List<ScheduleDataResponse> scheduleDatas = new List<ScheduleDataResponse>();
         LocationDataResponse locationDatasResponse = new LocationDataResponse();
 

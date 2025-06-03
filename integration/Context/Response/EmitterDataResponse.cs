@@ -24,7 +24,7 @@ namespace integration.Context
         public Author? author { get; set; }
         public string amount { get; set; }
         public string contractNumber { get; set; }
-        public int location_mt_id { get; set; }
+        public int? location_mt_id { get; set; }
         public string executorName { get; set; }
         public int idContract { get; set; }
         public string contractStatus { get; set; }

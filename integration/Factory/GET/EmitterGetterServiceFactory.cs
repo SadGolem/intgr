@@ -2,7 +2,6 @@
 using integration.Factory.GET.Interfaces;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.Client;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Emitter;
 using integration.Services.Emitter.Storage;

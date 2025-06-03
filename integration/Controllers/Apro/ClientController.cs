@@ -2,16 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using integration.Controllers;
 using integration.Factory.GET.Interfaces;
-using integration.Services.Interfaces;
-using integration.Services.Location;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClientController : BaseSyncController<ClientDataResponseResponse>
+public class ClientController : BaseSyncController<ClientDataResponse>
 {
     public ClientController(
         ILogger<ClientController> logger,
-        IGetterServiceFactory<ClientDataResponseResponse> serviceGetter)
+        IGetterServiceFactory<ClientDataResponse> serviceGetter)
         : base(logger, serviceGetter) { }
     
     public async Task<IActionResult> Sync()

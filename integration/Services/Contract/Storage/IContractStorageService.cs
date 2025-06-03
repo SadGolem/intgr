@@ -1,10 +1,6 @@
 ﻿using integration.Context;
+using integration.Services.Storage.Interfaces;
 
-public interface IContractStorageService
+public interface IContractStorageService : IStorageService<ContractDataResponse>
 {
-    List<ContractDataResponseResponse> GetContracts();
-    void SetContracts(ContractDataResponseResponse dates);
-    void SetContracts(List<ContractDataResponseResponse> dates);
-    void ClearList(ContractDataResponseResponse date);
-    void ClearList();
 }

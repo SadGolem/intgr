@@ -1,7 +1,5 @@
 ﻿using integration.Context;
 using integration.Factory.GET.Interfaces;
-using integration.HelpClasses;
-using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Client;
@@ -9,11 +7,12 @@ using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Storage;
+using integration.Services.Storage.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace integration.Factory;
 
-public class ClientGetterServiceFactory : IGetterServiceFactory<ClientDataResponseResponse>
+public class ClientGetterServiceFactory : IGetterServiceFactory<ClientDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ClientGetterService> _logger;
@@ -21,7 +20,6 @@ public class ClientGetterServiceFactory : IGetterServiceFactory<ClientDataRespon
     private readonly IAuthorizer _authorizer;
     private readonly IConverterToStorageService _converterToStorageService;
     private readonly IContractPositionStorageService _contractPositionStorageService;
-    private readonly IStorageService _storageService;
     private readonly IClientStorageService _storageClientService;
 
     public ClientGetterServiceFactory(
@@ -42,7 +40,7 @@ public class ClientGetterServiceFactory : IGetterServiceFactory<ClientDataRespon
         _storageClientService = storageClientService;
     }
 
-    public IGetterService<ClientDataResponseResponse> Create()
+    public IGetterService<ClientDataResponse> Create()
     {
         return new ClientGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _contractPositionStorageService, _storageClientService);
     }

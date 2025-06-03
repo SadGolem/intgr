@@ -10,7 +10,6 @@ using integration.Factory.SET;
 using integration.Factory.SET.Interfaces;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services;
 using integration.Services.CheckUp;
 using integration.Services.CheckUp.Factory;
 using integration.Services.Client;
@@ -27,6 +26,11 @@ using integration.Services.Integration.Interfaces;
 using integration.Services.Integration.Processors;
 using integration.Services.Token;
 using integration.Services.Token.Interfaces;
+using AutoMapper;
+using integration.Services.Emitter;
+using integration.Services.Emitter.Storage;
+using integration.Services.Storage.Interfaces;
+using integration.Structs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +40,6 @@ builder.Services.AddMemoryCache();
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
 
-
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthorizer, Authorizer>();
@@ -45,8 +48,10 @@ builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>()
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
 builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
 builder.Services.AddSingleton<IContractStorageService, ContractStorageService>();
-builder.Services.AddSingleton<IStorageService, StorageService>();
+//builder.Services.AddSingleton<IIntegrationStructStorageService, StorageService>();
+builder.Services.AddSingleton<IStorageService<IntegrationStruct>, StorageService>();
 builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
+builder.Services.AddSingleton<IEmitterStorageService, EmitterStorageService>();
 builder.Services.AddTransient<IGetterServiceFactory<DataResponse>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse>, LocationGetterServiceFactory>();
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
@@ -58,20 +63,22 @@ builder.Services.AddTransient<IGetterServiceFactory<ScheduleDataResponse>, Sched
 builder.Services.AddTransient<IGetterService<ScheduleDataResponse>, ScheduleGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<ContractPositionDataResponse>, ContractPositionGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ContractPositionDataResponse>, ContractPositionGetterService>();
-builder.Services.AddTransient<IGetterServiceFactory<ContractDataResponseResponse>, ContractGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ContractDataResponseResponse>, ContractGetterService>();
-builder.Services.AddTransient<IGetterServiceFactory<ClientDataResponseResponse>, ClientGetterServiceFactory>();
-builder.Services.AddTransient<IGetterService<ClientDataResponseResponse>, ClientGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ContractDataResponse>, ContractGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ContractDataResponse>, ContractGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<ClientDataResponse>, ClientGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<ClientDataResponse>, ClientGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<EmitterDataResponse>, EmitterGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<EmitterDataResponse>, EmitterGetterService>();
 
-builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponseResponse>, ContragentProcessor>();
+builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponse>, ContragentProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<LocationDataResponse>, LocationProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<ScheduleDataResponse>, ScheduleProcessor>();
 
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
-builder.Services.AddScoped<ICheckUpFactory<ClientDataResponseResponse>, ClientCheckUpFactory>();
-builder.Services.AddScoped<ICheckUpService<ClientDataResponseResponse>, ClientCheckUpService>();
+builder.Services.AddScoped<ICheckUpFactory<ClientDataResponse>, ClientCheckUpFactory>();
+builder.Services.AddScoped<ICheckUpService<ClientDataResponse>, ClientCheckUpService>();
 
 
 builder.Services.AddSingleton<TokenController>();
@@ -95,6 +102,12 @@ builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
+var mapperConfig = new MapperConfiguration(cfg => 
+{
+    cfg.AddProfile<IntegrationMappingProfile>();
+});
+
+builder.Services.AddSingleton<IMapper>(sp => mapperConfig.CreateMapper());
 var app = builder.Build();
 
 app.UseHttpsRedirection();

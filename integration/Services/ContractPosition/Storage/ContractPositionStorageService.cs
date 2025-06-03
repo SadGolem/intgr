@@ -14,7 +14,7 @@ public class ContractPositionStorageService : IContractPositionStorageService
     {
         ContractPositionList.Add(dates);
     }
-    public ContractPositionDataResponse GetPosOnRoot_ID(string root_id)
+    /*public ContractPositionDataResponse GetPosOnRoot_ID(string root_id)
     {
         foreach (var pos in ContractPositionList)
         {
@@ -23,7 +23,7 @@ public class ContractPositionStorageService : IContractPositionStorageService
         }
 
         return null;
-    }
+    }*/
 
     public void Set(List<ContractPositionDataResponse> dates)
     {
@@ -41,5 +41,16 @@ public class ContractPositionStorageService : IContractPositionStorageService
     public void ClearList()
     {
         ContractPositionList.Clear();
+    }
+
+    public ContractPositionDataResponse GetPosOn_ID(int id)
+    {
+        foreach (var pos in ContractPositionList)
+        {
+            if (pos.id == id)
+                return pos;
+        }
+
+        return null;
     }
 }

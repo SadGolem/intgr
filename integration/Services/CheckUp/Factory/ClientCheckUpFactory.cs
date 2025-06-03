@@ -3,10 +3,10 @@ using integration.Services.CheckUp.Services;
 
 namespace integration.Services.CheckUp.Factory;
 
-public class ClientCheckUpFactory : ICheckUpFactory<ClientDataResponseResponse> 
+public class ClientCheckUpFactory : ICheckUpFactory<ClientDataResponse> 
 {
 
-    public ICheckUpService<ClientDataResponseResponse> Create()
+    public ICheckUpService<ClientDataResponse> Create()
     {
         return new ClientCheckUpService();
     }

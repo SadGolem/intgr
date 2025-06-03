@@ -1,31 +1,27 @@
-﻿using System.Text;
-using System.Text.Json;
-using integration.Context;
-using integration.HelpClasses;
+﻿using integration.Context;
 using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.Client.Storage;
-using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Services.Storage;
+using integration.Services.Storage.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Client;
 
-public class ClientSetterService : ServiceSetterBase<ClientDataResponseResponse>, ISetterService<ClientDataResponseResponse>
+public class ClientSetterService : ServiceSetterBase<ClientDataResponse>, ISetterService<ClientDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ClientSetterService> _logger;
     private IContractStorageService _contractStorageService;
-    private IStorageService _storageService;
+    private IStorageService<ClientDataResponse>_storageService;
     private readonly IOptions<AuthSettings> _configuration;
     private ConnectingStringApro _aproConnect;
 
     public ClientSetterService(IHttpClientFactory httpClientFactory,
         ILogger<ClientSetterService> logger, IAuthorizer authorizer, IOptions<AuthSettings> configuration,
-        IStorageService storageService) : base(httpClientFactory, logger, authorizer, configuration)
+        IStorageService<ClientDataResponse> storageService) : base(httpClientFactory, logger, authorizer, configuration)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
@@ -56,7 +52,7 @@ public class ClientSetterService : ServiceSetterBase<ClientDataResponseResponse>
 
     }
 
-      private async Task<List<ClientDataResponseResponse>> FetchEmitterData()
+      private async Task<List<ClientDataResponse>> FetchEmitterData()
     {
         var locations = new List<EmitterDataResponse>();
        // var token = await TokenController._authorizer.GetCachedTokenAPRO();
@@ -171,27 +167,27 @@ public class ClientSetterService : ServiceSetterBase<ClientDataResponseResponse>
     }
 
 */
-  public Task PostAndPatch(List<(ClientDataResponseResponse, bool)> data)
+  public Task PostAndPatch(List<(ClientDataResponse, bool)> data)
   {
       throw new NotImplementedException();
   }
 
-  public Task Post(ClientDataResponseResponse dataResponseResponse)
+  public Task Post(ClientDataResponse dataResponse)
   {
       throw new NotImplementedException();
   }
 
-  public Task Patch(ClientDataResponseResponse dataResponseResponse)
+  public Task Patch(ClientDataResponse dataResponse)
   {
       throw new NotImplementedException();
   }
 
-  public object MappingData(ClientDataResponseResponse dataResponseResponse)
+  public object MappingData(ClientDataResponse dataResponse)
   {
       throw new NotImplementedException();
   }
 
-  public bool Check(ClientDataResponseResponse dataResponseResponse)
+  public bool Check(ClientDataResponse dataResponse)
   {
       throw new NotImplementedException();
   }

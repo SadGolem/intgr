@@ -1,26 +1,18 @@
-﻿using System.Diagnostics.Contracts;
-using integration.Context;
+﻿using integration.Context;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using integration;
-using System.Text;
 using integration.Controllers;
-using integration.Factory;
 using integration.Factory.GET.Interfaces;
-using integration.HelpClasses;
 using integration.Services.Interfaces;
-using integration.Services.Location;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContractController : BaseSyncController<ContractDataResponseResponse>
+public class ContractController : BaseSyncController<ContractDataResponse>
 {
     private readonly ILogger<ContractController> _logger;
-    private readonly IGetterServiceFactory<ContractDataResponseResponse> _serviceGetter;
-    private IGetterService<ContractDataResponseResponse> _getter;
+    private readonly IGetterServiceFactory<ContractDataResponse> _serviceGetter;
+    private IGetterService<ContractDataResponse> _getter;
     public ContractController(ILogger<ContractController> logger, 
-        IGetterServiceFactory<ContractDataResponseResponse> serviceGetter
+        IGetterServiceFactory<ContractDataResponse> serviceGetter
       ) : base(logger, serviceGetter) {}
 
     [HttpGet("syncEmitters")] // This endpoint can be used for manual triggers

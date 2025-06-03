@@ -1,4 +1,5 @@
-﻿using integration.Context;
+﻿using AutoMapper;
+using integration.Context;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services;
@@ -12,10 +13,11 @@ public class IntegrationService : ServiceBase, IIntegrationService
     private readonly ILogger<IntegrationService> _logger;
     private readonly IApiClientService _apiClientService;
     private readonly string _mtBaseUrl;
-    private readonly IIntegrationProcessor<ClientDataResponseResponse> _contragentProcessor;
+    private readonly IIntegrationProcessor<ClientDataResponse> _contragentProcessor;
     private readonly IIntegrationProcessor<EmitterDataResponse> _emitterProcessor;
     private readonly IIntegrationProcessor<LocationDataResponse> _locationProcessor;
     private readonly IIntegrationProcessor<ScheduleDataResponse> _scheduleProcessor;
+    private IMapper _mapper;
 
     public IntegrationService(
         IHttpClientFactory httpClientFactory,
@@ -23,10 +25,11 @@ public class IntegrationService : ServiceBase, IIntegrationService
         IAuthorizer authorizer,
         IOptions<AuthSettings> mtSettings,
         IApiClientService apiClientService,
-        IIntegrationProcessor<ClientDataResponseResponse> contragentProcessor,
+        IIntegrationProcessor<ClientDataResponse> contragentProcessor,
         IIntegrationProcessor<EmitterDataResponse> emitterProcessor,
         IIntegrationProcessor<LocationDataResponse> locationProcessor,
-        IIntegrationProcessor<ScheduleDataResponse> scheduleProcessor) 
+        IIntegrationProcessor<ScheduleDataResponse> scheduleProcessor,
+        IMapper mapper) 
         : base(httpClientFactory, logger, authorizer, mtSettings)
     {
         _logger = logger;
@@ -36,6 +39,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
         _emitterProcessor = emitterProcessor;
         _locationProcessor = locationProcessor;
         _scheduleProcessor = scheduleProcessor;
+        _mapper = mapper;
     }
 
     public async Task SendIntegrationDataAsync(IntegrationStruct integrationData)

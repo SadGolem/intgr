@@ -4,23 +4,23 @@ namespace integration.Services.Client.Storage;
 
 public class ContractStorageService : IContractStorageService
 {
-    public static List<ContractDataResponseResponse> _contractDatas = new List<ContractDataResponseResponse>();
-    public List<ContractDataResponseResponse> GetContracts()
+    public static List<ContractDataResponse> _contractDatas = new List<ContractDataResponse>();
+    public List<ContractDataResponse> Get()
     {
         return _contractDatas;
     }
 
-    public void SetContracts(ContractDataResponseResponse dates)
+    public void Set(ContractDataResponse dates)
     {
         _contractDatas.Add(dates);
     }
 
-    public void SetContracts(List<ContractDataResponseResponse> dates)
+    public void Set(List<ContractDataResponse> dates)
     {
         _contractDatas = dates;
     }
 
-    public void ClearList(ContractDataResponseResponse date)
+    public void ClearList(ContractDataResponse date)
     {
         _contractDatas.Remove(date);
     }
