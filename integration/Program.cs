@@ -78,6 +78,12 @@ builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddScoped<ICheckUpFactory<ClientDataResponse>, ClientCheckUpFactory>();
 builder.Services.AddScoped<ICheckUpService<ClientDataResponse>, ClientCheckUpService>();
+builder.Services.AddScoped<ICheckUpFactory<EmitterDataResponse>, EmitterCheckUpFactory>();
+builder.Services.AddScoped<ICheckUpService<EmitterDataResponse>, EmitterCheckUpService>();
+builder.Services.AddScoped<ICheckUpFactory<ScheduleDataResponse>, ScheduleCheckUpFactory>();
+builder.Services.AddScoped<ICheckUpService<ScheduleDataResponse>, ScheduleCheckUpService>();
+builder.Services.AddScoped<ICheckUpFactory<LocationDataResponse>, LocationCheckUpFactory>();
+builder.Services.AddScoped<ICheckUpService<LocationDataResponse>, LocationCheckUpService>();
 
 
 builder.Services.AddSingleton<TokenController>();

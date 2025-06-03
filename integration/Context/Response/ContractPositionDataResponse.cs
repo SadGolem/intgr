@@ -7,7 +7,7 @@ public class ContractPositionDataResponse : DataResponse
     [JsonPropertyName("id")] //позиция договора
     public int id { get; set; }
 
-    [JsonPropertyName("number")]
+    [JsonPropertyName("name")]
     public string number { get; set; }
 
     [JsonPropertyName("status")]
