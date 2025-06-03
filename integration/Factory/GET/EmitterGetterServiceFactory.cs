@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET;
 
-public class EmitterGetterServiceFactory: IGetterServiceFactory<EmitterDataResponse>
+public class EmitterGetterServiceFactory : IGetterServiceFactory<EmitterDataResponse>
 {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<EmitterGetterService> _logger;

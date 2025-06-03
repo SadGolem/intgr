@@ -8,7 +8,7 @@ public class EmitterStorageService : IEmitterStorageService
 
     public List<EmitterDataResponse> Get()
     {
-        throw new NotImplementedException();
+        return EmitterPositionList;
     }
 
     public void Set(EmitterDataResponse dates)

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using integration.Factory.GET.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using integration.Helpers;
 using integration.Helpers.Auth;
@@ -8,19 +9,21 @@ namespace integration.Controllers.Apro
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class WasteSiteEntryController : ControllerBase
+    public class WasteSiteEntryController : BaseSyncController<EntryDataResponse>
     {
         private string _aproConnectSettings;
         private readonly ILogger<WasteSiteEntryController> _logger;
         public static List<EntryDataResponse> newEntry = new List<EntryDataResponse>();
         public static List<EntryDataResponse> updateEntry = new List<EntryDataResponse>();
-        private string url = "wf__wastetakeoutrequest__garbage_collection_request/?query={id, datetime_create, datetime_update,waste_site{id},client_contact{id,name}, author{name},status,volume,date, capacity{id},type{id,name},ext_id, comment, containers{id}}";
-
-        public WasteSiteEntryController(HttpClient httpClient, ILogger<WasteSiteEntryController> logger, IOptions<AuthSettings> configuration)
+        
+        public WasteSiteEntryController(
+            ILogger<WasteSiteEntryController> logger,
+            IGetterServiceFactory<EntryDataResponse> serviceGetter)
+            : base(logger, serviceGetter) { }
+        
+        public async Task<IActionResult> Sync()
         {
-            _logger = logger;
-            ConnectingStringApro connectingStringApro = new ConnectingStringApro(configuration, url);
-            _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
+            return await base.Sync();
         }
 
         [HttpGet]

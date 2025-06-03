@@ -98,8 +98,4 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
 
         return $"{basePath}{root_id}";
     }
-    private record ClientIdentifier(int Id, string DocumentType)
-    {
-        public bool IsLegalEntity => DocumentType == "Юридические лица";
-    }
 }

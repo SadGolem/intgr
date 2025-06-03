@@ -29,6 +29,8 @@ using integration.Services.Token.Interfaces;
 using AutoMapper;
 using integration.Services.Emitter;
 using integration.Services.Emitter.Storage;
+using integration.Services.Entry;
+using integration.Services.Entry.Storage;
 using integration.Services.Storage.Interfaces;
 using integration.Structs;
 
@@ -44,6 +46,7 @@ builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
+builder.Services.AddSingleton<IEntryStorageService, EntryStorageService>();
 builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
 builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
@@ -68,6 +71,8 @@ builder.Services.AddTransient<IGetterServiceFactory<ClientDataResponse>, ClientG
 builder.Services.AddTransient<IGetterService<ClientDataResponse>, ClientGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<EmitterDataResponse>, EmitterGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<EmitterDataResponse>, EmitterGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<EntryDataResponse>, EntryGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<EntryDataResponse>, EntryGetterService>();
 
 builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponse>, ContragentProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();
@@ -93,7 +98,6 @@ builder.Services.AddSingleton<ContractPositionController>();
 builder.Services.AddSingleton<ContractController>();
 builder.Services.AddSingleton<ClientController>();
 builder.Services.AddSingleton<EmitterController>();
-builder.Services.AddSingleton<EmitterControllerMT>();
 builder.Services.AddSingleton<WasteSiteEntryController>();
 builder.Services.AddSingleton<EntryController>();
 builder.Services.AddSingleton<ScheduleController>();
