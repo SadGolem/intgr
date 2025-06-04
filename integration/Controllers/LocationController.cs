@@ -55,11 +55,11 @@ namespace integration.Controllers
             _locationIdService.SetLocation(locations);
             _logger.LogInformation($"Received {locations.Count} locations");
         }
-        public async Task PostOrPatch(List<(LocationDataResponse, bool)> locations)
+        /*public async Task PostOrPatch(List<(LocationDataResponse, bool)> locations)
         {
             _locationServiceSetter = _serviceSetter.Create();
             await _locationServiceSetter.PostAndPatch(locations);
-        }
+        }*/
     }
 }
 

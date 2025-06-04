@@ -191,4 +191,9 @@ public class ClientSetterService : ServiceSetterBase<ClientDataResponse>, ISette
   {
       throw new NotImplementedException();
   }
+
+  public Task PostAndPatch()
+  {
+      throw new NotImplementedException();
+  }
 }

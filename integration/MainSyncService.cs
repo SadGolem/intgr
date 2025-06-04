@@ -1,6 +1,5 @@
 ﻿using integration.Controllers;
 using integration.Controllers.Apro;
-using integration.Controllers.MT;
 using integration.Services.Integration;
 using integration.Services.Storage;
 using integration.Services.Storage.Interfaces;
@@ -49,20 +48,18 @@ namespace integration
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
                 var contractController = scope.ServiceProvider.GetRequiredService<ContractController>();
                 var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
-                var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>();
-
-              //  var wasteSiteEntryController = scope.ServiceProvider.GetRequiredService<WasteSiteEntryController>();
-            //    var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
+                var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
+                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
             
-                await GetLocation(locationController);
-                await GetContractPosition(contractPositionController);
-                await GetContract(contractController);
-                await GetClient(contragentController);
-                await GetEmitter(emitterController);
-                await GetSchedule(scheduleController);
-                await SetStruct(_converterToStorageService);
-               // await StartEntry(wasteSiteEntryController, entryController);
-                await CheckAndSendIntegrationToAPRO();
+                //await GetLocation(locationController);
+                //await GetContractPosition(contractPositionController);
+                //await GetContract(contractController);
+                //await GetClient(contragentController);
+                //await GetEmitter(emitterController);
+                //await GetSchedule(scheduleController);
+                //await SetStruct(_converterToStorageService);
+                await StartEntry(entryController);
+                //await CheckAndSendIntegrationToAPRO();
                
                 await SendAsync();
                 
@@ -182,29 +179,11 @@ namespace integration
             }*/
         }
     
-        private async Task StartEntry(WasteSiteEntryController wasteSiteEntryController, EntryController entryController)
+        private async Task StartEntry(EntryController entryController)
         {
             try
             {
-                Console.WriteLine(wasteSiteEntryController.GetType());
-                //var newWasteData = await wasteSiteEntryController.GetEntriesData();
-                TimeManager.SetLastUpdateTime("entry");
-                if (WasteSiteEntryController.newEntry.Any() || WasteSiteEntryController.updateEntry.Any())
-                {
-                    _logger.LogInformation($"Found {WasteSiteEntryController.newEntry.Count()} new/updated records to sync");
-                    foreach (var wasteData in WasteSiteEntryController.newEntry)
-                    {
-                        await ProcessEntry(wasteData, entryController, true);
-                    }
-                    foreach (var wasteUpdateData in WasteSiteEntryController.updateEntry)
-                    {
-                        await ProcessEntry(wasteUpdateData, entryController, false);
-                    }
-                }
-                else
-                {
-                    _logger.LogInformation("No new/updated records found.");
-                }
+                await entryController.Sync();
             }
             catch (Exception ex)
             {

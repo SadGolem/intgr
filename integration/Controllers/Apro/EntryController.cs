@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using integration.Factory.GET.Interfaces;
+using integration.Factory.SET.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using integration.Helpers;
 using integration.Helpers.Auth;
@@ -9,23 +10,37 @@ namespace integration.Controllers.Apro
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class WasteSiteEntryController : BaseSyncController<EntryDataResponse>
+    public class EntryController : BaseSyncController<EntryDataResponse>
     {
         private string _aproConnectSettings;
-        private readonly ILogger<WasteSiteEntryController> _logger;
+        private readonly ILogger<EntryController> _logger;
+        private ISetterServiceFactory<EntryDataResponse> _setterServiceFactory;
         public static List<EntryDataResponse> newEntry = new List<EntryDataResponse>();
         public static List<EntryDataResponse> updateEntry = new List<EntryDataResponse>();
         
-        public WasteSiteEntryController(
-            ILogger<WasteSiteEntryController> logger,
-            IGetterServiceFactory<EntryDataResponse> serviceGetter)
+        public EntryController(
+            ILogger<EntryController> logger,
+            IGetterServiceFactory<EntryDataResponse> serviceGetter,
+            ISetterServiceFactory<EntryDataResponse> serviceSetter)
             : base(logger, serviceGetter) { }
         
         public async Task<IActionResult> Sync()
         {
-            return await base.Sync();
+            await Get();
+            await Set();
+            return Ok();
         }
 
+        private async Task Get()
+        {
+            await base.Sync();
+        }
+
+        private async Task Set()
+        {
+            var service = _setterServiceFactory.Create(); 
+            await service.PostAndPatch();
+        }
         [HttpGet]
         /*public async Task<IActionResult> GetEntriesData()
         {

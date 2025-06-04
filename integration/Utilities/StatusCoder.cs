@@ -4,7 +4,7 @@ namespace integration.Context
 {
     public static class StatusCoder
     {
-        private static Dictionary<int, string> _statusEntry = new Dictionary<int, string>
+        private static Dictionary<int, string> _statusEntryAPRO = new Dictionary<int, string>
         {
             { 179, "Выполнено" },
             { 43, "Добавлена в план" },
@@ -12,9 +12,17 @@ namespace integration.Context
             { 301, "Не выполнена" },
             { 166, "Отклонено" },
             { 282, "Отменено" },
-            { 302, "Новая" }, //согласовано и принято в работу
+            { 302, "Согласовано и принято в работу" }, //согласовано и принято в работу
             { 300, "Требуется информация" },
             { 52, "Черновик" }
+        };
+        private static List<(string, string)> _statusEntryAPROtoMT = new List<(string, string)>
+        {
+            {( "Выполнено", "Выполена" )},
+            {( "Черновик", "Новая") },
+            {( "Выполнено", "Закрыта" )},
+            {( "Отменено", "Отменена") },
+            {( "Согласовано и принято в работу", "Передана перевозчику") },
         };
 
         private static List<(int Key, string Value)> _statusLocation = new List<(int Key, string Value)>
@@ -105,7 +113,33 @@ namespace integration.Context
             (29, 164), (8, 161), (3, 141), (3, 156), (19, 101), (19, 149), (19, 158),
             (19, 163), (19, 100), (19, 144), (4, 147)
         };
+        
 
+        public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
+        {
+            if (entry?.Status == null)
+                return "Новая";
+            
+            int statusId = entry.Status.Id;
+            
+            if (!_statusEntryAPRO.TryGetValue(statusId, out string aproStatus))
+            {
+                return "Новая";
+            }
+
+            string result = aproStatus; 
+            
+            foreach (var mapping in _statusEntryAPROtoMT)
+            {
+                if (mapping.Item1 == aproStatus)
+                {
+                    result = mapping.Item2;
+                }
+            }
+
+            return result;
+        }
+        
         public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
         {
             int status = wasteDataResponse.Status?.Id ?? 0;
@@ -113,7 +147,7 @@ namespace integration.Context
                 return "";
             else if (status != 179 && status != 302 && status != 282)
                 return "";
-            else if (_statusEntry.TryGetValue(status, out string? value))
+            else if (_statusEntryAPRO.TryGetValue(status, out string? value))
             {
                 return value;  // Перекодируем статус если он существует в словаре
             }
