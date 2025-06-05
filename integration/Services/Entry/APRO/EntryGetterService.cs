@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Immutable;
+using System.Data.Common;
 using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
@@ -33,12 +34,20 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
     
     public async Task Get()
     {
-        var endpoint = BuildEmitterEndpoint();
-        var response = await Get(_httpClientFactory, _connectionString);
+        var endpoint = BuildEmitterEndpoint(false);
+        var response = await Get(_httpClientFactory, endpoint);
         GetNewEntry(response);
     }
+    
+    public async Task<EntryDataResponse> GetCapacity(EntryDataResponse entry)
+    {
+        var endpoint = BuildEmitterEndpoint(true) + entry.BtNumber;
+        var response = await Get(_httpClientFactory, endpoint); 
+        entry.Capacity = response.FirstOrDefault().Capacity;
+        return entry;
+    }
 
-    private void GetNewEntry(List<EntryDataResponse> entry)
+    private async Task GetNewEntry(List<EntryDataResponse> entry)
     {
         var lastUpdate = TimeManager.GetLastUpdateTime("entry");
 
@@ -47,6 +56,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
             try
             {
                 var isNew = DetermineIfNew(data, lastUpdate);
+                await GetCapacity(data);
                 _storageService.Set(data, isNew);
             }
             catch (Exception ex)
@@ -71,12 +81,20 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         return false;
     }
     
-    private string BuildEmitterEndpoint()
+    private string BuildEmitterEndpoint(bool isCapacity)
     {
-        var basePath = _apiSettings.Value.APROconnect.BaseUrl + (_apiSettings.ApiClientSettings.EntryEndopint);
-        string connectionString = new ConnectingStringApro(_apiSettings,basePath).GetAproConnectSettings();
-        
-       
+        string basePath;
+        if (!isCapacity)
+        {
+             basePath = _apiSettings.Value.APROconnect.BaseUrl +
+                           (_apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpoint);
+             basePath = new ConnectingStringApro(_apiSettings, basePath).GetAproConnectSettings();
+        }
+        else
+        {
+             basePath = _apiSettings.Value.APROconnect.BaseUrl +
+                           (_apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpointCapacity);
+        }
         return $"{basePath}";
     }
 }

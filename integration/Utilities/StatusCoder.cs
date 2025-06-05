@@ -115,19 +115,19 @@ namespace integration.Context
         };
         
 
-        public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
+        /*public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
         {
-            if (entry?.Status == null)
+            /*if (entry?.status == null)
                 return "Новая";
             
-            int statusId = entry.Status.Id;
+            int statusId = entry.status;#1#
             
-            if (!_statusEntryAPRO.TryGetValue(statusId, out string aproStatus))
+            /*if (!_statusEntryAPRO.TryGetValue(statusId, out string aproStatus))
             {
                 return "Новая";
-            }
+            }#1#
 
-            string result = aproStatus; 
+            /*string result = aproStatus; #1#
             
             foreach (var mapping in _statusEntryAPROtoMT)
             {
@@ -138,11 +138,12 @@ namespace integration.Context
             }
 
             return result;
-        }
+        }*/
         
+        /*
         public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
         {
-            int status = wasteDataResponse.Status?.Id ?? 0;
+            int status = wasteDataResponse.status;
             if (status == 0)
                 return "";
             else if (status != 179 && status != 302 && status != 282)
@@ -153,22 +154,7 @@ namespace integration.Context
             }
             return "";
         }
-
-        public static int ToCorrectContainer(EntryDataResponse wasteDataResponse) //Возвращаем список
-        {
-            if (wasteDataResponse.IdContainerType == null) return -1 ; // или null, если хотите
-
-            int containerId = wasteDataResponse.IdContainerType.Id;
-            int results = 0;
-            foreach (var item in _containersMapping)
-            {
-                if (item.Key == containerId)
-                {
-                    results = item.Value;
-                }
-            }
-            return results; // Вернет пустой список, если ничего не найдено
-        }
+        */
 
         public static double ToCorrectCapacity(int idCapacity)
         {

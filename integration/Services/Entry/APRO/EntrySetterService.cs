@@ -29,7 +29,7 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _authorizer = authorizer;
-        _apiClientSettings = apiSettings.Value.MTconnect.ApiClientSettings.EntryEndopint;
+        _apiClientSettings = apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpoint;
         _storageService = storageService;
     }
 

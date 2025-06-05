@@ -37,9 +37,6 @@ public class ConnectingStringApro
 
     private void InitializeAproConnectSettings(string url)
     {
-
-        
-
         // Получаем текущее время в UTC
         DateTimeOffset nowUtc = DateTimeOffset.UtcNow;
 
