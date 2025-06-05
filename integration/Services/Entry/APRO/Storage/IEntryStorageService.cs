@@ -2,8 +2,8 @@
 
 namespace integration.Services.Entry.Storage;
 
-public interface IEntryStorageService : IStorageService<EntryDataResponse>
+public interface IEntryStorageService<T> : IStorageService<T> where T : class
 {
-    public List<(EntryDataResponse, bool)> Get();
-    public void Set(EntryDataResponse data, bool isNew);
+    public List<(T, bool)> Get();
+    public void Set(T data, bool isNew);
 }

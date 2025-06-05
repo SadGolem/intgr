@@ -18,13 +18,13 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
     private IAuthorizer _authorizer;
     private string _apiClientSettings;
     private ConnectingStringApro _aproConnect;
-    private IEntryStorageService _storageService;
+    private IEntryStorageService<EntryDataResponse> _storageService;
     private IMapper _mapper;
     private List<(EntryDataResponse, bool)> _entriesData;
     
     public EntrySetterService(IHttpClientFactory httpClientFactory,
         ILogger<EntrySetterService> logger, IAuthorizer authorizer,
-        IOptions<AuthSettings> apiSettings, IEntryStorageService storageService) : base(httpClientFactory, logger, authorizer, apiSettings)
+        IOptions<AuthSettings> apiSettings, IEntryStorageService<EntryDataResponse> storageService) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;

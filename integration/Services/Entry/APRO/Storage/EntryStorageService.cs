@@ -2,14 +2,14 @@
 
 namespace integration.Services.Entry.Storage;
 
-public class EntryStorageService : IEntryStorageService
+public class EntryStorageService : IEntryStorageService<EntryDataResponse>
 {
-    public static List<(EntryDataResponse, bool)> EntryListBool = new List<(EntryDataResponse, bool)>();
-    public static List<EntryDataResponse> EntryList = new List<EntryDataResponse>();
+    public static List<(EntryDataResponse, bool)> EntryListBoolAPRO = new List<(EntryDataResponse, bool)>();
+    public static List<EntryDataResponse> EntryListAPRO = new List<EntryDataResponse>();
     
     public List<(EntryDataResponse, bool)> Get()
     {
-        return EntryListBool;
+        return EntryListBoolAPRO;
     }
 
     List<EntryDataResponse> IStorageService<EntryDataResponse>.Get()
@@ -19,28 +19,28 @@ public class EntryStorageService : IEntryStorageService
 
     public void Set(EntryDataResponse data, bool isNew)
     {
-        EntryListBool.Add((data, isNew));
+        EntryListBoolAPRO.Add((data, isNew));
     }
     
     public void Set(EntryDataResponse data)
     {
-        EntryList.Add(data);
+        EntryListAPRO.Add(data);
     }
     public void Set(List<EntryDataResponse> datas)
     {
         foreach (var data in datas)
         {
-            EntryList.Add(data);
+            EntryListAPRO.Add(data);
         }
     }
 
     public void ClearList(EntryDataResponse date)
     {
-        EntryList.Remove(date);
+        EntryListAPRO.Remove(date);
     }
 
     public void ClearList()
     {
-        EntryList.Clear();
+        EntryListAPRO.Clear();
     }
 }

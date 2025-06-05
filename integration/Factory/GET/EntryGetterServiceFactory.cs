@@ -17,14 +17,14 @@ public class EntryGetterServiceFactory : IGetterServiceFactory<EntryDataResponse
     private readonly ILogger<EntryGetterService> _logger;
     private readonly IAuthorizer _authorizer;
     private readonly IOptions<AuthSettings> _configuration;
-    private IEntryStorageService _storageService;
+    private IEntryStorageService<EntryDataResponse> _storageService;
 
     public EntryGetterServiceFactory(
         IHttpClientFactory httpClientFactory,
         ILogger<EntryGetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> configuration,
-        IEntryStorageService storageService)
+        IEntryStorageService<EntryDataResponse> storageService)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
