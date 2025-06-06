@@ -58,7 +58,7 @@ namespace integration.Controllers
         /*public async Task PostOrPatch(List<(LocationDataResponse, bool)> locations)
         {
             _locationServiceSetter = _serviceSetter.Create();
-            await _locationServiceSetter.PostAndPatch(locations);
+            await _locationServiceSetter.Set(locations);
         }*/
     }
 }

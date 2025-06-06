@@ -1,16 +1,13 @@
-﻿using System.Text.Json;
-using integration.Factory.GET.Interfaces;
+﻿using integration.Factory.GET.Interfaces;
 using integration.Factory.SET.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using integration.Helpers;
-using integration.Helpers.Auth;
-using Microsoft.Extensions.Options;
+using integration.Services.Interfaces;
 
 namespace integration.Controllers.Apro
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EntryController : BaseSyncController<EntryDataResponse>
+    public class EntryController : BaseSyncController<EntryDataResponse>, ISetterService<EntryDataResponse>
     {
         private string _aproConnectSettings;
         private readonly ILogger<EntryController> _logger;
@@ -30,21 +27,28 @@ namespace integration.Controllers.Apro
         public async Task<IActionResult> Sync()
         {
             await Get();
-            await Set();
             return Ok();
         }
-
+        
         private async Task Get()
         {
             await base.Sync();
         }
 
-        private async Task Set()
+        private async Task TryPostAndPatch()
         {
             var service = _setterServiceFactory.Create(); 
-            await service.PostAndPatch();
+            await service.Set();
         }
-        [HttpGet]
+
+        public async Task Set()
+        {
+            await TryPostAndPatch();
+        }
+        public void Message(string ex)
+        {
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getentry, ex);
+        }
         /*public async Task<IActionResult> GetEntriesData()
         {
             _logger.LogInformation("Starting manual entry sync...");
@@ -132,9 +136,6 @@ namespace integration.Controllers.Apro
         }
         */
 
-        void ToMessage(string ex)
-        {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getentry, ex);
-        }
+  
     }
 }

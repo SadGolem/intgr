@@ -184,6 +184,7 @@ namespace integration
             try
             {
                 await entryController.Sync();
+                await entryController.Set();
             }
             catch (Exception ex)
             {

@@ -114,7 +114,7 @@ public class LocationSetterService : ServiceBase, ISetterService<LocationDataRes
         throw new NotImplementedException();
     }
 
-    public Task PostAndPatch()
+    public Task Set()
     {
         throw new NotImplementedException();
     }

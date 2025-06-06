@@ -33,7 +33,7 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
         _storageService = storageService;
     }
 
-    public async Task PostAndPatch()
+    public async Task Set()
     {
         GetEntries();
         PostOrPatch();

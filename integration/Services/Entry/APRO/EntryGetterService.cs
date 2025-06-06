@@ -6,6 +6,8 @@ using integration.Helpers.Interfaces;
 using integration.Services.Entry.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Entry;
@@ -31,20 +33,20 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         _apiSettings = apiSettings;
         _storageService = storageService;
     }
-    
+
     public async Task Get()
     {
         var endpoint = BuildEmitterEndpoint(false);
         var response = await Get(_httpClientFactory, endpoint);
-        GetNewEntry(response);
+        await GetNewEntry(response);
     }
-    
-    public async Task<EntryDataResponse> GetCapacity(EntryDataResponse entry)
+
+    public async Task<Capacity> GetCapacity(EntryDataResponse entry)
     {
         var endpoint = BuildEmitterEndpoint(true) + entry.BtNumber;
-        var response = await Get(_httpClientFactory, endpoint); 
+        var response = await Get(_httpClientFactory, endpoint);
         entry.Capacity = response.FirstOrDefault().Capacity;
-        return entry;
+        return entry.Capacity;
     }
 
     private async Task GetNewEntry(List<EntryDataResponse> entry)
@@ -56,7 +58,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
             try
             {
                 var isNew = DetermineIfNew(data, lastUpdate);
-                await GetCapacity(data);
+                data.Capacity = await GetCapacity(data);
                 _storageService.Set(data, isNew);
             }
             catch (Exception ex)
@@ -64,6 +66,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
                 _logger.LogError(ex, "Error processing entry {LocationId}", data.BtNumber);
             }
         }
+        TimeManager.SetLastUpdateTime("entry");
     }
 
     private bool DetermineIfNew(EntryDataResponse entry, DateTime lastUpdate)
@@ -72,29 +75,28 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         {
             return true;
         }
-            
         if (entry.datetime_update > lastUpdate)
         {
             return false;
         }
-            
-        return false;
+
+        throw new Exception("this entry is already created");
     }
-    
+
     private string BuildEmitterEndpoint(bool isCapacity)
     {
         string basePath;
         if (!isCapacity)
         {
-             basePath = _apiSettings.Value.APROconnect.BaseUrl +
-                           (_apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpoint);
-             basePath = new ConnectingStringApro(_apiSettings, basePath).GetAproConnectSettings();
+            basePath = _apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpoint;
+            basePath = new ConnectingStringApro(_apiSettings, basePath).GetAproConnectSettings();
         }
         else
         {
-             basePath = _apiSettings.Value.APROconnect.BaseUrl +
-                           (_apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpointCapacity);
+            basePath = _apiSettings.Value.APROconnect.BaseUrl +
+                       (_apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpointCapacity);
         }
+
         return $"{basePath}";
     }
 }

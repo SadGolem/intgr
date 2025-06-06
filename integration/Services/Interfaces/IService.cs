@@ -2,6 +2,5 @@
 
 public interface IService
 {
-    public Task<HttpClient> CreateAuthorizedClientAsync(AuthType authType);
     public void Message(string ex);
 }

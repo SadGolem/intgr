@@ -115,19 +115,19 @@ namespace integration.Context
         };
         
 
-        /*public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
+        public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
         {
-            /*if (entry?.status == null)
+            if (entry?.status == null)
                 return "Новая";
             
-            int statusId = entry.status;#1#
+            int statusId = entry.status;
             
-            /*if (!_statusEntryAPRO.TryGetValue(statusId, out string aproStatus))
+            if (!_statusEntryAPRO.TryGetValue(statusId, out string aproStatus))
             {
                 return "Новая";
-            }#1#
+            }
 
-            /*string result = aproStatus; #1#
+            string result = aproStatus;
             
             foreach (var mapping in _statusEntryAPROtoMT)
             {
@@ -138,9 +138,9 @@ namespace integration.Context
             }
 
             return result;
-        }*/
+        }
         
-        /*
+        
         public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
         {
             int status = wasteDataResponse.status;
@@ -154,7 +154,7 @@ namespace integration.Context
             }
             return "";
         }
-        */
+        
 
         public static double ToCorrectCapacity(int idCapacity)
         {

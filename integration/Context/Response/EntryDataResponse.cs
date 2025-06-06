@@ -14,7 +14,7 @@ public class EntryDataResponse: DataResponse
     [JsonPropertyName("status_id")]
     public int status { get; set; } 
     [JsonPropertyName("capacity")]
-    public Capacity Capacity { get; set; }
+    public Capacity? Capacity { get; set; }
 
     
 }

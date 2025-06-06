@@ -40,11 +40,11 @@ public class ClientSetterService : ServiceSetterBase<ClientDataResponse>, ISette
             {
                 if (emitter.datetime_create > lastUpdate) //здесь менять логику незлья, так как у них  апдейт чуть позже криеэйт
                 {
-                    await PostAndPatch(emitter, true);
+                    await Set(emitter, true);
                 }
                 else if (emitter.datetime_update > lastUpdate)
                 {
-                    await PostAndPatch(emitter, false);
+                    await Set(emitter, false);
                 }
             }
             TimeManager.SetLastUpdateTime("emitter");
@@ -90,7 +90,7 @@ public class ClientSetterService : ServiceSetterBase<ClientDataResponse>, ISette
         }
     }
 
-    private async Task PostAndPatch(EmitterDataResponse emitter, bool isNew)
+    private async Task Set(EmitterDataResponse emitter, bool isNew)
     {
         var client = _httpClientFactory.CreateClient();
        // var token = await TokenController._authorizer.GetCachedTokenAPRO();
@@ -192,7 +192,7 @@ public class ClientSetterService : ServiceSetterBase<ClientDataResponse>, ISette
       throw new NotImplementedException();
   }
 
-  public Task PostAndPatch()
+  public Task Set()
   {
       throw new NotImplementedException();
   }

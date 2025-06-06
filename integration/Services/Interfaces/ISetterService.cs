@@ -6,6 +6,6 @@ namespace integration.Services.Interfaces
 {
     public interface ISetterService<T> : IService
     {
-        Task PostAndPatch();
+        public Task Set();
     }
 }

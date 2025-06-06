@@ -55,13 +55,13 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
                 _logger.LogError(ex, "Error processing entry {LocationId}", data.idAPRO);
             }
         }
+        TimeManager.SetLastUpdateTime("entryMT");
     }
     
     private string BuildEmitterEndpoint()
     {
         string basePath;
-             basePath = _apiSettings.Value.APROconnect.BaseUrl +
-                           (_apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpoint);
+             basePath = _apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpoint;
              basePath = new ConnectingStringApro(_apiSettings, basePath).GetAproConnectSettings();
         return $"{basePath}";
     }

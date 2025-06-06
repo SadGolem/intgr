@@ -1,4 +1,5 @@
 ﻿using integration.Context;
+using Microsoft.AspNetCore.Mvc;
 
 namespace integration.Services.Interfaces
 {
