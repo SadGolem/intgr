@@ -38,7 +38,6 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         GetNewEntry(response);
     }
     
-
     private async Task GetNewEntry(List<EntryMTDataResponse> entry)
     {
         var lastUpdate = TimeManager.GetLastUpdateTime("entryMT");

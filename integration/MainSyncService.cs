@@ -60,7 +60,8 @@ namespace integration
                 //await SetStruct(_converterToStorageService);
                 await StartEntry(entryController);
                 //await CheckAndSendIntegrationToAPRO();
-               
+                await GetMTLocation(locationController);
+                
                 await SendAsync();
                 
                 EmailMessageBuilder.ClearList();
@@ -77,6 +78,17 @@ namespace integration
             try
             {
                 await scheduleController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing schedule.");
+            }
+        }
+        private async Task GetMTLocation(LocationController locationController)
+        {
+            try
+            {
+                await locationController.Get();
             }
             catch (Exception ex)
             {
