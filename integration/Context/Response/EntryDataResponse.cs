@@ -13,6 +13,8 @@ public class EntryDataResponse: DataResponse
     public LocationDataResponse location { get; set; }
     [JsonPropertyName("status_id")]
     public int status { get; set; } 
+    [JsonPropertyName("agreement")]
+    public Agreement? agreement { get; set; } 
     [JsonPropertyName("capacity")]
     public Capacity? Capacity { get; set; }
 
@@ -27,6 +29,11 @@ public class Capacity
 {
     [JsonPropertyName("capacity")] // Ожидает свойство "capacity" внутри объекта
     public float? volume { get; set; }
+}
+public class Agreement
+{
+    [JsonPropertyName("id")] 
+    public int id { get; set; }
 }
 
 

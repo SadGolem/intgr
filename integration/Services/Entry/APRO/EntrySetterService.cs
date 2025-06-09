@@ -24,13 +24,14 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
     
     public EntrySetterService(IHttpClientFactory httpClientFactory,
         ILogger<EntrySetterService> logger, IAuthorizer authorizer,
-        IOptions<AuthSettings> apiSettings, IEntryStorageService<EntryDataResponse> storageService) : base(httpClientFactory, logger, authorizer, apiSettings)
+        IOptions<AuthSettings> apiSettings, IEntryStorageService<EntryDataResponse> storageService, IMapper mapper) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _authorizer = authorizer;
-        _apiClientSettings = apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpoint;
+        _apiClientSettings = apiSettings.Value.MTconnect.BaseUrl+apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpoint;
         _storageService = storageService;
+        _mapper = mapper;
     }
 
     public async Task Set()

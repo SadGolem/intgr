@@ -7,7 +7,7 @@ using integration.Managers;
 public static class TimeManager
 {
     private const string DateTimeFormat = "o";
-    private static string timeZoneId = "Etc/GMT+1"; // TimeZoneId для GMT-1. ВНИМАНИЕ: Знак "+" инвертирован!
+    private static string timeZoneId = "Etc/GMT"; // TimeZoneId для GMT-1. ВНИМАНИЕ: Знак "+" инвертирован!
     private static FileManager _fileManager;
 
     static TimeManager()
