@@ -1,4 +1,5 @@
-﻿using integration.Context;
+﻿using System.Net;
+using integration.Context;
 using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
@@ -40,26 +41,26 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         await ProcessEntries(response);
     }
 
-    public async Task<Capacity> GetCapacity(EntryDataResponse entry)
+    public async Task GetCapacity(EntryDataResponse entry)
     {
         try
         {
             var endpoint = BuildEmitterEndpoint(true) + entry.BtNumber;
             var response = await Get(_httpClientFactory, endpoint);
-        
+
             if (response == null || !response.Any())
             {
                 _logger.LogWarning("Пустой ответ при получении capacity для {BtNumber}", entry.BtNumber);
-                return null;
+                return;
             }
-        
-            var capacity = response.FirstOrDefault()?.Capacity;
-            return capacity;
+            var res = response.FirstOrDefault();
+            entry.number = res?.number;
+            entry.Capacity = res?.Capacity;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при получении capacity для {BtNumber}", entry.BtNumber);
-            return new Capacity { volume = 1 }; 
+            return;
         }
     }
 
@@ -86,21 +87,15 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
                     continue;
                 }
 
-                data.Capacity = await GetCapacity(data);
-                ///// убрать потом!!!
-                data.Capacity = new Capacity();
-                data.Capacity.type = new Types();
-                data.Capacity.volume = 1;
-                data.Capacity.id = 1;
-                data.Capacity.type.id = 4;
-            
-            if (data.Capacity is null)
+                await GetCapacity(data);
+
+                if (data.Capacity is null)
                 {
                     _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует соглашение", data.BtNumber);
-                    Message($"Entry id {data.BtNumber} is not has a capacity." );
+                    Message($"Entry id {data.BtNumber} is not has a capacity.");
                     continue;
                 }
-                
+
                 data.idContainerType = ContainerFinder.FindContainerId(data.Capacity.id, data.Capacity.type.id);
                 data.statusString = StatusCoder.ToCorrectStatusEntryToMT(data);
                 bool isNew = status == EntryStatus.New;
@@ -129,9 +124,9 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
 
     private enum EntryStatus
     {
-        New, 
-        Updated, 
-        Outdated 
+        New,
+        Updated,
+        Outdated
     }
 
     private bool DetermineIsHasNotAAgreement(EntryDataResponse entry)

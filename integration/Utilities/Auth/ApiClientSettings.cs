@@ -10,6 +10,8 @@ public class ApiClientSettings
         public string UpdateLocationEndpoint { get; set; }
         public string EmitterEndopint { get; set; }
         public string EntryEndpoint { get; set; }
+        public string EntryEndpointCreate { get; set; }
+        public string EntryEndpointUpdate { get; set; }
         public string EntryEndpointCapacity { get; set; }
         public string LocationGetStatusAndPhotoEndpoint { get; set; }
 }

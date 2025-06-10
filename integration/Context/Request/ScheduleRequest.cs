@@ -2,7 +2,7 @@
 
 public class ScheduleRequest
 {
-    public int? idGabrageMaker { get; set; } 
+    public int? idWasteGenerator { get; set; } 
     public int? idLocation { get; set; } 
     public int? amount { get; set; } 
     public int? idContainerType { get; set; } 

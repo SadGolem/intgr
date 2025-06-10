@@ -51,7 +51,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => src.lon));
 
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
-            .ForMember(dest => dest.idGabrageMaker, opt => opt.MapFrom(src => src.emitter.id))
+            .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.id))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.emitter.amount))
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
@@ -63,7 +63,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.number ?? 0))
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
-            .ForMember(dest => dest.volume, opt => opt.MapFrom(src => src.Capacity.volume ?? 0))
+            .ForMember(dest => dest.volume, opt => opt.MapFrom(src => src.volume))
             .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.statusString))
             .ForMember(dest => dest.consumerName, opt => opt.MapFrom(src => src.location.participant.name ?? ""))
             .ForMember(dest => dest.planDateRO, opt => opt.MapFrom(src => src.PlanDateRO))
