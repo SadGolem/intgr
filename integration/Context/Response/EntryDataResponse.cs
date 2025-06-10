@@ -15,10 +15,17 @@ public class EntryDataResponse: DataResponse
     public int status { get; set; } 
     [JsonPropertyName("agreement")]
     public Agreement? agreement { get; set; } 
+    [JsonPropertyName("comment")]
+    public string? comment { get; set; } 
+    [JsonPropertyName("volume")]
+    public string volume { get; set; } 
     [JsonPropertyName("capacity")]
     public Capacity? Capacity { get; set; }
+    [JsonPropertyName("number")]
+    public int? number { get; set; }
+    public int? idContainerType { get; set; }
+    public string? statusString { get; set; }
 
-    
 }
 public class AuthorData
 {
@@ -27,10 +34,20 @@ public class AuthorData
 }
 public class Capacity
 {
-    [JsonPropertyName("capacity")] // Ожидает свойство "capacity" внутри объекта
+    [JsonPropertyName("capacity")] 
     public float? volume { get; set; }
+    [JsonPropertyName("id")] 
+    public int? id { get; set; }
+    [JsonPropertyName("type")] 
+    public Types type { get; set; }
+    
 }
 public class Agreement
+{
+    [JsonPropertyName("id")] 
+    public int id { get; set; }
+}
+public class Types
 {
     [JsonPropertyName("id")] 
     public int id { get; set; }

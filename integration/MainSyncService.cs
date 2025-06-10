@@ -60,7 +60,7 @@ namespace integration
                 //await SetStruct(_converterToStorageService);
                 await StartEntry(entryController);
                 //await CheckAndSendIntegrationToAPRO();
-                await GetMTLocation(locationController);
+                //await GetMTLocation(locationController);
                 
                 await SendAsync();
                 

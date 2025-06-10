@@ -33,6 +33,8 @@ using integration.Services.Emitter.Storage;
 using integration.Services.Entry;
 using integration.Services.Entry.MT.Storage;
 using integration.Services.Entry.Storage;
+using integration.Services.Location.fromMT;
+using integration.Services.Location.fromMT.Storage;
 using integration.Services.Storage.Interfaces;
 using integration.Structs;
 
@@ -50,6 +52,7 @@ builder.Services.AddScoped<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();
+builder.Services.AddSingleton<ILocationMTStorageService, LocationMTStorageService>();
 builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
 builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
@@ -79,6 +82,8 @@ builder.Services.AddTransient<IGetterServiceFactory<EmitterDataResponse>, Emitte
 builder.Services.AddTransient<IGetterService<EmitterDataResponse>, EmitterGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<EntryDataResponse>, EntryGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<EntryDataResponse>, EntryGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<LocationMTDataResponse>, LocationMTGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<LocationMTDataResponse>, LocationMTGetterService>();
 
 builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponse>, ContragentProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();

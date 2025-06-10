@@ -1,10 +1,13 @@
-﻿using integration.Helpers;
+﻿using integration.Context;
+using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Entry.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
+using integration.Utilities;
 using Microsoft.Extensions.Options;
+using Type = integration.Context.Type;
 
 namespace integration.Services.Entry;
 
@@ -86,15 +89,20 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
                 data.Capacity = await GetCapacity(data);
                 ///// убрать потом!!!
                 data.Capacity = new Capacity();
+                data.Capacity.type = new Types();
                 data.Capacity.volume = 1;
-
+                data.Capacity.id = 1;
+                data.Capacity.type.id = 4;
+            
             if (data.Capacity is null)
                 {
                     _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует соглашение", data.BtNumber);
                     Message($"Entry id {data.BtNumber} is not has a capacity." );
                     continue;
                 }
-
+                
+                data.idContainerType = ContainerFinder.FindContainerId(data.Capacity.id, data.Capacity.type.id);
+                data.statusString = StatusCoder.ToCorrectStatusEntryToMT(data);
                 bool isNew = status == EntryStatus.New;
                 _storageService.Set(data, isNew);
 

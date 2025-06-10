@@ -49,6 +49,7 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
     {
         foreach (var entry in _entriesData)
         {
+            var responce = _mapper.Map<EntryDataResponse, EntryRequest>(entry.Item1);
             if (entry.Item2)
                 await Post(_httpClientFactory,_apiClientSettings, _mapper.Map<EntryDataResponse,EntryRequest>(entry.Item1));
             else

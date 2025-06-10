@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using integration.Context;
+using integration.Context.MT;
 using integration.Context.Request;
 
 public class IntegrationMappingProfile : Profile
@@ -56,6 +57,20 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
             .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.LocationDataResponse.address))
             .ForMember(dest => dest.exportSchedule, opt => opt.MapFrom(src => src.gr_w));
+        
+        CreateMap<EntryDataResponse, EntryRequest>()
+            .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.BtNumber))
+            .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
+            .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.number ?? 0))
+            .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
+            .ForMember(dest => dest.volume, opt => opt.MapFrom(src => src.Capacity.volume ?? 0))
+            .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.statusString))
+            .ForMember(dest => dest.consumerName, opt => opt.MapFrom(src => src.location.participant.name ?? ""))
+            .ForMember(dest => dest.planDateRO, opt => opt.MapFrom(src => src.PlanDateRO))
+            .ForMember(dest => dest.creationDate, opt => opt.MapFrom(src => src.datetime_create.ToString("yyyy-MM-dd")))
+            .ForMember(dest => dest.type, opt => opt.MapFrom(src => "Заявка"))
+            .ForMember(dest => dest.commentByRO, opt => opt.MapFrom(src => src.comment ?? ""))
+            .ForMember(dest => dest.creator, opt => opt.MapFrom(src => src.Author.Name ?? ""));
     }
 
     private long SafeParseLong(string value)

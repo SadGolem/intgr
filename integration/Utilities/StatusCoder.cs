@@ -19,10 +19,9 @@ namespace integration.Context
         private static List<(string, string)> _statusEntryAPROtoMT = new List<(string, string)>
         {
             {( "Выполнено", "Выполена" )},
-            {( "Черновик", "Новая") },
             {( "Выполнено", "Закрыта" )},
             {( "Отменено", "Отменена") },
-            {( "Согласовано и принято в работу", "Передана перевозчику") },
+            {( "Согласовано и принято в работу", "Новая") },
         };
 
         private static List<(int Key, string Value)> _statusLocation = new List<(int Key, string Value)>
