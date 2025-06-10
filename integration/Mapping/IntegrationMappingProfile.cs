@@ -2,6 +2,7 @@
 using integration.Context;
 using integration.Context.MT;
 using integration.Context.Request;
+using integration.Context.Request.MT;
 
 public class IntegrationMappingProfile : Profile
 {
@@ -71,6 +72,10 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.type, opt => opt.MapFrom(src => "Заявка"))
             .ForMember(dest => dest.commentByRO, opt => opt.MapFrom(src => src.comment ?? ""))
             .ForMember(dest => dest.creator, opt => opt.MapFrom(src => src.Author.Name ?? ""));
+
+        CreateMap<EntryMTDataResponse, EntryMTRequest>()
+            .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.id))
+            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => src.status));
     }
 
     private long SafeParseLong(string value)

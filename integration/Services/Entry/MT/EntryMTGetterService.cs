@@ -11,7 +11,7 @@ namespace integration.Services.Entry.MT;
 
 public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGetterService<EntryMTDataResponse>
 {
-     private readonly string _connectionString;
+    private readonly string _connectionString;
     private readonly IOptions<AuthSettings> _apiSettings;
     private readonly ILogger<EntryMTGetterService> _logger;
     private IHttpClientFactory _httpClientFactory;
@@ -33,35 +33,55 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
     
     public async Task Get()
     {
-        var endpoint = BuildEmitterEndpoint();
-        var response = await Get(_httpClientFactory, endpoint);
-        GetNewEntry(response);
+        var endpoint = await BuildEmitterEndpoint();
+        try
+        {
+            var response = await Get(_httpClientFactory, endpoint);
+            await GetNewEntry(response);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.ToString());
+            throw;
+        }
     }
     
     private async Task GetNewEntry(List<EntryMTDataResponse> entry)
     {
-        var lastUpdate = TimeManager.GetLastUpdateTime("entryMT");
-
         foreach (var data in entry)
         {
             try
             {
-              //  var isNew = DetermineIfNew(data, lastUpdate);
                 _storageService.Set(data);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error processing entry {LocationId}", data.idAPRO);
+                _logger.LogError(ex, "Error processing entry {LocationId}", data.id);
             }
-        }
+        } 
         TimeManager.SetLastUpdateTime("entryMT");
     }
     
-    private string BuildEmitterEndpoint()
+    private async Task<string> BuildEmitterEndpoint()
     {
         string basePath;
-             basePath = _apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpoint;
-             basePath = new ConnectingStringApro(_apiSettings, basePath).GetAproConnectSettings();
+             basePath = _apiSettings.Value.MTconnect.BaseUrl +_apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpointGetFromMT + await GetDateTimeHalfHourAgo();
+
         return $"{basePath}";
+    }
+    
+    public async Task<string> GetDateTimeHalfHourAgo()
+    {
+        var lastUpdate = TimeManager.GetLastUpdateTime("entryMT");
+        DateTime halfHourAgo = lastUpdate.AddMinutes(30);
+    
+        // Создаем DateTimeOffset с исходным временем (предполагая, что оно в UTC)
+        DateTimeOffset dto = new DateTimeOffset(halfHourAgo, TimeSpan.Zero);
+    
+        // Применяем смещение +7 часов
+        DateTimeOffset inPlus7 = dto.ToOffset(TimeSpan.FromHours(7));
+    
+        // Форматируем результат (без указания смещения)
+        return inPlus7.ToString("yyyy-MM-ddTHH:mm:ss");
     }
 }

@@ -101,7 +101,6 @@ builder.Services.AddScoped<ICheckUpService<ScheduleDataResponse>, ScheduleCheckU
 builder.Services.AddScoped<ICheckUpFactory<LocationDataResponse>, LocationCheckUpFactory>();
 builder.Services.AddScoped<ICheckUpService<LocationDataResponse>, LocationCheckUpService>();
 
-
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<LocationController>();
 builder.Services.AddSingleton<ScheduleController>();

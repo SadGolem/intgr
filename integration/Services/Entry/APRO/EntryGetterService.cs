@@ -60,7 +60,6 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при получении capacity для {BtNumber}", entry.BtNumber);
-            return;
         }
     }
 

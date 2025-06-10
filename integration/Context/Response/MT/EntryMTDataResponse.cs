@@ -4,8 +4,8 @@ namespace integration.Context.MT;
 
 public class EntryMTDataResponse : DataResponse
 {
-    [JsonPropertyName("id")]
-    public int idAPRO { get; set; }
+    [JsonPropertyName("idAsuPro")]
+    public int id { get; set; }
     [JsonPropertyName("status")]
     public string? status { get; set; } 
 }

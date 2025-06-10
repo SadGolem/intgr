@@ -50,7 +50,8 @@ namespace integration
                 var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
-            
+
+                await GetMTLEntryStatus(entryController);
                 //await GetLocation(locationController);
                 //await GetContractPosition(contractPositionController);
                 //await GetContract(contractController);
@@ -58,6 +59,7 @@ namespace integration
                 //await GetEmitter(emitterController);
                 //await GetSchedule(scheduleController);
                 //await SetStruct(_converterToStorageService);
+                
                 await StartEntry(entryController);
                 //await CheckAndSendIntegrationToAPRO();
                 //await GetMTLocation(locationController);
@@ -89,6 +91,17 @@ namespace integration
             try
             {
                 await locationController.Get();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing schedule.");
+            }
+        }
+        private async Task GetMTLEntryStatus(EntryController entryController)
+        {
+            try
+            {
+                await entryController.GetMT();
             }
             catch (Exception ex)
             {
