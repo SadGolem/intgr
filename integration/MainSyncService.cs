@@ -61,14 +61,9 @@ namespace integration
                 await SetStruct(_converterToStorageService);
                 
                 await StartEntry(entryController);
-<<<<<<< HEAD
                 await CheckAndSendIntegrationToAPRO();
                 //await GetMTLocation(locationController);
                 
-=======
-                //await CheckAndSendIntegrationToAPRO();
-               
->>>>>>> parent of 9e2d2c2 (photo location)
                 await SendAsync();
                 
                 EmailMessageBuilder.ClearList();
@@ -91,7 +86,6 @@ namespace integration
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-<<<<<<< HEAD
         private async Task GetMTLocation(LocationController locationController)
         {
             try
@@ -114,8 +108,6 @@ namespace integration
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-=======
->>>>>>> parent of 9e2d2c2 (photo location)
         private async Task GetEmitter(EmitterController emitterController)
         {
             try

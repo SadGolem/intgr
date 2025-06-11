@@ -13,10 +13,7 @@ public class ApiClientSettings
         public string EntryEndpointCreate { get; set; }
         public string EntryEndpointUpdate { get; set; }
         public string EntryEndpointCapacity { get; set; }
-<<<<<<< HEAD
         public string EntryEndpointGetFromMT { get; set; }
         public string LocationGetStatusAndPhotoEndpoint { get; set; }
         public string EntryEndpointPATCH { get; set; }
-=======
->>>>>>> parent of 9e2d2c2 (photo location)
 }
