@@ -75,7 +75,7 @@ public class IntegrationMappingProfile : Profile
 
         CreateMap<EntryMTDataResponse, EntryMTRequest>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.id))
-            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => src.status));
+            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.GetStatusId(src.status ?? "")));
     }
 
     private long SafeParseLong(string value)

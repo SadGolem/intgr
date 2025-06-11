@@ -51,17 +51,17 @@ namespace integration
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                await GetMTLEntryStatus(entryController);
-                //await GetLocation(locationController);
-                //await GetContractPosition(contractPositionController);
-                //await GetContract(contractController);
-                //await GetClient(contragentController);
-                //await GetEmitter(emitterController);
-                //await GetSchedule(scheduleController);
-                //await SetStruct(_converterToStorageService);
+                //await GetMTLEntryStatus(entryController);
+                await GetLocation(locationController);
+                await GetContractPosition(contractPositionController);
+                await GetContract(contractController);
+                await GetClient(contragentController);
+                await GetEmitter(emitterController);
+                await GetSchedule(scheduleController);
+                await SetStruct(_converterToStorageService);
                 
                 await StartEntry(entryController);
-                //await CheckAndSendIntegrationToAPRO();
+                await CheckAndSendIntegrationToAPRO();
                 //await GetMTLocation(locationController);
                 
                 await SendAsync();

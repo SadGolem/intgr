@@ -141,7 +141,30 @@ namespace integration.Context
 
             return result;
         }
-        
+        public static int GetStatusId(string externalStatus)
+        {
+            string internalStatus = null;
+            foreach (var mapping in _statusEntryAPROtoMT)
+            {
+                if (mapping.Item1 == externalStatus)
+                {
+                    internalStatus = mapping.Item2;
+                    break;
+                }
+            }
+            
+            internalStatus ??= externalStatus;
+            
+            foreach (var entry in _statusEntryAPRO)
+            {
+                if (entry.Value == internalStatus)
+                {
+                    return entry.Key;
+                }
+            }
+
+            throw new KeyNotFoundException($"Статус '{internalStatus}' не найден в словаре");
+        }
         
         public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
         {
