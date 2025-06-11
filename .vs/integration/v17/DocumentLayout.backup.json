@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "C:\\Projects\\intgr\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\location\\locationsetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\location\\locationsetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\getterapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\getterapiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -37,6 +33,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\interfaces\\igetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\interfaces\\igetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\location\\locationsetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|solutionrelative:integration\\services\\location\\locationsetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7D51A5B7-82B3-4973-8161-99996919ECFD}|integration\\integration.csproj|c:\\projects\\intgr\\integration\\services\\interfaces\\isetterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -190,73 +190,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "IGetterServiceFactory.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
-              "RelativeDocumentMoniker": "integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
-              "RelativeToolTip": "integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-17T04:57:30.85Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "DataSetterServiceFactory.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\SET\\DataSetterServiceFactory.cs",
-              "RelativeDocumentMoniker": "integration\\Factory\\SET\\DataSetterServiceFactory.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Factory\\SET\\DataSetterServiceFactory.cs",
-              "RelativeToolTip": "integration\\Factory\\SET\\DataSetterServiceFactory.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-17T09:41:32.613Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LocationGetterService.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationGetterService.cs",
-              "RelativeDocumentMoniker": "integration\\Services\\Location\\LocationGetterService.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationGetterService.cs",
-              "RelativeToolTip": "integration\\Services\\Location\\LocationGetterService.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-14T06:49:04.993Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "GetterAPIService.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\GetterAPIService.cs",
-              "RelativeDocumentMoniker": "integration\\Services\\GetterAPIService.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\GetterAPIService.cs",
-              "RelativeToolTip": "integration\\Services\\GetterAPIService.cs",
-              "ViewState": "AgIAAC8AAAAAAAAAAAAuwG0AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-13T06:59:30.811Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "LocationSetterService.cs",
-              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationSetterService.cs",
-              "RelativeDocumentMoniker": "integration\\Services\\Location\\LocationSetterService.cs",
-              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationSetterService.cs",
-              "RelativeToolTip": "integration\\Services\\Location\\LocationSetterService.cs",
-              "ViewState": "AgIAAGYAAAAAAAAAAAAAAFMAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-17T09:47:24.171Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "ISetterServiceFactory.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\SET\\Interfaces\\ISetterServiceFactory.cs",
               "RelativeDocumentMoniker": "integration\\Factory\\SET\\Interfaces\\ISetterServiceFactory.cs",
@@ -268,7 +202,56 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
+              "Title": "IGetterServiceFactory.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
+              "RelativeDocumentMoniker": "integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
+              "RelativeToolTip": "integration\\Factory\\GET\\Interfaces\\IGetterServiceFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-17T04:57:30.85Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DataSetterServiceFactory.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\SET\\DataSetterServiceFactory.cs",
+              "RelativeDocumentMoniker": "integration\\Factory\\SET\\DataSetterServiceFactory.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Factory\\SET\\DataSetterServiceFactory.cs",
+              "RelativeToolTip": "integration\\Factory\\SET\\DataSetterServiceFactory.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-17T09:41:32.613Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LocationGetterService.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationGetterService.cs",
+              "RelativeDocumentMoniker": "integration\\Services\\Location\\LocationGetterService.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationGetterService.cs",
+              "RelativeToolTip": "integration\\Services\\Location\\LocationGetterService.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T06:49:04.993Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GetterAPIService.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\GetterAPIService.cs",
+              "RelativeDocumentMoniker": "integration\\Services\\GetterAPIService.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\GetterAPIService.cs",
+              "RelativeToolTip": "integration\\Services\\GetterAPIService.cs",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAuwG0AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T06:59:30.811Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "DataGetterServiceFactory.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\GET\\DataGetterServiceFactory.cs",
               "RelativeDocumentMoniker": "integration\\Factory\\GET\\DataGetterServiceFactory.cs",
@@ -280,7 +263,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "LocationGetterServiceFactory.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Factory\\GET\\LocationGetterServiceFactory.cs",
               "RelativeDocumentMoniker": "integration\\Factory\\GET\\LocationGetterServiceFactory.cs",
@@ -292,7 +275,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "IGetterService.cs",
               "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Interfaces\\IGetterService.cs",
               "RelativeDocumentMoniker": "integration\\Services\\Interfaces\\IGetterService.cs",
@@ -301,6 +284,18 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAMwAoAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-13T06:52:44.858Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LocationSetterService.cs",
+              "DocumentMoniker": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationSetterService.cs",
+              "RelativeDocumentMoniker": "integration\\Services\\Location\\LocationSetterService.cs",
+              "ToolTip": "C:\\Projects\\intgr\\integration\\Services\\Location\\LocationSetterService.cs",
+              "RelativeToolTip": "integration\\Services\\Location\\LocationSetterService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-17T09:47:24.171Z"
             },
             {
               "$type": "Document",
@@ -360,8 +355,7 @@
               "RelativeToolTip": "integration\\Controllers\\LocationController.cs",
               "ViewState": "AgIAAEUAAAAAAAAAAAAAAC0AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T02:28:14.408Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-04T02:28:14.408Z"
             },
             {
               "$type": "Document",
@@ -613,8 +607,7 @@
               "RelativeToolTip": "integration\\Controllers\\MT\\EntryController.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAYwC0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-27T06:16:42.84Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-27T06:16:42.84Z"
             },
             {
               "$type": "Document",
@@ -674,6 +667,10 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-13T01:58:01.456Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }

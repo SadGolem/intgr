@@ -46,6 +46,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         }
     }
     
+
     private async Task GetNewEntry(List<EntryMTDataResponse> entry)
     {
         foreach (var data in entry)
