@@ -78,11 +78,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 var emitter = response.FirstOrDefault();
                 emitter.amount = _positionStorage.GetPosOn_ID(id).value;
                 emitter.contractNumber = _positionStorage.GetPosOn_ID(id).number;
-                emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null 
-                    ? 0 
-                    : int.TryParse(_positionStorage.GetPosOn_ID(id).waste_site.ext_id, out int result) 
-                        ? result 
-                        : 0;
+                emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null ? 0 : _positionStorage.GetPosOn_ID(id).waste_site.ext_id;
                 emitter.executorName = _positionStorage.GetPosOn_ID(id)?.contract?.assignee?.name;
                 emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
                 emitter.contractStatus = _positionStorage.GetPosOn_ID(id).contract?.status?.Name;
