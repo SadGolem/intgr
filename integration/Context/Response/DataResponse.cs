@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using integration.Services.Integration;
 using integration.Services.Integration.Interfaces;
 
 namespace integration.Context
@@ -8,17 +7,7 @@ namespace integration.Context
     {
         [JsonPropertyName("datetime_create")] public DateTime datetime_create { get; set; }
         [JsonPropertyName("datetime_update")] public DateTime datetime_update { get; set; }
-        public int ext_id { get; set; }
 
-        public virtual int GetIntegrationExtId()
-        {
-            return ext_id;
-        }
-
-        public virtual void UpdateIntegrationId(int newId)
-        {
-            ext_id = newId;
-        }
     }
 
     public class Container
