@@ -8,27 +8,27 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.ContractPosition;
 
-public class ContractPositionGetterService : ServiceGetterBase<ContractPositionDataResponse>, IGetterService<ContractPositionDataResponse>
+public class ContractPositionGetterService(
+    IHttpClientFactory httpClientFactory,
+    ILogger<ContractPositionGetterService> logger,
+    IAuthorizer authorizer,
+    IOptions<AuthSettings> apiSettings,
+    ILocationIdService locationIdService, 
+    IContractPositionStorageService contractPositionStorageService )
+    : ServiceGetterBase<ContractPositionDataResponse>(httpClientFactory, logger, authorizer, apiSettings),
+        IGetterService<ContractPositionDataResponse>
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
-    private IContractPositionStorageService _contractPositionStorageService;
-    private List<int> _locationIdSList = new List<int>();
-    private ILocationIdService _locationIdService;
-    private string _aproConnect;
-    public ContractPositionGetterService(IHttpClientFactory httpClientFactory,
-        ILogger<ContractPositionGetterService> logger,
-        IAuthorizer authorizer,
-        IOptions<AuthSettings> apiSettings,
-        ILocationIdService locationIdService, 
-        IContractPositionStorageService contractPositionStorageService) : base(httpClientFactory, logger, authorizer, apiSettings)
-    {
-        _httpClientFactory = httpClientFactory;
-        _contractPositionStorageService = contractPositionStorageService;
-        _aproConnect = apiSettings.Value.APROconnect.BaseUrl +
-                       apiSettings.Value.APROconnect.ApiClientSettings.ContractPositionEndpoint;
-        _locationIdService = locationIdService;
-    }
+    private IContractPositionStorageService _contractPositionStorageService = contractPositionStorageService;
+    private List<int> _locationIdSList = new List<int>(); 
+    private readonly string _aproConnect ="https://test.asu2.big3.ru/api/wf__contract_position_emitter__contract_position_takeout/?waste_site=1270125" +
+                                          "&query={id,number,status{id,name},contract{id,name,status{id,name},root_id,participant{id,name,short_name," +
+                                          " inn,kpp,ogrn,root_company ,waste_person, doc_type{name}}},waste_source{id,name,waste_source_category{name},address, " +
+                                          "normative_unit_value_exist, participant{id,name},status{id,name}, author{name}},waste_site{id,participant{id}," +
+                                          "address, author{name}, lat,lon,status{id},datetime_create, datetime_update}" +
+                                          ",estimation_value,value,value_manual,date_end,date_start}&ordering=-id&approximate_count=1&status_id=153";
+
     public async Task Get()
     { 
         GetLocationsId();
@@ -55,7 +55,7 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
 
     private void GetLocationsId()
     {
-        _locationIdSList = _locationIdService?.GetLocationIds() ?? _locationIdSList;
+        _locationIdSList = locationIdService?.GetLocationIds() ?? _locationIdSList;
     }
     public void Message(string ex)
     {

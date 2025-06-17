@@ -38,6 +38,7 @@ public class EmitterProcessor : IIntegrationProcessor<EmitterDataResponse>
                 var response = await _apiClientService.SendAsync<EmitterDataResponse, EmitterDataResponse>(
                     entity, url, method);
                 
+                entity.UpdateIntegrationId(response.ext_id);
             }
             else
             {
