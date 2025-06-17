@@ -25,7 +25,7 @@ public class EmitterCheckUpService : IEmitterCheckUpService
             return false;
         }
 
-        if (emitter.client == null)
+        if (emitter.participant == null)
         {
             Message($"{idLocation} - in emitter client is not found");
             return false;

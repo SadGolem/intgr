@@ -31,7 +31,7 @@ public class IntegrationMappingProfile : Profile
 
         CreateMap<EmitterDataResponse, EmitterRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
-            .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.client.id))
+            .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.participant.id))
             .ForMember(dest => dest.idConsumerType, opt => opt.MapFrom(src => src.typeConsumer))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => SafeParseInt(src.amount)))
             .ForMember(dest => dest.consumerAddress, opt => opt.MapFrom(src => src.address))

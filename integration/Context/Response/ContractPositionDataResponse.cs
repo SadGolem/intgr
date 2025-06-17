@@ -4,167 +4,38 @@ using integration.Context;
 public class ContractPositionDataResponse : DataResponse
 {
     [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
     
     [JsonPropertyName("number")]
-    public string Number { get; set; } = null!;
+    public string number { get; set; }  // Исправлено: должно быть "number" вместо "name"
     
-    [JsonPropertyName("estimation_value")]
-    public double? EstimationValue { get; set; }
-    
-    [JsonPropertyName("value")]
-    public double? Value { get; set; }
-    
-    [JsonPropertyName("value_manual")]
-    public double? ValueManual { get; set; }
-    
-    [JsonPropertyName("date_start")]
-    public string DateStart { get; set; } = null!;
-    
-    [JsonPropertyName("date_end")]
-    public string DateEnd { get; set; } = null!;
-    
-    [JsonPropertyName("contract")]
-    public ContractDataResponse Contract { get; set; } = null!;
-    
-    [JsonPropertyName("waste_site")]
-    public WasteSite WasteSite { get; set; } = null!;
-    
+    [JsonPropertyName("status")]
+    public Status status { get; set; }
+
     [JsonPropertyName("waste_source")]
-    public WasteSource WasteSource { get; set; } = null!;
-    
-    [JsonPropertyName("status")]
-    public Status Status { get; set; } = null!;
-}
+    public EmitterDataResponse waste_source { get; set; }
 
-public class ContractDataResponse
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    
-    [JsonPropertyName("root_id")]
-    public string RootId { get; set; } = null!;
-    
-    [JsonPropertyName("participant")]
-    public Participant Participant { get; set; } = null!;
-    
-    [JsonPropertyName("status")]
-    public Status Status { get; set; } = null!;
-    
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
-}
+    [JsonPropertyName("waste_site")]
+    public LocationDataResponse waste_site { get; set; }
 
-public class WasteSite
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    
-    [JsonPropertyName("datetime_create")]
-    public DateTime DatetimeCreate { get; set; }
-    
-    [JsonPropertyName("datetime_update")]
-    public DateTime DatetimeUpdate { get; set; }
-    
-    [JsonPropertyName("lon")]
-    public double Lon { get; set; }
-    
-    [JsonPropertyName("lat")]
-    public double Lat { get; set; }
-    
-    [JsonPropertyName("address")]
-    public string Address { get; set; } = null!;
-    
-    [JsonPropertyName("author")]
-    public Author Author { get; set; } = null!;
-    
-    [JsonPropertyName("participant")]
-    public Participant? Participant { get; set; }
-    
-    [JsonPropertyName("status")]
-    public Status Status { get; set; } = null!;
-}
+    [JsonPropertyName("value")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? value { get; set; }  // Изменен тип на double?
 
-public class WasteSource
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    
-    [JsonPropertyName("address")]
-    public string Address { get; set; } = null!;
-    
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
-    
-    [JsonPropertyName("author")]
-    public Author Author { get; set; } = null!;
-    
-    [JsonPropertyName("participant")]
-    public Participant Participant { get; set; } = null!;
-    
-    [JsonPropertyName("waste_source_category")]
-    public WasteSourceCategory WasteSourceCategory { get; set; } = null!;
-    
-    [JsonPropertyName("status")]
-    public Status Status { get; set; } = null!;
-    
-    [JsonPropertyName("normative_unit_value_exist")]
-    public bool NormativeUnitValueExist { get; set; }
-}
+    [JsonPropertyName("value_manual")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? value_manual { get; set; }  // Изменен тип на double?
 
-public class Status
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    
-    [JsonPropertyName("name")]
-    public string? Name { get; set; }
-}
+    [JsonPropertyName("contract")]
+    public ContractDataResponse contract { get; set; }
 
-public class Participant
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
-    
-    [JsonPropertyName("short_name")]
-    public string? ShortName { get; set; }
-    
-    [JsonPropertyName("inn")]
-    public string? Inn { get; set; }
-    
-    [JsonPropertyName("kpp")]
-    public string? Kpp { get; set; }
-    
-    [JsonPropertyName("ogrn")]
-    public string? Ogrn { get; set; }
-    
-    [JsonPropertyName("doc_type")]
-    public DocType? DocType { get; set; }
-    
-    [JsonPropertyName("root_company")]
-    public object? RootCompany { get; set; }
-    
-    [JsonPropertyName("waste_person")]
-    public object? WastePerson { get; set; }
-}
+    [JsonPropertyName("estimation_value")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? estimation_value { get; set; }  // Изменен тип на double?
 
-public class Author
-{
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
-}
+    [JsonPropertyName("date_start")]
+    public string date_start { get; set; }  // Исправлено имя свойства
 
-public class WasteSourceCategory
-{
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
-}
-
-public class DocType
-{
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
+    [JsonPropertyName("date_end")]
+    public string date_end { get; set; }  // Исправлено имя свойства
 }

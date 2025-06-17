@@ -76,7 +76,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 var endpoint = BuildEmitterEndpoint(id.ToString());
                 var response = await Get(_httpClientFactory, endpoint);
                 var emitter = response.FirstOrDefault();
-                emitter.amount = _positionStorage.GetPosOn_ID(id).value;
+                emitter.amount = _positionStorage.GetPosOn_ID(id).value.Value.ToString();
                 emitter.contractNumber = _positionStorage.GetPosOn_ID(id).number;
                 emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null 
                     ? 0 

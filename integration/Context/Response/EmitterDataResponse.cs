@@ -12,12 +12,8 @@ namespace integration.Context
         public int ext_id { get; set; }
         [JsonPropertyName("name")]
         public string name { get; set; }
-        [JsonPropertyName("participant")]
-        public ClientContact client { get; set; }
         [JsonPropertyName("address")]
         public string address { get; set; }
-        [JsonPropertyName("normative_unit_value_exist")]
-        public bool normative { get; set; }
         [JsonPropertyName("status")]
         public Status status { get; set; }
         [JsonPropertyName("author")]
@@ -30,13 +26,20 @@ namespace integration.Context
         public string contractStatus { get; set; }
         public string typeConsumer { get; set; }
         public string nameConsumer { get; set; }
-        [JsonPropertyName("waste_source_categoty")]
-        public EmitterCategory emitterCategory { get; set; }
+        
+        [JsonPropertyName("normative_unit_value_exist")]
+        public bool normative { get; set; }  // Новое свойство
 
-        public class EmitterCategory
+        [JsonPropertyName("waste_source_category")]
+        public WasteSourceCategory waste_source_category { get; set; }  // Исправлено имя
+
+        [JsonPropertyName("participant")]
+        public ClientContact participant { get; set; }  // Изменен тип
+
+        public class WasteSourceCategory
         {
-            [JsonPropertyName("name")] 
-            public string name { get; set; } // Добавлен public
+            [JsonPropertyName("name")]
+            public string name { get; set; }
         }
     }
 }

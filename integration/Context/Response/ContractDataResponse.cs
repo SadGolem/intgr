@@ -12,8 +12,9 @@ public class ContractDataResponse : DataResponse
     public Status status { get; set; }
     [JsonPropertyName("root_id")]
     public string root_id { get; set; }
-    [JsonPropertyName("participant")]
-    public ClientDataResponse client { get; set; }
+    
+    [JsonPropertyName("client_entity")]
+    public ClientDataResponse client { get; set; } 
     [JsonPropertyName("contract_type")]
     public ContractType contractType { get; set; }
     [JsonPropertyName("assignee")]
