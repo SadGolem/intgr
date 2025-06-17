@@ -2,4 +2,6 @@
 
 public interface IIntegratableEntity
 {
+    int GetIntegrationExtId();
+    void UpdateIntegrationId(int newId);
 }

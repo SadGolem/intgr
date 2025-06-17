@@ -17,7 +17,6 @@ namespace integration.Context
         [JsonPropertyName("dates")]
         public string[] dates { get; set; }
 
-        public string? ext_id;
         public EmitterDataResponse? emitter { get; set; }
         public LocationDataResponse? LocationDataResponse { get; set; }
         public int idContainerType { get; set; }

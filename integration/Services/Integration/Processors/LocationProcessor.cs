@@ -25,9 +25,7 @@ public class LocationProcessor : IIntegrationProcessor<LocationDataResponse>
     {
         if (entity == null) return;
         
-        var isNew = !string.IsNullOrEmpty(entity.ext_id) && 
-                    int.TryParse(entity.ext_id, out int parsedExtId) && 
-                    parsedExtId == 0;
+        var isNew = entity.ext_id == 0;
         var endpoint = isNew 
             ? "api/v2/location/create_from_asupro" 
             : "api/v2/location/update_from_asupro";
@@ -42,6 +40,7 @@ public class LocationProcessor : IIntegrationProcessor<LocationDataResponse>
                 var response = await _apiClientService.SendAsync<LocationDataResponse, LocationDataResponse>(
                     entity, url, method);
                 
+                entity.UpdateIntegrationId(response.id);
             }
             else
             {

@@ -191,6 +191,19 @@ namespace integration
             }
            
         }
+
+        private async Task StartEmitter(ContractController contractController)
+        {
+            /*try
+            {
+                await contractController.SyncEmitter();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing emitters.");
+            }*/
+        }
+    
         private async Task StartEntry(EntryController entryController)
         {
             try
@@ -203,6 +216,29 @@ namespace integration
                 _logger.LogError(ex, "An error occurred while syncing data.");
             }
         }
+
+        private async Task ProcessEntry(EntryDataResponse wasteDataResponse, EntryController entryController, bool isNew)
+        {
+            try
+            {
+                if (wasteDataResponse.BtNumber == 0)
+                {
+                    _logger.LogError($"No ID found: {wasteDataResponse.BtNumber}");
+                    return;
+                }
+                /*
+                if (isNew)
+                    await entryController.ProcessEntryPatchData(wasteDataResponse);
+                else { await entryController.ProcessEntryPatchData(wasteDataResponse); }
+                */
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error processing data with id: {wasteDataResponse.BtNumber}");
+            }
+        }
+
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("DataSyncService is stopping.");
