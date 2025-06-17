@@ -16,4 +16,5 @@ public class ApiClientSettings
         public string EntryEndpointGetFromMT { get; set; }
         public string LocationGetStatusAndPhotoEndpoint { get; set; }
         public string EntryEndpointPATCH { get; set; }
+        public string ContractPositionEndpoint{ get; set; }
 }

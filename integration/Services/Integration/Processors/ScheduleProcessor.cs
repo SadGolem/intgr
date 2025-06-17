@@ -23,7 +23,8 @@ public class ScheduleProcessor : IIntegrationProcessor<ScheduleDataResponse>
 
     public async Task ProcessAsync(ScheduleDataResponse entity)
     {
-        var isNew = entity.ext_id == 0;
+        var isNew = int.TryParse(entity.ext_id, out int result) ? result != 0 : true;
+        
         var endpoint = isNew 
             ? "api/v2/export_schedule/create_from_asupro" 
             : "api/v2/export_schedule/edit_from_asupro";
@@ -38,7 +39,6 @@ public class ScheduleProcessor : IIntegrationProcessor<ScheduleDataResponse>
                 var response = await _apiClientService.SendAsync<ScheduleDataResponse, ScheduleDataResponse>(
                     entity, url, method);
                 
-                entity.UpdateIntegrationId(response.ext_id);
             }
             else
             {
@@ -48,7 +48,7 @@ public class ScheduleProcessor : IIntegrationProcessor<ScheduleDataResponse>
         catch (Exception ex)
         {
             _logger.LogError(ex, 
-                $"Error processing schedule with ID: {entity.ext_id}");
+                $"Error processing schedule with ID: {entity.id_oob}");
             throw;
         }
     }
