@@ -32,7 +32,7 @@ namespace integration.Services.Location
             
             _aproConnect = new ConnectingStringApro(
                 _configuration,
-                "wf__waste_site__waste_site/?query={id,datetime_create,datetime_update,lon,lat,address,status_id,ext_id,participant{id,name}}"
+                "wf__waste_site__waste_site/?query={id,datetime_create,datetime_update,lon,lat,address,status_id,ext_id_2,participant{id,name}}"
             );
 
             _jsonOptions = new JsonSerializerOptions
