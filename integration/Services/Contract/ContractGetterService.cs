@@ -39,9 +39,7 @@ public class ContractGetterService
         _contractPositionStorageService = contractPositionStorageService;
         _contractStorageService = contractStorageService;
         _aproConnect = apiSettings.Value.APROconnect.BaseUrl +
-                       "wf__contract__contract_takeout/?query={id,name,status{id,name},contract_type{name}," +
-                       " root_id,participant{id,name,short_name, inn,kpp, ogrn, root_company ,waste_person," +
-                       "doc_type{name}},assignee{id,name}, v_order}&v_order=0&root_id=";
+                       apiSettings.Value.APROconnect.ApiClientSettings.ContractEndpoint;
     }
 
     public async Task Get()
