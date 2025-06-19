@@ -89,6 +89,7 @@ builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponse>, Contragent
 builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<LocationDataResponse>, LocationProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<ScheduleDataResponse>, ScheduleProcessor>();
+builder.Services.AddScoped<IAproClientService, AproClientService>();
 
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();

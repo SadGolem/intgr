@@ -6,12 +6,17 @@ using Microsoft.Extensions.Options;
 namespace integration.Services.Integration;
 public interface IApiClientService
 {
-    Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, string url, HttpMethod method)
-        where TRequest : class
-        where TResponse : class;
+
+        Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, string url, HttpMethod method)
+            where TRequest : class
+            where TResponse : class;
     
-    Task SendAsync<TRequest>(TRequest request, string url, HttpMethod method)
-        where TRequest : class;
+        Task SendAsync<TRequest>(TRequest request, string url, HttpMethod method)
+            where TRequest : class;
+        
+        Task<string> SendAndGetStringAsync<TRequest>(TRequest request, string url, HttpMethod method)
+            where TRequest : class;
+    
 }
 public class ApiClientService : HttpServiceBase, IApiClientService
 {
@@ -41,5 +46,12 @@ public class ApiClientService : HttpServiceBase, IApiClientService
         where TRequest : class
     {
         await base.SendAsync(url, method, request);
+    }
+
+    public async Task<string> SendAndGetStringAsync<TRequest>(TRequest request, string url, HttpMethod method)
+        where TRequest : class
+    {
+        var response = await base.SendAsync(url, method, request);
+        return await response.Content.ReadAsStringAsync();
     }
 }

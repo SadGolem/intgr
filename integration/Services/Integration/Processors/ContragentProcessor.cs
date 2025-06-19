@@ -1,27 +1,32 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
 using integration.Helpers.Auth;
+using integration.Services.Integration;
 using integration.Services.Integration.Interfaces;
 using Microsoft.Extensions.Options;
-
-namespace integration.Services.Integration.Processors;
 
 public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
 {
     private readonly IApiClientService _apiClientService;
+    private readonly IAproClientService _aproClientService; // Новый сервис для работы с АСУ ПРО
     private readonly string _baseUrl;
+    private readonly string _aproBaseUrl; // Базовый URL АСУ ПРО
     private readonly ILogger<ContragentProcessor> _logger;
-    private IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public ContragentProcessor(
-        IApiClientService apiClientService, 
-        IOptions<AuthSettings> mtSettings,
+        IApiClientService apiClientService,
+        IAproClientService aproClientService,
+        IOptions<AuthSettings> apiSettings, 
         ILogger<ContragentProcessor> logger,
         IMapper mapper)
     {
         _apiClientService = apiClientService;
-        _baseUrl = mtSettings.Value.MTconnect.BaseUrl;
+        _aproClientService = aproClientService;
+        _baseUrl = apiSettings.Value.MTconnect.BaseUrl;
+        _aproBaseUrl = apiSettings.Value.APROconnect.BaseUrl;
         _logger = logger;
         _mapper = mapper;
     }
@@ -41,18 +46,53 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
         {
             if (isNew)
             {
-                var response = await _apiClientService.SendAsync<ClientRequest, ClientRequest>(
+                string response = await _apiClientService.SendAndGetStringAsync<ClientRequest>(
                     entityRequest, url, method);
+            
+                var mtId = ParseMtIdFromResponse(response);
+                UpdateAproEntity(entity.idAsuPro, mtId.Value );
             }
             else
             {
-                await _apiClientService.SendAsync(entity, url, method);
+                // Existing update logic remains unchanged
+                await _apiClientService.SendAsync(entityRequest, url, method);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, 
                 $"Error processing contragent with ID: {entity.GetIntegrationExtId()}");
+            throw;
+        }
+    }
+
+    private int? ParseMtIdFromResponse(string response)
+    {
+        // Парсим ответ вида "Consumer 423 has created with id 300028"
+        var match = Regex.Match(response, @"id (\d+)$");
+        if (match.Success && int.TryParse(match.Groups[1].Value, out int id))
+        {
+            return id;
+        }
+        return null;
+    }
+
+    private async Task UpdateAproEntity(int aproId, int mtId)
+    {
+        try
+        {
+
+            var aproEndpoint = _aproBaseUrl + $"wf__participant__fl/{aproId}/";
+            
+            var updateRequest = new { ext_id = mtId };
+            
+            await _aproClientService.PatchAsync(aproEndpoint, updateRequest);
+            
+            _logger.LogInformation($"Updated ASU PRO entity {aproId} with MT ID {mtId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error updating ASU PRO entity {aproId}");
             throw;
         }
     }
