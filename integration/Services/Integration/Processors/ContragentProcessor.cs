@@ -33,7 +33,7 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
 
     public async Task ProcessAsync(ClientDataResponse entity)
     {
-        var isNew = entity.GetIntegrationExtId() == 0;
+        var isNew = entity.ext_id == null;
         var endpoint = isNew 
             ? "api/v2/consumer/create_from_asupro" 
             : "api/v2/consumer/update_from_asupro";
@@ -60,7 +60,7 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
         catch (Exception ex)
         {
             _logger.LogError(ex, 
-                $"Error processing contragent with ID: {entity.GetIntegrationExtId()}");
+                $"Error processing contragent with ID: {entity.ext_id}");
             throw;
         }
     }

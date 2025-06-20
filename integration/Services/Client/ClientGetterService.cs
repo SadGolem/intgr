@@ -90,7 +90,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
                 var type = pos.contract.contractType.name;
                 client.type_ka = StatusCoder.GetTypeContragent(type);
                 client.doc_type = pos.contract.client.doc_type;
-                client.address = pos.contract.client.address;
+                client.address = pos.waste_site.address;
                 
             }
         }
