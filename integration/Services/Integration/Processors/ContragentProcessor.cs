@@ -50,11 +50,10 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
                     entityRequest, url, method);
             
                 var mtId = ParseMtIdFromResponse(response);
-                UpdateAproEntity(entity.idAsuPro, mtId.Value );
+                await UpdateAproEntity(entity.idAsuPro, mtId.Value, entity.doc_type.name == "Юридические лица");
             }
             else
             {
-                // Existing update logic remains unchanged
                 await _apiClientService.SendAsync(entityRequest, url, method);
             }
         }
@@ -68,7 +67,6 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
 
     private int? ParseMtIdFromResponse(string response)
     {
-        // Парсим ответ вида "Consumer 423 has created with id 300028"
         var match = Regex.Match(response, @"id (\d+)$");
         if (match.Success && int.TryParse(match.Groups[1].Value, out int id))
         {
@@ -77,18 +75,20 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
         return null;
     }
 
-    private async Task UpdateAproEntity(int aproId, int mtId)
+    private async Task UpdateAproEntity(int aproId, int mtId, bool isLegalEntity)
     {
         try
         {
-
-            var aproEndpoint = _aproBaseUrl + $"wf__participant__fl/{aproId}/";
-            
+            string endpointPath = isLegalEntity 
+                ? $"wf__participant__legal_entity/{aproId}/" 
+                : $"wf__participant__fl/{aproId}/";
+        
+            var aproEndpoint = _aproBaseUrl + endpointPath;
             var updateRequest = new { ext_id = mtId };
-            
+        
             await _aproClientService.PatchAsync(aproEndpoint, updateRequest);
-            
-            _logger.LogInformation($"Updated ASU PRO entity {aproId} with MT ID {mtId}");
+        
+            _logger.LogInformation($"Updated ASU PRO {aproId} ({(isLegalEntity ? "Юр.лицо" : "Физ.лицо")}) with MT ID {mtId}");
         }
         catch (Exception ex)
         {

@@ -43,9 +43,9 @@ public class ServiceSetterBase<T> : ServiceBase
         }
     }
     
-    public async Task Patch(IHttpClientFactory _httpClientFactory, string _connect, object mappedData)
+    public async Task Patch(IHttpClientFactory _httpClientFactory, string _connect, object mappedData, bool isApro)
     {
-        var client = await Authorize(false);
+        var client = await Authorize(isApro);
         try
         {
             var jsonBody = JsonSerializer.Serialize(mappedData);

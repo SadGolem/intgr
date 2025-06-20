@@ -70,9 +70,9 @@ public class ConverterToStorageService : IConverterToStorageService
         LocationDataResponse locationDatasResponse = new LocationDataResponse();
 
         int idPos = context.id;
-        contractDatas.Add(context.contract);
+        contractDatas = contracts;
         emitterDatas.Add(context.waste_source);
-        clientDatas.Add(context.contract.client);
+        clientDatas = clients;
         locationDatasResponse = context.waste_site;
         foreach (var schedule in scheduleDatas)
         {

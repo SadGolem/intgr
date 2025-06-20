@@ -47,8 +47,8 @@ builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthS
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
 
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IAuthorizer, Authorizer>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();

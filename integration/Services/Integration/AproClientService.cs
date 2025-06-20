@@ -1,34 +1,39 @@
 ﻿using System.Text;
 using System.Text.Json;
+using integration;
+using integration.Helpers.Auth;
+using integration.Helpers.Interfaces;
+using integration.Services;
+using integration.Services.Location;
+using Microsoft.Extensions.Options;
 
 public interface IAproClientService
 {
     Task PatchAsync(string url, object data);
 }
 
-public class AproClientService : IAproClientService
+public class AproClientService :ServiceSetterBase<AproClientService>, IAproClientService
 {
-    private readonly HttpClient _httpClient;
     private readonly ILogger<AproClientService> _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IAuthorizer _authorizer;
+    private readonly AuthSettings _apiSettings;
 
-    public AproClientService(HttpClient httpClient, ILogger<AproClientService> logger)
+    public AproClientService(IHttpClientFactory httpClientFactory, ILogger<AproClientService> logger, IAuthorizer authorizer, IOptions<AuthSettings> apiSettings) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
-        _httpClient = httpClient;
+        _httpClientFactory = httpClientFactory;
         _logger = logger;
+        _authorizer = authorizer;
+        _apiSettings = apiSettings.Value;
     }
 
     public async Task PatchAsync(string url, object data)
     {
-        var json = JsonSerializer.Serialize(data);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        
-        var response = await _httpClient.PatchAsync(url, content);
-        
-        if (!response.IsSuccessStatusCode)
-        {
-            var errorContent = await response.Content.ReadAsStringAsync();
-            _logger.LogError($"PATCH to {url} failed: {response.StatusCode}. Response: {errorContent}");
-            throw new HttpRequestException($"Request failed with status {response.StatusCode}");
-        }
+        /*var json = JsonSerializer.Serialize(data);
+        var content = new StringContent(json, Encoding.UTF8, "application/json"); 
+        using var _httpClient = await Authorize(true);*/
+
+        await Patch(_httpClientFactory, url, data, true);
+
     }
 }

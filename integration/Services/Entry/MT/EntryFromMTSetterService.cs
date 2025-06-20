@@ -53,7 +53,7 @@ public class EntryFromMTSetterService: ServiceSetterBase<EntryMTRequest>, ISette
             var responce = _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1);
 
                 await Patch(_httpClientFactory, _connectionString,
-                    _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1));
+                    _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1), true);
         }
     }
 

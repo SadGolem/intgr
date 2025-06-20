@@ -26,7 +26,6 @@ namespace integration.Context
         };
 
 
-
         private static List<(int Key, string Value)> _statusLocation = new List<(int Key, string Value)>
         {
             ( 52, "Новая" ),
@@ -165,7 +164,26 @@ namespace integration.Context
 
             throw new KeyNotFoundException($"Статус '{internalStatus}' не найден в словаре");
         }
-        
+
+        public static string GetTypeContragent(string key)
+        {
+            var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["по 44 ФЗ(Бюджет)"] = "consumer_phy",
+                ["АДМИНИСТРАЦИЯ"] = "consumer_org",
+                ["БЮДЖЕТНАЯ ОРГАНИЗАЦИЯ"] = "consumer_budget_org",
+                ["МКД С УК"] = "consumer_mfh_direct",
+                ["ОРГАНИЗАЦИЯ"] = "consumer_org",
+                ["по 223 ФЗ"] = "consumer_phy",
+                ["ЮЛ"] = "consumer_person",
+                ["ИП"] = "consumer_person",
+                ["ФЛ - коммерческое помещение"] = "consumer_phy",
+                ["ФЛ - жилое помещение"] = "consumer_phy",
+                ["Управляющая организация (ТСЖ, ЖСК, иное) - помещения МКД"] = "consumer_org"
+            };
+
+            return mapping.TryGetValue(key, out var value) ? value : null;
+        }
         public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
         {
             int status = wasteDataResponse.status;

@@ -15,14 +15,14 @@ public class IntegrationMappingProfile : Profile
                 SafeParseLong(src.inn)))
             .ForMember(dest => dest.kpp, opt => opt.MapFrom(src => 
                 SafeParseInt(src.kpp)))
-            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.mailAddress))
+            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
             .ForMember(dest => dest.bik, opt => opt.MapFrom(src => 
                 SafeParseLong(src.bik)))
             .ForMember(dest => dest.mailAddress, opt => opt.MapFrom(src => src.mailAddress))
             .ForMember(dest => dest.ogrn, opt => opt.MapFrom(src => 
                 SafeParseLong(src.ogrn)))
             .ForMember(dest => dest.consumerType, opt => opt.MapFrom(src => 
-                src.doc_type != null ? src.doc_type.name : null))
+                src.type_ka))
             .ForMember(dest => dest.idPerson, opt => opt.MapFrom(src => 
                 SafeParseInt(src.person_id)))
             .ForMember(dest => dest.idBoss, opt => opt.MapFrom(src => src.boss.id))

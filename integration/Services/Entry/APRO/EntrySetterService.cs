@@ -56,7 +56,7 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
             else
             {
                 await Patch(_httpClientFactory, _apiClientSettingsUpdate,
-                    _mapper.Map<EntryDataResponse, EntryRequest>(entry.Item1));
+                    _mapper.Map<EntryDataResponse, EntryRequest>(entry.Item1), false);
             }
         }
     }

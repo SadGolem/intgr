@@ -16,6 +16,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
     private readonly APROconnectSettings _apiSettings;
     private readonly ILogger<ClientGetterService> _logger;
     private IHttpClientFactory _httpClientFactory;
+    private List<ContractPositionDataResponse> _positions;
 
     public ClientGetterService(
         IHttpClientFactory httpClientFactory,
@@ -52,9 +53,9 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
     }
 
     private async Task<IEnumerable<ClientIdentifier>> GetClientIdentifiers()
-    {
-        var positions = _positionStorage.Get();
-        return positions.Select(p => new ClientIdentifier(
+    { 
+        _positions = _positionStorage.Get();
+        return _positions.Select(p => new ClientIdentifier(
             p.contract.client.idAsuPro,
             p.contract.client.doc_type.name
         )).Distinct();
@@ -69,11 +70,30 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
             var client = await FetchClientDataAsync(clientId);
             if (client != null)
             {
+                await GetTypeKA(client);
                 clients.Add(client);
             }
         }
 
+        
+        
+
         return clients;
+    }
+
+    private async Task GetTypeKA(ClientDataResponse client)
+    {
+        foreach (var pos in _positions)
+        {
+            if (client.idAsuPro == pos.contract.client.idAsuPro)
+            {
+                var type = pos.contract.contractType.name;
+                client.type_ka = StatusCoder.GetTypeContragent(type);
+                client.doc_type = pos.contract.client.doc_type;
+                client.address = pos.contract.client.address;
+                
+            }
+        }
     }
 
     private async Task<ClientDataResponse> FetchClientDataAsync(ClientIdentifier clientId)

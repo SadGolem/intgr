@@ -32,7 +32,8 @@ namespace integration.Context
         public string person_id {get; set;}
         [JsonPropertyName("doc_type")]
         public Doc_type doc_type { get; set; }
-        
+        public string type_ka { get; set; }
+        public string address { get; set; }
         public class Doc_type
         {
             [JsonPropertyName("name")]
