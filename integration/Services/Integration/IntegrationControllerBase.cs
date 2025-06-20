@@ -9,14 +9,17 @@ namespace integration.Services.Integration;
 [Route("api/[controller]")]
 public class IntegrationControllerBase : ControllerBase
 {
-    private readonly ICheckUpService<ClientDataResponse> _checkUpService; // Change to ClientDataResponse
-    private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientDataResponse
+    private readonly ICheckUpService<ClientDataResponse> _checkUpServiceClient; 
+    private readonly ICheckUpService<EmitterDataResponse> _checkUpServiceEmitter; 
+    private readonly ICheckUpService<LocationDataResponse> _checkUpServiceLocation; 
+    private readonly ICheckUpService<ScheduleDataResponse> _checkUpServiceSchedule; 
+    private readonly ILogger<ControllerBase> _logger; 
 
     public IntegrationControllerBase(
         ILogger<IntegrationControllerBase> logger,
-        ICheckUpFactory<ClientDataResponse> checkUpFactory) // Change to ClientDataResponse
+        ICheckUpFactory<ClientDataResponse> checkUpFactory) 
     {
-        _checkUpService = checkUpFactory.Create();
+        _checkUpServiceClient = checkUpFactory.Create();
         _logger = logger;
     }
 
@@ -38,16 +41,45 @@ public class IntegrationControllerBase : ControllerBase
 
     private async Task<IActionResult> Check(IntegrationStruct _struct)
     {
-        var item = _checkUpService.Check(_struct);
-        if (item.Item1)
-            return Ok();
+        var client = _checkUpServiceClient.Check(_struct);
+        if (client.Item1)
+        {
+            var emitter = _checkUpServiceEmitter.Check(_struct);
+            if (emitter.Item1)
+            {
+                var location = _checkUpServiceEmitter.Check(_struct);
+                if (location.Item1)
+                {
+                    var schedule = _checkUpServiceEmitter.Check(_struct);
+                    if (schedule.Item1)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        Message(schedule.Item2, EmailMessageBuilder.ListType.setschedule);
+                    }
+                }
+                else
+                {
+                    Message(location.Item2, EmailMessageBuilder.ListType.setlocation);
+                }
 
-        Message(item.Item2);
+            }
+            else
+            {
+                Message(emitter.Item2, EmailMessageBuilder.ListType.setemitter);
+            }
+        }
+
+        Message(client.Item2, EmailMessageBuilder.ListType.setcontragent);
+        
+        
         return StatusCode(500, "There are mistakes in the data");
     }
 
-    public void Message(string ex)
+    public void Message(string ex, EmailMessageBuilder.ListType type)
     {
-        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.setcontragent, ex);
+        EmailMessageBuilder.PutInformation(type, ex);
     }
 }
