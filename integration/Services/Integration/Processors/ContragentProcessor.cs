@@ -5,9 +5,10 @@ using integration.Context.Request;
 using integration.Helpers.Auth;
 using integration.Services.Integration;
 using integration.Services.Integration.Interfaces;
+using integration.Services.Integration.Processors;
 using Microsoft.Extensions.Options;
 
-public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
+public class ContragentProcessor : BaseProcessor, IIntegrationProcessor<ClientDataResponse>
 {
     private readonly IApiClientService _apiClientService;
     private readonly IAproClientService _aproClientService; // Новый сервис для работы с АСУ ПРО
@@ -64,17 +65,7 @@ public class ContragentProcessor : IIntegrationProcessor<ClientDataResponse>
             throw;
         }
     }
-
-    private int? ParseMtIdFromResponse(string response)
-    {
-        var match = Regex.Match(response, @"id (\d+)$");
-        if (match.Success && int.TryParse(match.Groups[1].Value, out int id))
-        {
-            return id;
-        }
-        return null;
-    }
-
+    
     private async Task UpdateAproEntity(int aproId, int mtId, bool isLegalEntity)
     {
         try

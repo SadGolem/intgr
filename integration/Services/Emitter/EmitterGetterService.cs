@@ -42,12 +42,8 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
     {
         try
         {
-            // ?/*var clientIds = await GetClientIdentifiers();
-            // var clients = await ProcessClientsAsync(clientIds);*/
             GetClientIdentifiers();
             FetchEmitterDataAsync();
-
-
         }
         catch (Exception ex)
         {
@@ -86,7 +82,6 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 emitter.executorName = _positionStorage.GetPosOn_ID(id)?.contract?.assignee?.name;
                 emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
                 emitter.contractStatus = _positionStorage.GetPosOn_ID(id).contract?.status?.Name;
-                
                 _emitterStorage.Set(emitter);
             }
         }

@@ -63,8 +63,8 @@ public class IntegrationService : ServiceBase, IIntegrationService
         var tasks = new List<Task>
         {
             ProcessCollectionAsync(integrationData.contragentList, _contragentProcessor),
-            ProcessCollectionAsync(integrationData.emittersList, _emitterProcessor),
             ProcessEntityAsync(integrationData.location, _locationProcessor),
+            ProcessCollectionAsync(integrationData.emittersList, _emitterProcessor),
             ProcessCollectionAsync(integrationData.schedulesList, _scheduleProcessor)
         };
 
