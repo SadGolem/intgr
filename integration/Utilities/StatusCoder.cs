@@ -213,7 +213,7 @@ namespace integration.Context
             }
         }
 
-        public static string ToCorrectLocationStatus(int id) //Возвращаем список
+        public static string ToCorrectLocationStatus(int id, int idLocation) 
         {
             string results = "";
             foreach (var item in _statusLocation)
@@ -224,7 +224,14 @@ namespace integration.Context
                     return results;
                 }
             }
-            return results; // Вернет пустой список, если ничего не найдено
+
+            if (results == "")
+            {
+                EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation,
+                    "Status is not found idLocation - " + idLocation);
+                return "0";
+            }
+            return results; 
         }
 
     }
