@@ -5,7 +5,7 @@ namespace integration.Context
     public class LocationDataResponse : DataResponse
     {
         [JsonPropertyName("id")] public int id { get; set; }
-        [JsonPropertyName("status_id")] public int status { get; set; }
+        [JsonPropertyName("status")] public Status status { get; set; }
         [JsonPropertyName("lon")] public decimal lon { get; set; }
         [JsonPropertyName("lat")] public decimal lat { get; set; }
         [JsonPropertyName("address")] public string address { get; set; }

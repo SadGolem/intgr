@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using integration.Context;
 using integration.Context.MT;
 using integration.Context.Request;
@@ -47,9 +48,10 @@ public class IntegrationMappingProfile : Profile
         CreateMap<LocationDataResponse, LocationRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.status))
-            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src => src.lat))
-            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => src.lon));
+            .ForMember(dest => dest.status, opt => opt.MapFrom(src => StatusCoder.ToCorrectLocationStatus(src.status.id, src.id)))
+            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src => (double)decimal.Round(src.lat, 5)))
+            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => (double)decimal.Round(src.lon, 5)));
+
 
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
             .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.id))
@@ -89,4 +91,13 @@ public class IntegrationMappingProfile : Profile
         if (string.IsNullOrWhiteSpace(value)) return 0;
         return int.TryParse(value, out int result) ? result : 0;
     }
+    
+    decimal TruncateDecimal(decimal value, int precision)
+    {
+        decimal step = (decimal)Math.Pow(10, precision);
+        decimal tmp = Math.Truncate(step * value);
+        return tmp / step;
+    }
+
+
 }
