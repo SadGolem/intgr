@@ -71,10 +71,10 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
     {
         try
         {
-            string endpointPath = $"wf__waste_site__waste_site//{aproId}/";
+            string endpointPath = $"wf__waste_site__waste_site/{aproId}/";
         
             var aproEndpoint = _aproBaseUrl + endpointPath;
-            var updateRequest = new { ext_id = mtId };
+            var updateRequest = new { ext_id_2 = mtId };
         
             await _aproClientService.PatchAsync(aproEndpoint, updateRequest);
             
@@ -86,4 +86,12 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
             throw;
         }
     }
+    
+     public void Message(string message)
+        {
+            EmailMessageBuilder.PutInformation(
+                EmailMessageBuilder.ListType.getlocation, 
+                message
+            );
+        }
 }

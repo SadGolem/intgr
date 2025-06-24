@@ -77,7 +77,7 @@ namespace integration.Services.Location
             try
             {
                 var content = response.Content.ReadAsStringAsync().Result;
-                Message($"Received locations data: {content}");
+                
             }
             catch (Exception ex)
             {
@@ -105,6 +105,7 @@ namespace integration.Services.Location
                     if (isNew.HasValue)
                     {
                         result.Add((location, isNew.Value));
+                        Message("id: " + location.id + "\n");
                         _locationIdService.SetLocationIds(location.id);
                     }
                 }
