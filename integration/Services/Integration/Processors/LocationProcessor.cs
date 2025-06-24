@@ -1,9 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
+using integration.Exceptions;
 using integration.Helpers.Auth;
 using integration.Services.Integration.Interfaces;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace integration.Services.Integration.Processors;
 
@@ -39,7 +42,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
         var endpoint = isNew 
             ? "api/v2/location/create_from_asupro" 
             : "api/v2/location/update_from_asupro";
-        
+    
         var url = $"{_baseUrl}{endpoint}";
         var method = isNew ? HttpMethod.Post : HttpMethod.Patch;
         var entityRequest = _mapper.Map<LocationRequest>(entity);
@@ -56,13 +59,36 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
             }
             else
             {
-                await _apiClientService.SendAsync(entity, url, method);
+                await _apiClientService.SendAsync(entityRequest, url, method);
             }
+        }
+        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
+        {
+            try
+            {
+                var errorResponse = JObject.Parse(ex.Content);
+                var errorMessage = errorResponse["errorMessage"]?.ToString();
+            
+                if (errorMessage != null && 
+                    errorMessage.Contains("Duplicate entry") && 
+                    errorMessage.Contains("IDX_locations_adres"))
+                {
+                    _logger.LogError($"Duplicate location address detected. Entity ID: {entity.id}. Error: {errorMessage}");
+                    return;
+                }
+            }
+            catch
+            {
+                _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
+                throw;
+            }
+        
+            _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
+            throw;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, 
-                $"Error processing location with ID: {entity.ext_id}");
+            _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
             throw;
         }
     }

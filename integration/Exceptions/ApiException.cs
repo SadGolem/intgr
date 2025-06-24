@@ -5,18 +5,12 @@ namespace integration.Exceptions;
 public class ApiException : Exception
 {
     public HttpStatusCode StatusCode { get; }
-    public string ResponseBody { get; }
-    public string ErrorMessage { get; }
-
-    public ApiException(
-        string message,
-        HttpStatusCode statusCode,
-        string responseBody,
-        string errorMessage = null
-    ) : base(message)
+    public string Content { get; }
+    
+    public ApiException(HttpStatusCode statusCode, string content)
+        : base($"API error: {statusCode}")
     {
         StatusCode = statusCode;
-        ResponseBody = responseBody;
-        ErrorMessage = errorMessage;
+        Content = content;
     }
 }
