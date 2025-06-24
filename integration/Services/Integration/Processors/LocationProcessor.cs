@@ -35,63 +35,82 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
     }
 
     public async Task ProcessAsync(LocationDataResponse entity)
-    {
-        if (entity == null) return;
+{
+    if (entity == null) return;
 
-        var isNew = entity.ext_id == null;
-        var endpoint = isNew 
-            ? "api/v2/location/create_from_asupro" 
-            : "api/v2/location/update_from_asupro";
+    var isNew = entity.ext_id == null;
+    isNew = entity.ext_id == "";
+    var endpoint = isNew 
+        ? "api/v2/location/create_from_asupro" 
+        : "api/v2/location/update_from_asupro";
     
-        var url = $"{_baseUrl}{endpoint}";
-        var method = isNew ? HttpMethod.Post : HttpMethod.Patch;
-        var entityRequest = _mapper.Map<LocationRequest>(entity);
+    var url = $"{_baseUrl}{endpoint}";
+    var method = isNew ? HttpMethod.Post : HttpMethod.Patch;
+    var entityRequest = _mapper.Map<LocationRequest>(entity);
 
-        try
+    try
+    {
+        if (isNew)
         {
-            if (isNew)
-            {
-                string response = await _apiClientService.SendAndGetStringAsync<LocationRequest>(
-                    entityRequest, url, method);
-                var mtId = ParseMtIdFromResponse(response);
-                await UpdateAproEntity(entity.id, mtId.Value);
-                entity.ext_id = mtId.Value.ToString();
-            }
-            else
-            {
-                await _apiClientService.SendAsync(entityRequest, url, method);
-            }
+            string response = await _apiClientService.SendAndGetStringAsync<LocationRequest>(
+                entityRequest, url, method);
+            var mtId = ParseMtIdFromResponse(response);
+            await UpdateAproEntity(entity.id, mtId.Value);
+            entity.ext_id = mtId.Value.ToString();
         }
-        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
+        else
         {
-            try
-            {
-                var errorResponse = JObject.Parse(ex.Content);
-                var errorMessage = errorResponse["errorMessage"]?.ToString();
-            
-                if (errorMessage != null && 
-                    errorMessage.Contains("Duplicate entry") && 
-                    errorMessage.Contains("IDX_locations_adres"))
-                {
-                    _logger.LogError($"Duplicate location address detected. Entity ID: {entity.id}. Error: {errorMessage}");
-                    return;
-                }
-            }
-            catch
-            {
-                _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
-                throw;
-            }
-        
-            _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
-            throw;
+            await _apiClientService.SendAsync(entityRequest, url, method);
         }
     }
+    catch (HttpRequestException ex) when (ex.Message.Contains("400"))
+    {
+        // Получаем доступ к содержимому ответа об ошибке
+        string errorContent = await GetErrorContentAsync(ex);
+        await HandleApiErrorAsync(errorContent, entity.id);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"Error processing location with ID: {entity.ext_id}");
+        throw;
+    }
+}
+
+private async Task<string> GetErrorContentAsync(HttpRequestException ex)
+{
+    if (ex.Data.Contains("ResponseContent"))
+    {
+        return ex.Data["ResponseContent"]?.ToString();
+    }
+    return "{}";
+}
+
+private async Task HandleApiErrorAsync(string errorContent, int entityId)
+{
+    try
+    {
+        var errorResponse = JObject.Parse(errorContent);
+        var errorMessage = errorResponse["errorMessage"]?.ToString();
+        
+        if (errorMessage != null && 
+            errorMessage.Contains("Duplicate entry") && 
+            errorMessage.Contains("IDX_locations_adres"))
+        {
+            _logger.LogError($"Duplicate location address detected. Entity ID: {entityId}. Error: {errorMessage}");
+            Message($"Duplicate location address detected. Entity ID: {entityId}. Error: {errorMessage}");
+        }
+        else
+        {
+            _logger.LogError($"API error occurred. Entity ID: {entityId}. Error: {errorMessage}");
+            Message($"API error occurred. Entity ID: {entityId}. Error: {errorMessage}");
+        }
+    }
+    catch
+    {
+        _logger.LogError($"Unparsable error content. Entity ID: {entityId}. Raw content: {errorContent}");
+        throw;
+    }
+}
     
     private async Task UpdateAproEntity(int aproId, int mtId)
     {

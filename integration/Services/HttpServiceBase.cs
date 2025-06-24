@@ -61,13 +61,15 @@ public abstract class HttpServiceBase : ServiceBase
         return request;
     }
 
-    private async Task EnsureSuccessResponse(HttpResponseMessage response, string url)
+    protected async Task EnsureSuccessResponse(HttpResponseMessage response, string url)
     {
         if (!response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
-            _logger.LogError($"HTTP error {response.StatusCode} from {url}. Response: {content}");
-            response.EnsureSuccessStatusCode(); // Will throw proper exception
+            var ex = new HttpRequestException($"Response status code does not indicate success: {(int)response.StatusCode}.");
+            ex.Data.Add("StatusCode", response.StatusCode);
+            ex.Data.Add("ResponseContent", content);
+            throw ex;
         }
     }
 
