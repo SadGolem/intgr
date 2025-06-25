@@ -13,7 +13,7 @@ public class BaseProcessor : IIntegrationProcessor<DataResponse>
     
     public int? ParseMtIdFromResponse(string response)
     {
-        var match = Regex.Match(response, @"id (\d+)$");
+        var match = Regex.Match(response, @"id (\d+)$") == null ?  Regex.Match(response, @"id is (\d+)$") : null;
         if (match.Success && int.TryParse(match.Groups[1].Value, out int id))
         {
             return id;

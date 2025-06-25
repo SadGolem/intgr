@@ -14,6 +14,7 @@ namespace integration.Context
     {
         [JsonPropertyName("id")] public int? id { get; set; }
         [JsonPropertyName("type")] public Type? type { get; set; }
+        [JsonPropertyName("capacity")] public Capacity? capacity { get; set; }
     }
 
     public class AuthorData

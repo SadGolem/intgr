@@ -41,9 +41,9 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
     public async Task Get()
     {
         try
-        {
-            GetClientIdentifiers();
-            FetchEmitterDataAsync();
+        { 
+            await GetClientIdentifiers();
+            await FetchEmitterDataAsync();
         }
         catch (Exception ex)
         {
@@ -72,16 +72,14 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 var endpoint = BuildEmitterEndpoint(id.ToString());
                 var response = await Get(_httpClientFactory, endpoint);
                 var emitter = response.FirstOrDefault();
-                emitter.amount = _positionStorage.GetPosOn_ID(id).value.Value.ToString();
-                emitter.contractNumber = _positionStorage.GetPosOn_ID(id).number;
+                emitter.amount = GetVolume(emitter).ToString();
+                emitter.contractNumber = emitter.name;
                 emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null 
-                    ? 0 
-                    : int.TryParse(_positionStorage.GetPosOn_ID(id).waste_site.ext_id, out int result) 
-                        ? result 
-                        : 0;
+                    ? null 
+                    : _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null ? null : _positionStorage.GetPosOn_ID(id).waste_site.ext_id;
                 emitter.executorName = _positionStorage.GetPosOn_ID(id)?.contract?.assignee?.name;
                 emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
-                emitter.contractStatus = _positionStorage.GetPosOn_ID(id).contract?.status?.Name;
+                emitter.contractStatus = StatusCoder.GetTypeContragent(_positionStorage.GetPosOn_ID(id).contract?.status?.Name);
                 _emitterStorage.Set(emitter);
             }
         }
@@ -91,6 +89,16 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
         }
     }
 
+    private double GetVolume(EmitterDataResponse emitter)
+    {
+        double value = 0;
+        foreach (var container in  emitter.container)
+        {
+            value += StatusCoder.ToCorrectCapacity(container.capacity.id);
+        }
+
+        return value;
+    }
     private string BuildEmitterEndpoint(string root_id)
     {
         var basePath = _apiSettings.BaseUrl + (_apiSettings.ApiClientSettings.EmitterEndopint);

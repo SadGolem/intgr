@@ -40,6 +40,21 @@ namespace integration.Context
             ( 70, "Закрыта" ),
             ( 167, "Проинспектирована" )
         };
+        
+        private static List<(string Key, string Value)> _statusContract = new List<(string Key, string Value)>
+        {
+            ( "На доработке", "Отклонен" ), 
+            ( "Подписан РО по ЭЦП", "Подписан" ),
+            ( "Подписан одной стороной", "Подписан" ),
+            ( "Подписан контрагентом вручную", "Подписан" ),
+            ( "Подписан всеми сторонами", "Подписан" ),
+            ( "Подписан всеми сторонами по ЭЦП", "Подписан" ),
+            ( "Черновик", "Проект договора" ),
+            ( "На внутреннем согласовании в РО", "Проект договора" ),
+            ( "Расторгнут", "Расторгнут" ),
+            ( "Оферта", "Оферта" ),
+        };
+
 
         private static Dictionary<int, double> _containersCapacityMapping = new Dictionary<int, double>
         {
@@ -166,6 +181,26 @@ namespace integration.Context
         }
 
         public static string GetTypeContragent(string key)
+        {
+            var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["На доработке"] = "Отклонен" ,
+                ["Подписан РО по ЭЦП"] = "Подписан",
+                ["Подписан одной стороной"] = "Подписан",
+                ["Подписан контрагентом вручную"] = "Подписан",
+                ["Подписан всеми сторонами"] = "Подписан",
+                ["Подписан всеми сторонами по ЭЦП"] = "Подписан",
+                ["В договоре"] = "Подписан",
+                ["Черновик"] = "Проект договора",
+                ["На внутреннем согласовании в РО"] = "Проект договора",
+                ["Расторгнут"] = "Расторгнут",
+                ["Оферта"] = "Оферта"
+            };
+
+            return mapping.TryGetValue(key, out var value) ? value : null;
+        }
+        
+        public static string GetStatusContract(string key)
         {
             var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
