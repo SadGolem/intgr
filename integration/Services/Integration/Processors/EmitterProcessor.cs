@@ -49,7 +49,7 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
             {
                 string response = await _apiClientService.SendAndGetStringAsync(
                     entityRequest, url, method);
-                var mtId = ParseMtIdFromResponse(response);
+                var mtId = await ParseMtIdFromResponse(response);
                 await UpdateAproEntity(entity.id, mtId.Value);
                 }
             else
@@ -72,7 +72,7 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
             string endpointPath = $"wf__contractpositionemitter__contract_position_takeout/{aproId}/";
         
             var aproEndpoint = _aproBaseUrl + endpointPath;
-            var updateRequest = new { ext_id = mtId };
+            var updateRequest = new { external_id = mtId };
         
             await _aproClientService.PatchAsync(aproEndpoint, updateRequest);
         

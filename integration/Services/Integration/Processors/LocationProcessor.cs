@@ -38,8 +38,8 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
 {
     if (entity == null) return;
 
-    var isNew = entity.ext_id == null;
-    isNew = entity.ext_id == "";
+    bool isNew = entity.ext_id is null or "";
+    
     var endpoint = isNew 
         ? "api/v2/location/create_from_asupro" 
         : "api/v2/location/update_from_asupro";
@@ -55,8 +55,8 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
             string response = await _apiClientService.SendAndGetStringAsync<LocationRequest>(
                 entityRequest, url, method);
             var mtId = ParseMtIdFromResponse(response);
-            await UpdateAproEntity(entity.id, mtId.Value);
-            entity.ext_id = mtId.Value.ToString();
+            await UpdateAproEntity(entity.id, mtId.Id);
+            entity.ext_id = mtId.Id.ToString();
         }
         else
         {

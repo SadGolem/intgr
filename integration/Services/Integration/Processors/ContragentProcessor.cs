@@ -51,7 +51,7 @@ public class ContragentProcessor : BaseProcessor, IIntegrationProcessor<ClientDa
                     entityRequest, url, method);
             
                 var mtId = ParseMtIdFromResponse(response);
-                await UpdateAproEntity(entity.idAsuPro, mtId.Value, entity.doc_type.name == "Юридические лица");
+                await UpdateAproEntity(entity.idAsuPro, mtId.Id, entity.doc_type.name == "Юридические лица");
             }
             else
             {
