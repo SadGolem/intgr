@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Security.Cryptography.Xml;
 using integration.Context;
 using integration.Helpers;
 using integration.Helpers.Auth;
@@ -37,7 +36,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
 
     public async Task Get()
     {
-        var endpoint = BuildEndpoint(false);
+        var endpoint = BuildEmitterEndpoint(false);
         var response = await Get(_httpClientFactory, endpoint, true);
         await ProcessEntries(response);
     }
@@ -46,7 +45,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
     {
         try
         {
-            var endpoint = BuildEndpoint(true) + entry.BtNumber;
+            var endpoint = BuildEmitterEndpoint(true) + entry.BtNumber;
             var response = await Get(_httpClientFactory, endpoint, true);
 
             if (response == null || !response.Any())
@@ -57,7 +56,6 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
             var res = response.FirstOrDefault();
             entry.number = res?.number;
             entry.Capacity = res?.Capacity;
-            entry.volume = res?.Capacity.volume.Value * res?.number ?? 0;
         }
         catch (Exception ex)
         {
@@ -92,7 +90,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
 
                 if (data.Capacity is null)
                 {
-                    _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует объем", data.BtNumber);
+                    _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует соглашение", data.BtNumber);
                     Message($"Entry id {data.BtNumber} is not has a capacity.");
                     continue;
                 }
@@ -141,7 +139,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         return false;
     }
 
-    private string BuildEndpoint(bool isCapacity)
+    private string BuildEmitterEndpoint(bool isCapacity)
     {
         string basePath;
         if (!isCapacity)

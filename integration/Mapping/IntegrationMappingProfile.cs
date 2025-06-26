@@ -72,7 +72,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
             .ForMember(dest => dest.volume, opt => opt.MapFrom(src => src.volume))
             .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.statusString))
-            .ForMember(dest => dest.consumerName, opt => opt.MapFrom(src => src.location.client.name ?? ""))
+            .ForMember(dest => dest.consumerName, opt => opt.MapFrom(src => src.location.participant.name ?? ""))
             .ForMember(dest => dest.planDateRO, opt => opt.MapFrom(src => src.PlanDateRO))
             .ForMember(dest => dest.creationDate, opt => opt.MapFrom(src => src.datetime_create.ToString("yyyy-MM-dd")))
             .ForMember(dest => dest.type, opt => opt.MapFrom(src => "Заявка"))

@@ -10,7 +10,6 @@ namespace integration.Context
         [JsonPropertyName("lat")] public decimal lat { get; set; }
         [JsonPropertyName("address")] public string address { get; set; }
         [JsonPropertyName("ext_id_2")] public string? ext_id { get; set; }
-        [JsonPropertyName("participant")] public Participant client { get; set; }
         
         [JsonIgnore] // Игнорируем при сериализации
         public bool IsNew => !string.IsNullOrEmpty(ext_id) && 
