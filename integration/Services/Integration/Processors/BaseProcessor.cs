@@ -11,13 +11,11 @@ public class BaseProcessor : IIntegrationProcessor<DataResponse>
         throw new NotImplementedException();
     }
     
-    public async Task<int?>  ParseMtIdFromResponse(string response)
+    public virtual int? ParseMtIdFromResponse(string response)
     {
         var match = Regex.Match(response, @"id (\d+)$");
-        if (match.Success && int.TryParse(match.Groups[1].Value, out int id))
-        {
-            return id;
-        }
-        return null;
+        return match.Success && int.TryParse(match.Groups[1].Value, out int id) 
+            ? id 
+            : null;
     }
 }
