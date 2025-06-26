@@ -36,7 +36,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         var endpoint = await BuildEmitterEndpoint();
         try
         {
-            var response = await Get(_httpClientFactory, endpoint);
+            var response = await GetFullResponse<EntryMTDataResponse>(_httpClientFactory, endpoint, false);
             await GetNewEntry(response);
         }
         catch (Exception e)
@@ -45,23 +45,21 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
             throw;
         }
     }
-    
-    private async Task GetNewEntry(List<EntryMTDataResponse> entry)
+
+    private async Task GetNewEntry(EntryMTDataResponse entry)
     {
-        foreach (var data in entry)
+        try
         {
-            try
-            {
-                _storageService.Set(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing entry {LocationId}", data.id);
-            }
-        } 
+            _storageService.Set(entry);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing entry {LocationId}", entry.Data.Count);
+        }
+
         TimeManager.SetLastUpdateTime("entryMT");
     }
-    
+
     private async Task<string> BuildEmitterEndpoint()
     {
         string basePath;
@@ -81,7 +79,6 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         // Применяем смещение +7 часов
         DateTimeOffset inPlus7 = dto.ToOffset(TimeSpan.FromHours(7));
     
-        // Форматируем результат (без указания смещения)
         return inPlus7.ToString("yyyy-MM-ddTHH:mm:ss");
     }
 }

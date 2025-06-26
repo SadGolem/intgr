@@ -101,7 +101,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
         try
         {
             var endpoint = BuildClientEndpoint(clientId);
-            var response = await Get(_httpClientFactory, endpoint);
+            var response = await Get(_httpClientFactory, endpoint, true);
             return response.FirstOrDefault();
         }
         catch (Exception ex)
@@ -145,7 +145,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
         try
         {
             var endpoint = $"{_apiSettings.BaseUrl + _apiSettings.ApiClientSettings.BankDetailsEndpoint}{clientId}";
-            var response = await Get(_httpClientFactory, endpoint);
+            var response = await Get(_httpClientFactory, endpoint, true);
             return response.FirstOrDefault()?.bik;
         }
         catch (Exception ex)
@@ -169,7 +169,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
         try
         {
             var endpoint = $"{_apiSettings.BaseUrl + _apiSettings.ApiClientSettings.ContactsEndpoint}{clientId}";
-            var response = await Get(_httpClientFactory, endpoint);
+            var response = await Get(_httpClientFactory, endpoint, true);
             return response.FirstOrDefault()?.mailAddress;
         }
         catch (Exception ex)
