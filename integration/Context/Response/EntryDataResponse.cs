@@ -18,13 +18,14 @@ public class EntryDataResponse: DataResponse
     [JsonPropertyName("comment")]
     public string? comment { get; set; } 
     [JsonPropertyName("volume")]
-    public float volume { get; set; } 
+    public float? volume { get; set; } 
     [JsonPropertyName("capacity")]
     public Capacity? Capacity { get; set; }
     [JsonPropertyName("number")]
     public int? number { get; set; }
     public int? idContainerType { get; set; }
     public string? statusString { get; set; }
+    public string? participant { get; set; }
 
 }
 public class AuthorData
