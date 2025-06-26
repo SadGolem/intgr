@@ -13,7 +13,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("integration")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d78a1e10b4538bbe42db5b5f816ae15e857b1fe")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5bd91c1eefa94d20e908af1e49c94ceaf61c4055")]
+>>>>>>> parent of d75f170 (emitter)
 [assembly: System.Reflection.AssemblyProductAttribute("integration")]
 [assembly: System.Reflection.AssemblyTitleAttribute("integration")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

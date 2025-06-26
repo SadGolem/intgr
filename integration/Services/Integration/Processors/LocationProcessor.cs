@@ -1,12 +1,10 @@
 ﻿using System.Net;
-using System.Text.RegularExpressions;
 using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
 using integration.Exceptions;
 using integration.Helpers.Auth;
 using integration.Services.Integration.Interfaces;
-using integration.Services.Location;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
@@ -39,29 +37,30 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
     public async Task ProcessAsync(LocationDataResponse entity)
 {
     if (entity == null) return;
-    bool isNew = string.IsNullOrEmpty(entity.ext_id);
+
+    bool isNew = entity.ext_id is null or "";
     
-    var url = $"{_baseUrl}{(isNew ? "api/v2/location/create_from_asupro" : "api/v2/location/update_from_asupro")}";
+    var endpoint = isNew 
+        ? "api/v2/location/create_from_asupro" 
+        : "api/v2/location/update_from_asupro";
+    
+    var url = $"{_baseUrl}{endpoint}";
+    var method = isNew ? HttpMethod.Post : HttpMethod.Patch;
     var entityRequest = _mapper.Map<LocationRequest>(entity);
 
     try
     {
         if (isNew)
         {
-            string response = await _apiClientService.SendAndGetStringAsync(entityRequest, url, HttpMethod.Post);
+            string response = await _apiClientService.SendAndGetStringAsync<LocationRequest>(
+                entityRequest, url, method);
             var mtId = ParseMtIdFromResponse(response);
-            
-            if (!mtId.HasValue)
-            {
-                _logger.LogError($"Failed to parse MT ID for location: {entity.id}");
-            }
-            
-            await UpdateAproEntity(entity.id, mtId.Value);
-            entity.ext_id = mtId.Value.ToString();
+            await UpdateAproEntity(entity.id, mtId.Id);
+            entity.ext_id = mtId.Id.ToString();
         }
         else
         {
-            await _apiClientService.SendAsync(entityRequest, url, HttpMethod.Patch);
+            await _apiClientService.SendAsync(entityRequest, url, method);
         }
     }
     catch (HttpRequestException ex) when (ex.Message.Contains("400"))
@@ -76,13 +75,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
         throw;
     }
 }
-    public int? ParseMtIdFromResponse(string response)
-    {
-        var match = Regex.Match(response, @"id (\d+)$");
-        return match.Success && int.TryParse(match.Groups[1].Value, out int id) 
-            ? id 
-            : null;
-    }
+
 private async Task<string> GetErrorContentAsync(HttpRequestException ex)
 {
     if (ex.Data.Contains("ResponseContent"))
