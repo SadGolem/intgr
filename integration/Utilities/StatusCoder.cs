@@ -180,7 +180,7 @@ namespace integration.Context
             throw new KeyNotFoundException($"Статус '{internalStatus}' не найден в словаре");
         }
 
-        public static string GetTypeContragent(string key)
+        public static string GetTypeContract(string key)
         {
             var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -200,7 +200,7 @@ namespace integration.Context
             return mapping.TryGetValue(key, out var value) ? value : null;
         }
         
-        public static string GetStatusContract(string key)
+        public static string GetTypeContragent(string key)
         {
             var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
