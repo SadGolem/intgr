@@ -81,7 +81,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                     : _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null ? null : _positionStorage.GetPosOn_ID(id).waste_site.ext_id;
                 emitter.executorName = _positionStorage.GetPosOn_ID(id)?.contract?.assignee?.name;
                 emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
-                emitter.contractStatus = StatusCoder.GetTypeContragent(_positionStorage.GetPosOn_ID(id).contract?.status?.Name);
+                emitter.contractStatus = StatusCoder.GetStatusContract(_positionStorage.GetPosOn_ID(id).contract?.status?.Name);
                 _emitterStorage.Set(emitter);
             }
         }
