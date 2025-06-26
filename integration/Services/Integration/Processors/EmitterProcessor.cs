@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
 using integration.Helpers.Auth;
@@ -42,27 +43,40 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
         
         var url = $"{_baseUrl}{endpoint}";
         var method = isNew ? HttpMethod.Post : HttpMethod.Patch;
-        var entityRequest = _mapper.Map<EmitterRequest>(entity);
         try
         {
+            var entityRequest = _mapper.Map<EmitterRequest>(entity);
+        
             if (isNew)
             {
-                string response = await _apiClientService.SendAndGetStringAsync(
-                    entityRequest, url, method);
-                var mtId = await ParseMtIdFromResponse(response);
-                await UpdateAproEntity(entity.id, mtId.Value);
+                string response = await _apiClientService.SendAndGetStringAsync(entityRequest, url, HttpMethod.Post);
+                var mtId = ParseMtIdFromResponse(response);
+            
+                if (!mtId.HasValue)
+                {
+                    _logger.LogError($"Failed to parse MT ID for emitter: {entity.id}");
                 }
+            
+                await UpdateAproEntity(entity.id, mtId.Value);
+            }
             else
             {
-                await _apiClientService.SendAsync(entity, url, method);
+                await _apiClientService.SendAsync(entityRequest, url, HttpMethod.Patch);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, 
-                $"Error processing emitter with ID: {entity.ext_id}");
+            _logger.LogError(ex, $"Error processing emitter: {entity.ext_id}");
+
             throw;
         }
+    }
+    public int? ParseMtIdFromResponse(string response)
+    {
+        var match = Regex.Match(response, @"id is (\d+)$");
+        return match.Success && int.TryParse(match.Groups[1].Value, out int id) 
+            ? id 
+            : null;
     }
     
     private async Task UpdateAproEntity(int aproId, int mtId)
