@@ -17,9 +17,9 @@ public class ServiceGetterBase<T> : ServiceBase
         _logger = logger;
     }
 
-    public async Task<List<T>> Get(IHttpClientFactory _httpClientFactory, string _connect, bool isApro)
+    public async Task<List<T>> Get(IHttpClientFactory _httpClientFactory, string _connect)
     {
-        var client = await Authorize(isApro);
+        var client = await Authorize(true);
         try
         {
             var response = await client.GetAsync(_connect);
@@ -40,16 +40,7 @@ public class ServiceGetterBase<T> : ServiceBase
             throw;
         }
     }
-    public async Task<T> GetFullResponse<T>(IHttpClientFactory _httpClientFactory, string _connect, bool isApro)
-    {
-        var client = await Authorize(isApro);
-        var response = await client.GetAsync(_connect);
-    
-        response.EnsureSuccessStatusCode();
-    
-        var responseContentString = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(responseContentString) ?? throw new InvalidOperationException("Deserialization failed");
-    }
+
     public void Message(string ex)
     {
         throw new NotImplementedException();

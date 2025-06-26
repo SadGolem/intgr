@@ -69,7 +69,7 @@ public class ContractGetterService
         {
             try
             {
-                contractsList = await Get(_httpClientFactory, _aproConnect + id, true);
+                contractsList = await Get(_httpClientFactory, _aproConnect + id);
                 if (contractsList.Count() > 0)
                     _contractStorageService.Set(contractsList.First());
             }

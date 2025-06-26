@@ -37,7 +37,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
     public async Task Get()
     {
         var endpoint = BuildEmitterEndpoint(false);
-        var response = await Get(_httpClientFactory, endpoint, true);
+        var response = await Get(_httpClientFactory, endpoint);
         await ProcessEntries(response);
     }
 
@@ -46,7 +46,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         try
         {
             var endpoint = BuildEmitterEndpoint(true) + entry.BtNumber;
-            var response = await Get(_httpClientFactory, endpoint, true);
+            var response = await Get(_httpClientFactory, endpoint);
 
             if (response == null || !response.Any())
             {

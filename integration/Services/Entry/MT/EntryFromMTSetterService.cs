@@ -10,18 +10,18 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Entry.MT;
 
-public class EntryFromAproToMTSetterService: ServiceSetterBase<EntryMTRequest>, ISetterService<EntryMTRequest>
+public class EntryFromMTSetterService: ServiceSetterBase<EntryMTRequest>, ISetterService<EntryMTRequest>
 {
     private readonly string _connectionString;
     private readonly IOptions<AuthSettings> _apiSettings;
-    private readonly ILogger<EntryFromAproToMTSetterService> _logger;
+    private readonly ILogger<EntryFromMTSetterService> _logger;
     private IHttpClientFactory _httpClientFactory;
     private IEntryStorageService<EntryMTDataResponse> _storageService;
     private List<(EntryMTDataResponse, bool)> _entriesData;
     private readonly IMapper _mapper;
     
-    public EntryFromAproToMTSetterService(IHttpClientFactory httpClientFactory, 
-        ILogger<EntryFromAproToMTSetterService> logger, 
+    public EntryFromMTSetterService(IHttpClientFactory httpClientFactory, 
+        ILogger<EntryFromMTSetterService> logger, 
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
         IEntryStorageService<EntryMTDataResponse> storageService,
@@ -50,14 +50,10 @@ public class EntryFromAproToMTSetterService: ServiceSetterBase<EntryMTRequest>, 
     {
         foreach (var entry in _entriesData)
         {
-            foreach (var entryData in entry.Item1.Data)
-            {
-                var responce = _mapper.Map<EntryData, EntryMTRequest>(entryData);
+            var responce = _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1);
 
                 await Patch(_httpClientFactory, _connectionString,
-                    responce, true);
-            }
-            
+                    _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1), true);
         }
     }
 

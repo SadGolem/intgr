@@ -32,7 +32,7 @@ public class LocationMTGetterService: ServiceGetterBase<LocationMTDataResponse>,
    
     public async Task Get()
     {
-        var locations = await base.Get(_httpClientFactory, _getEndpoint, false);
+        var locations = await base.Get(_httpClientFactory, _getEndpoint);
     }
 
     public Task<List<(LocationMTDataResponse, bool IsNew)>> GetSync()

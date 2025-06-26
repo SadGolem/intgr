@@ -79,7 +79,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.commentByRO, opt => opt.MapFrom(src => src.comment ?? ""))
             .ForMember(dest => dest.creator, opt => opt.MapFrom(src => src.Author.Name ?? ""));
 
-        CreateMap<EntryData, EntryMTRequest>()
+        CreateMap<EntryMTDataResponse, EntryMTRequest>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.GetStatusId(src.status ?? "")));
     }
