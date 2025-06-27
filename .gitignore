@@ -24,3 +24,4 @@ integration/obj/Debug/net8.0/refint/integration.dll
 *.dll
 /integration/obj
 /integration/bin
+/integration/obj
