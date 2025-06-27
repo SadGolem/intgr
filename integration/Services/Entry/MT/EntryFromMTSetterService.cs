@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using integration.Context.MT;
 using integration.Context.Request.MT;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
@@ -53,9 +52,21 @@ public class EntryFromMTSetterService: ServiceSetterBase<EntryMTRequest>, ISette
             foreach (var entryData in entry.Item1.Data)
             {
                 var responce = _mapper.Map<EntryData, EntryMTRequest>(entryData);
-
-                await Patch(_httpClientFactory, _connectionString + entryData.id + "/",
-                    responce, true);
+                
+                var requestBody = new 
+                {
+                    transition = new 
+                    {
+                        id = responce.status_id
+                    }
+                };
+                
+                await Patch(
+                    _httpClientFactory,
+                    $"{_connectionString}{entryData.id}/",
+                    requestBody,
+                    true
+                );
             }
         }
     }

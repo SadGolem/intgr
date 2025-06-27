@@ -71,7 +71,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
     public async Task<string> GetDateTimeHalfHourAgo()
     {
         var lastUpdate = TimeManager.GetLastUpdateTime("entryMT");
-        DateTime halfHourAgo = lastUpdate.AddMinutes(30);
+        DateTime halfHourAgo = lastUpdate.AddMinutes(0);
         
         DateTimeOffset dto = new DateTimeOffset(halfHourAgo, TimeSpan.Zero);
         
