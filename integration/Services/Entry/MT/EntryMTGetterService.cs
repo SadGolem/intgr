@@ -36,7 +36,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         var endpoint = await BuildEmitterEndpoint();
         try
         {
-            var response = await Get(_httpClientFactory, endpoint);
+            var response = await Get(_httpClientFactory, endpoint, false);
             await GetNewEntry(response);
         }
         catch (Exception e)
