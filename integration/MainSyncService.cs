@@ -51,7 +51,7 @@ namespace integration
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                //await GetMTLEntryStatus(entryController);
+                await GetMTLEntryStatus(entryController);
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
                 await GetContract(contractController);
@@ -102,6 +102,7 @@ namespace integration
             try
             {
                 await entryController.GetMT();
+                await entryController.SetToMT();
             }
             catch (Exception ex)
             {

@@ -50,11 +50,13 @@ public class EntryFromMTSetterService: ServiceSetterBase<EntryMTRequest>, ISette
     {
         foreach (var entry in _entriesData)
         {
-            var responce = _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1);
+            foreach (var entryData in entry.Item1.Data)
+            {
+                var responce = _mapper.Map<EntryData, EntryMTRequest>(entryData);
 
-                await Patch(_httpClientFactory, _connectionString,
-                    _mapper.Map<EntryMTDataResponse, EntryMTRequest>(entry.Item1), true);
+                await Patch(_httpClientFactory, _connectionString + entryData.id + "/",
+                    responce, true);
+            }
         }
     }
-
 }
