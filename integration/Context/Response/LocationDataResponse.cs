@@ -16,7 +16,7 @@ namespace integration.Context
                              int.TryParse(ext_id, out int parsed) && 
                              parsed == 0;
         [JsonPropertyName("client_entity")] public Participant? participant { get; set; }
-
+        [JsonPropertyName("participant")] public Participant? client { get; set; }
         public class Participant()
         {
             [JsonPropertyName("id")] public int id { get; set; }

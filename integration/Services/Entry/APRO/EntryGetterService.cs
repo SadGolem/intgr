@@ -56,6 +56,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
             var res = response.FirstOrDefault();
             entry.number = res?.number;
             entry.Capacity = res?.Capacity;
+            entry.volume = entry.Capacity.volume * entry.number;
         }
         catch (Exception ex)
         {

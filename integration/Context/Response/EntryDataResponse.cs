@@ -18,7 +18,7 @@ public class EntryDataResponse: DataResponse
     [JsonPropertyName("comment")]
     public string? comment { get; set; } 
     [JsonPropertyName("volume")]
-    public float volume { get; set; } 
+    public float? volume { get; set; } 
     [JsonPropertyName("capacity")]
     public Capacity? Capacity { get; set; }
     [JsonPropertyName("number")]
