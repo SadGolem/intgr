@@ -21,3 +21,5 @@ integration/obj/Debug/net8.0/integration.pdb
 integration/obj/Debug/net8.0/integration.sourcelink.json
 integration/obj/Debug/net8.0/ref/integration.dll
 integration/obj/Debug/net8.0/refint/integration.dll
+*.dll
+/integration/obj
