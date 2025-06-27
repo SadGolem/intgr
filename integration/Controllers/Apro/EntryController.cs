@@ -1,4 +1,5 @@
 ﻿using integration.Context.MT;
+using integration.Context.Request.MT;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace integration.Controllers.Apro
         private string _aproConnectSettings;
         private readonly ILogger<EntryController> _logger;
         private ISetterServiceFactory<EntryDataResponse> _setterServiceFactory;
+        private ISetterServiceFactory<EntryMTRequest> _setterFromMTToAproStatusServiceFactory;
         private IGetterServiceFactory<EntryMTDataResponse> _getterServiceFactoryMT;
         public static List<EntryDataResponse> newEntry = new List<EntryDataResponse>();
         public static List<EntryDataResponse> updateEntry = new List<EntryDataResponse>();
@@ -53,6 +55,12 @@ namespace integration.Controllers.Apro
         public async Task Set()
         {
             await TryPostAndPatch();
+        }
+        
+        public async Task SetToMT()
+        {
+            var service = _setterFromMTToAproStatusServiceFactory.Create(); 
+            await service.Set();
         }
         public void Message(string ex)
         {
