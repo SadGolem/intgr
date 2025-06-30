@@ -71,6 +71,7 @@ builder.Services.AddTransient<ISetterService<LocationDataResponse>, LocationSett
 builder.Services.AddTransient<ISetterServiceFactory<EntryDataResponse>, EntrySetterServiceFactory>();
 builder.Services.AddTransient<IGetterServiceFactory<EntryMTDataResponse>, EntryMTGetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<EntryDataResponse>, EntrySetterService>();
+builder.Services.AddTransient<ISetterServiceFactory<EntryMTRequest>, EntryFromMTServiceFactory>();
 builder.Services.AddTransient<ISetterService<EntryMTRequest>, EntryFromMTSetterService>();
 builder.Services.AddScoped<ILocationValidator, LocationValidator>();
 builder.Services.AddTransient<IGetterServiceFactory<ScheduleDataResponse>, ScheduleGetterServiceFactory>();

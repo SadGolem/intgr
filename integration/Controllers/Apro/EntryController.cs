@@ -20,12 +20,13 @@ namespace integration.Controllers.Apro
         public static List<EntryDataResponse> updateEntry = new List<EntryDataResponse>();
 
         public EntryController(
-            ILogger<EntryController> logger,
+            ILogger<EntryController> logger, ISetterServiceFactory<EntryMTRequest> setterFromMTToAproStatusServiceFactory,
             IGetterServiceFactory<EntryDataResponse> serviceGetter,
             ISetterServiceFactory<EntryDataResponse> serviceSetter, IGetterServiceFactory<EntryMTDataResponse> serviceGetterMT)
             : base(logger, serviceGetter)
         {
             _setterServiceFactory = serviceSetter;
+            _setterFromMTToAproStatusServiceFactory = setterFromMTToAproStatusServiceFactory;
             _getterServiceFactoryMT = serviceGetterMT;
         }
         

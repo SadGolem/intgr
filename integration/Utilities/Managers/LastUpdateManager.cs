@@ -42,6 +42,26 @@ public static class TimeManager
             _fileManager.SetText(lines, updated, lastUpdateUtc, key); // Сохраняем UTC в случае ошибки.
         }
     }
+    public static void SetLastUpdateTime(string key, DateTime lastUpdateUtc)
+    {
+        try
+        {
+            TimeZoneInfo targetZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            DateTime targetTime = TimeZoneInfo.ConvertTimeFromUtc(lastUpdateUtc, targetZone); // Преобразуем в целевой часовой пояс
+
+            var lines = new List<string>();
+            bool updated = false;
+            _fileManager.SetText(lines, updated, targetTime, key); // Сохраняем время в целевом часовом поясе
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            Console.WriteLine($"Часовой пояс с ID '{timeZoneId}' не найден.");
+            // Обработка ошибки: либо используем UTC, либо какое-то значение по умолчанию.
+            var lines = new List<string>();
+            bool updated = false;
+            _fileManager.SetText(lines, updated, lastUpdateUtc, key); // Сохраняем UTC в случае ошибки.
+        }
+    }
 
     public static DateTime GetNetworkTimeUtc(string ntpServer = "time.nist.gov")
     {
