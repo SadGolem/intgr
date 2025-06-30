@@ -14,7 +14,7 @@ namespace integration.Factory.SET;
 public class LocationFromMTSetterServiceFactory:  ISetterServiceFactory<LocationMTDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<LocationSetterService> _logger;
+    private readonly ILogger<LocationFromMTSetterService> _logger;
     private readonly IAuthorizer _authorizer;
     private readonly IOptions<AuthSettings> _apiSettings;
     private readonly IMapper _mapper;
@@ -22,7 +22,7 @@ public class LocationFromMTSetterServiceFactory:  ISetterServiceFactory<Location
     
     public LocationFromMTSetterServiceFactory(
         IHttpClientFactory httpClientFactory,
-        ILogger<LocationSetterService> logger,
+        ILogger<LocationFromMTSetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
         IMapper mapper,

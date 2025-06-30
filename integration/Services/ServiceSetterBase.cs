@@ -13,9 +13,9 @@ public class ServiceSetterBase<T> : ServiceBase
     {
         _logger = logger;
     }*/
-    public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, object mappedData)
+    public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, object mappedData, bool isApro)
     {
-        var client = await Authorize(false);
+        var client = await Authorize(isApro);
         try
         {
             var jsonBody = JsonSerializer.Serialize(mappedData);
@@ -42,7 +42,35 @@ public class ServiceSetterBase<T> : ServiceBase
             throw;
         }
     }
-    
+    public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, HttpContent mappedData, bool isApro)
+    {
+        var client = await Authorize(isApro);
+        try
+        {
+            var jsonBody = JsonSerializer.Serialize(mappedData);
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+            HttpResponseMessage response;
+            response = await client.PostAsync(_connect, content);
+
+            response.EnsureSuccessStatusCode();  
+            var responseContent = await response.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, $"HTTP error while posting data with id: {mappedData}");
+            throw;
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, $"Json Exception while posting data with id: {mappedData}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Unexpected Exception while posting data with id: {mappedData}");
+            throw;
+        }
+    }
     public async Task Patch(IHttpClientFactory _httpClientFactory, string _connect, object mappedData, bool isApro)
     {
         var client = await Authorize(isApro);

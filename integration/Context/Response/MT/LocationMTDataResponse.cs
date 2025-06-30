@@ -13,5 +13,5 @@ public class LocationMTDataResponse : DataResponse
     [JsonPropertyName("updateDate")]
     public int datetime_update { get; set; }
     [JsonPropertyName("imageBytesList")]
-    public List<byte> images { get; set; }
+    public List<byte[]> images { get; set; }
 }

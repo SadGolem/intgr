@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net.Http.Headers;
+using AutoMapper;
 using integration.Context;
 using integration.Context.MT;
 using integration.Context.Request.MT;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location.fromMT;
 
-public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataResponse>, ISetterService<LocationDataResponse>
+public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataResponse>, ISetterService<LocationMTDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILocationMTStorageService _storage;
@@ -42,12 +43,57 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
     {
         await GetLocation();
         await SetStatus();
+        await SetPhoto();
     }
 
-    public async Task GetLocation()
+    private async Task GetLocation()
     {
         _locations = _storage.Get();
     }
+    private async Task SetPhoto()
+    {
+        foreach (var loc in _locations)
+        {
+            // Пропускаем локации без фотографий
+            if (loc.images == null || loc.images.Count == 0)
+                continue;
+
+            try
+            {
+                // Создаем multipart-контент
+                using var content = new MultipartFormDataContent();
+            
+                // Добавляем ID локации
+                content.Add(new StringContent(loc.idMT.ToString()), "id");
+            
+                // Добавляем статус
+                content.Add(new StringContent(loc.status.ToString()), "status_id");
+            
+                // Добавляем все фотографии
+                for (int i = 0; i < loc.images.Count; i++)
+                {
+                    var imageBytes = loc.images[i].ToArray();
+                    var imageContent = new ByteArrayContent(imageBytes);
+                    imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+                    content.Add(imageContent, $"photos", $"photo_{i}.jpg");
+                }
+
+                // Отправляем запрос
+                await Post(
+                    _httpClientFactory,
+                    $"{_endpointSetPhoto}/",
+                    content, 
+                    true
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error uploading photos for location {loc.idMT}");
+            }
+        }
+    }
+    
+    private acync 
 
     private async Task SetStatus()
     {

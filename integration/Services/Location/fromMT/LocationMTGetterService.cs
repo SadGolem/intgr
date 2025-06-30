@@ -13,6 +13,7 @@ public class LocationMTGetterService: ServiceGetterBase<LocationMTDataResponse>,
     private readonly IClientStorageService _clientStorage;
     private readonly MTconnectSettings _apiSettings;
     private string  _getEndpoint;
+    private readonly string _photoEndpointTemplate;
     private readonly ILogger<LocationMTGetterService> _logger;
     private IHttpClientFactory _httpClientFactory;
     private ILocationMTStorageService _storageService;
@@ -27,12 +28,38 @@ public class LocationMTGetterService: ServiceGetterBase<LocationMTDataResponse>,
         _apiSettings = apiSettings.Value.MTconnect;
         _getEndpoint = _apiSettings.BaseUrl +
                        _apiSettings.ApiClientSettings.LocationGetStatusEndpoint;
+        _photoEndpointTemplate = _apiSettings.BaseUrl +
+                                 _apiSettings.ApiClientSettings.LocationGetPhotoEndpoint;
         _storageService = storageService;
     }
    
     public async Task Get()
     {
+        // Получаем статусы локаций
         var locationsStatus = await base.Get(_httpClientFactory, _getEndpoint, false);
+        
+        if (locationsStatus != null)
+        {
+            await ProcessLocationsWithPhotos(locationsStatus);
+            _storageService.Set(locationsStatus);
+        }
+    }
+private async Task ProcessLocationsWithPhotos(List<LocationMTDataResponse> locations)
+    {
+        foreach (var location in locations)
+        {
+            try
+            {
+                location.images = await DownloadLocationPhotos(location.idMT, _photoEndpointTemplate, false);
+                
+                // Помечаем как обработанное
+              //  location.PhotoLastUpdated = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error loading photos for location {location.idMT}");
+            }
+        }
     }
 
     public Task<List<(LocationMTDataResponse, bool IsNew)>> GetSync()
