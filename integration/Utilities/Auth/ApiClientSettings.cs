@@ -14,8 +14,11 @@ public class ApiClientSettings
         public string EntryEndpointUpdate { get; set; }
         public string EntryEndpointCapacity { get; set; }
         public string EntryEndpointGetFromMT { get; set; }
-        public string LocationGetStatusAndPhotoEndpoint { get; set; }
+        public string LocationGetStatusEndpoint { get; set; }
+        public string LocationGetPhotoEndpoint { get; set; }
         public string EntryEndpointPATCH { get; set; }
         public string ContractPositionEndpoint{ get; set; }
         public string ContractEndpoint{ get; set; }
+        public string LocationSetPhoto{ get; set; }
+        public string LocationSETStatusFromMT{ get; set; }
 }

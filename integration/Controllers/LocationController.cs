@@ -15,6 +15,7 @@ namespace integration.Controllers
         private readonly ILogger<LocationController> _logger;
         private readonly IGetterLocationServiceFactory<LocationDataResponse> _serviceGetter;
         private readonly ISetterServiceFactory<LocationDataResponse> _serviceSetter;
+        private readonly ISetterServiceFactory<LocationMTDataResponse> _serviceSetterFromMTtoAPRO;
         private IGetterLocationService<LocationDataResponse> _locationServiceGetter;
         private IGetterServiceFactory<LocationMTDataResponse> _locationMTServiceGetter;
         private ISetterService<LocationDataResponse> _locationServiceSetter;
@@ -23,6 +24,7 @@ namespace integration.Controllers
         public LocationController(ILogger<LocationController> logger, 
             IGetterLocationServiceFactory<LocationDataResponse> serviceGetter, IGetterServiceFactory<LocationMTDataResponse> locationMTServiceGetter,
             ISetterServiceFactory<LocationDataResponse> serviceSetter,
+            ISetterServiceFactory<LocationMTDataResponse> serviceSetterFromMTtoApro,
             ILocationIdService locationIdService
         )
         {
@@ -31,8 +33,9 @@ namespace integration.Controllers
             _serviceSetter = serviceSetter;
             _locationMTServiceGetter = locationMTServiceGetter;
             _locationIdService = locationIdService;
+            _serviceSetterFromMTtoAPRO = serviceSetterFromMTtoApro;
         }
-        //[HttpGet("syncLocations")] // This endpoint can be used for manual triggers
+       
         public async Task<IActionResult> Sync()
         {
             _logger.LogInformation("Starting manual location sync...");
@@ -70,6 +73,22 @@ namespace integration.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during location get from mt.");
+                return StatusCode(500, "Error during location get from mt.");
+            }
+        }
+
+        public async Task<IActionResult> Set()
+        {
+            try
+            {
+                var service = _serviceSetterFromMTtoAPRO.Create();
+                await service.Set();
+                
+                return Ok("Locations set from MT successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during location set from mt.");
                 return StatusCode(500, "Error during location get from mt.");
             }
         }

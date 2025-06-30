@@ -62,7 +62,7 @@ namespace integration
                 
                 await StartEntry(entryController);
                 await CheckAndSendIntegrationToAPRO();
-                //await GetMTLocation(locationController);
+                await GetMTLocation(locationController);
                 
                 await SendAsync();
                 
@@ -91,6 +91,7 @@ namespace integration
             try
             {
                 await locationController.Get();
+                await locationController.Set();
             }
             catch (Exception ex)
             {

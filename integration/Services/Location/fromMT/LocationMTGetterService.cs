@@ -25,18 +25,21 @@ public class LocationMTGetterService: ServiceGetterBase<LocationMTDataResponse>,
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _apiSettings = apiSettings.Value.MTconnect;
-        _getEndpoint = _apiSettings.BaseUrl + _apiSettings.BaseUrl +
-                       _apiSettings.ApiClientSettings.LocationGetStatusAndPhotoEndpoint;
+        _getEndpoint = _apiSettings.BaseUrl +
+                       _apiSettings.ApiClientSettings.LocationGetStatusEndpoint;
         _storageService = storageService;
     }
    
     public async Task Get()
     {
-        var locations = await base.Get(_httpClientFactory, _getEndpoint, false);
+        var locationsStatus = await base.Get(_httpClientFactory, _getEndpoint, false);
     }
 
     public Task<List<(LocationMTDataResponse, bool IsNew)>> GetSync()
     {
         throw new NotImplementedException();
     }
+    
+    
+    
 }

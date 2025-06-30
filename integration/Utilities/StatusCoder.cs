@@ -26,19 +26,19 @@ namespace integration.Context
         };
 
 
-        private static List<(int Key, string Value)> _statusLocation = new List<(int Key, string Value)>
+        private static List<(int Key, string Value, bool isNew)> _statusLocation = new List<(int Key, string Value, bool isNew)>
         {
-            ( 52, "Новая" ),
-            ( 74, "Заявка на проверку" ),
-            ( 167, "Проверенная" ),
-            ( 301, "Изменена" ), //не готово
-            ( 167, "Инспекция" ),
-            ( 14, "Действующая" ),
-            ( 67, "Фактическая" ),
-            ( 74, "Плановая" ),
-            ( 159, "Неизвестная" ),
-            ( 70, "Закрыта" ),
-            ( 167, "Проинспектирована" )
+            ( 52, "Новая", true),
+            ( 74, "Заявка на проверку", false),
+            ( 167, "Проверенная", false),
+            ( 74, "Изменена", false), //не готово
+            ( 167, "Инспекция", false),
+            ( 14, "Действующая", false),
+            ( 67, "Фактическая", false),
+            ( 74, "Плановая", false),
+            ( 159, "Неизвестная", false),
+            ( 70, "Закрыта", false),
+            ( 167, "Проинспектирована", false)
         };
         
         private static List<(string Key, string Value)> _statusContract = new List<(string Key, string Value)>
@@ -255,8 +255,10 @@ namespace integration.Context
             {
                 if (item.Key == id)
                 {
-                    results = item.Value;
-                    return results;
+                    if (item.Key == 74)
+                        if (!item.isNew)
+                            return results = "Изменена";
+                    return results = item.Value;
                 }
             }
 
