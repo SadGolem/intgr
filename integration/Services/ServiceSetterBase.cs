@@ -2,6 +2,7 @@
 using System.Text.Json;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location;
@@ -42,7 +43,7 @@ public class ServiceSetterBase<T> : ServiceBase
             throw;
         }
     }
-    public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, HttpContent mappedData, bool isApro)
+    public async Task<ActionResult<string>> Post(IHttpClientFactory _httpClientFactory, string _connect, HttpContent mappedData, bool isApro)
     {
         var client = await Authorize(isApro);
         try
@@ -54,6 +55,7 @@ public class ServiceSetterBase<T> : ServiceBase
 
             response.EnsureSuccessStatusCode();  
             var responseContent = await response.Content.ReadAsStringAsync();
+            return responseContent;
         }
         catch (HttpRequestException ex)
         {
