@@ -177,3 +177,5 @@ D:\Project_Visual\asu\integration\intgr\integration\obj\Debug\net8.0\refint\inte
 D:\Project_Visual\asu\integration\intgr\integration\obj\Debug\net8.0\integration.pdb
 D:\Project_Visual\asu\integration\intgr\integration\obj\Debug\net8.0\integration.genruntimeconfig.cache
 D:\Project_Visual\asu\integration\intgr\integration\obj\Debug\net8.0\ref\integration.dll
+C:\Projects\intgr\integration\bin\Debug\net8.0\Castle.Core.dll
+C:\Projects\intgr\integration\bin\Debug\net8.0\Moq.dll

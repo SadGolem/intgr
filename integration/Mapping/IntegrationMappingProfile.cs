@@ -82,6 +82,11 @@ public class IntegrationMappingProfile : Profile
         CreateMap<EntryData, EntryMTRequest>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.GetStatusId(src.status)));
+
+        CreateMap<LocationMTDataResponse, LocationMTRequest>()
+            .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.idAPRO))
+            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.ToCorrectLocationStatus(src.status,src.idMT )))
+            .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.images));
     }
 
     private long SafeParseLong(string value)

@@ -10,10 +10,7 @@ namespace integration.Services.Location;
 public class ServiceSetterBase<T> : ServiceBase
 {
     private readonly ILogger _logger;
-    /*public ServiceSetterBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger,IAu, IConfiguration? configuration) : base(httpClientFactory, logger,authorizer, configuration)
-    {
-        _logger = logger;
-    }*/
+
     public async Task Post(IHttpClientFactory _httpClientFactory, string _connect, object mappedData, bool isApro)
     {
         var client = await Authorize(isApro);
@@ -43,33 +40,27 @@ public class ServiceSetterBase<T> : ServiceBase
             throw;
         }
     }
-    public async Task<ActionResult<string>> Post(IHttpClientFactory _httpClientFactory, string _connect, HttpContent mappedData, bool isApro)
+    public async Task<string> Post( // Изменён возвращаемый тип на Task<string>
+        IHttpClientFactory _httpClientFactory, 
+        string _connect, 
+        HttpContent content, // Переименовано mappedData -> content
+        bool isApro)
     {
         var client = await Authorize(isApro);
         try
         {
-            var jsonBody = JsonSerializer.Serialize(mappedData);
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-            HttpResponseMessage response;
-            response = await client.PostAsync(_connect, content);
-
+            HttpResponseMessage response = await client.PostAsync(_connect, content);
             response.EnsureSuccessStatusCode();  
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return responseContent;
+            return await response.Content.ReadAsStringAsync();
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, $"HTTP error while posting data with id: {mappedData}");
-            throw;
-        }
-        catch (JsonException ex)
-        {
-            _logger.LogError(ex, $"Json Exception while posting data with id: {mappedData}");
+            _logger.LogError(ex, $"HTTP error while posting data");
             throw;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Unexpected Exception while posting data with id: {mappedData}");
+            _logger.LogError(ex, $"Unexpected Exception while posting data");
             throw;
         }
     }

@@ -130,6 +130,22 @@ namespace integration.Context
             (19, 163), (19, 100), (19, 144), (4, 147)
         };
         
+        public static int FromCorrectLocationStatus(string status)
+        {
+            foreach (var item in _statusLocation)
+            {
+                if (item.Value == status)
+                {
+                    if (item.Key == 74 && !item.isNew) continue;
+                    return item.Key;
+                }
+            }
+
+            // Если статус не найден
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation,
+                $"Reverse status not found: {status}");
+            return 0;
+        }
 
         public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
         {

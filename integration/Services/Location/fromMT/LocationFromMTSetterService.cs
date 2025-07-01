@@ -48,7 +48,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
     public async Task Set()
     {
         await GetLocation();
-        await SetStatus();
+            // await SetStatus();
         await SetPhoto();
     }
 
@@ -81,14 +81,19 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
                 content.Add(imageContent, $"photos", $"photo_{i}.jpg");
             }
 
+            var requestBody = new
+            {
+                file = content
+            };
+
             var response = await Post(
                 _httpClientFactory,
                 $"{_endpointSetPhoto}/",
-                content,
+                requestBody,
                 true
             );
 
-            SetFileToLocation(loc.idMT, response);
+            SetFileToLocation(loc.idAPRO, response);
         }
         catch (Exception ex)
         {
