@@ -2,7 +2,6 @@
 using System.Text.Json;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location;
@@ -100,5 +99,6 @@ public class ServiceSetterBase<T> : ServiceBase
 
     public ServiceSetterBase(IHttpClientFactory httpClientFactory, ILogger<ServiceBase> logger, IAuthorizer authorizer, IOptions<AuthSettings> apiSettings) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
+        _logger = logger;
     }
 }

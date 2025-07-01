@@ -69,41 +69,36 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
 
     private async Task UploadFile(LocationMTDataResponse loc)
     {
-        try
+        foreach (var image in loc.images)
         {
-            using var content = new MultipartFormDataContent();
-
-            for (int i = 0; i < loc.images.Count; i++)
+            try
             {
-                var imageBytes = loc.images[i].ToArray();
+                using var fileContent = new MultipartFormDataContent();
+                var imageBytes = image.ToArray();
                 var imageContent = new ByteArrayContent(imageBytes);
                 imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
-                content.Add(imageContent, $"photos", $"photo_{i}.jpg");
+                fileContent.Add(imageContent, "file", "photo.jpg");
+
+                var response = await Post(
+                    _httpClientFactory,
+                    $"{_endpointSetPhoto}",
+                    fileContent,
+                    true
+                );
+
+                SetFileToLocation(loc.idAPRO, response);
             }
-
-            var requestBody = new
+            catch (Exception ex)
             {
-                file = content
-            };
-
-            var response = await Post(
-                _httpClientFactory,
-                $"{_endpointSetPhoto}/",
-                requestBody,
-                true
-            );
-
-            SetFileToLocation(loc.idAPRO, response);
+                _logger.LogError(ex, $"Error uploading single file for location {loc.idAPRO}");
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error uploading photos for location {loc.idMT}");
-        }
+
     }
 
-    private async Task SetFileToLocation(int loc, ActionResult<string> response)
+    private async Task SetFileToLocation(int loc, string response)
     {
-        var jsonResponse = JsonSerializer.Deserialize<JsonElement>(response.Value);
+        var jsonResponse = JsonSerializer.Deserialize<JsonElement>(response);
         
         long fileId = jsonResponse.GetProperty("id").GetInt64();
         

@@ -60,14 +60,12 @@ public class ServiceGetterBase<T> : ServiceBase
         }
 
         var contentType = response.Content.Headers.ContentType?.MediaType;
-
-        // Проверяем Content-Disposition как резервный вариант
+        
         var contentDisposition = response.Content.Headers.ContentDisposition?.ToString();
         
         if (contentType?.StartsWith("multipart/") == true ||
                  (contentDisposition?.Contains("filename=") == true && contentDisposition.Contains("attachment")))
         {
-            // Комбинированный подход для обработки multipart без boundary
             return await HandleMultipartWithoutBoundary(response, locationId);
         }
 
