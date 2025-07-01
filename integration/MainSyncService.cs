@@ -51,7 +51,7 @@ namespace integration
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                await GetMTLEntryStatus(entryController);
+                /*await GetMTLEntryStatus(entryController);
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
                 await GetContract(contractController);
@@ -61,8 +61,8 @@ namespace integration
                 await SetStruct(_converterToStorageService);
                 
                 await StartEntry(entryController);
-                await CheckAndSendIntegrationToAPRO();
-                await GetMTLocation(locationController);
+                await CheckAndSendIntegrationToAPRO();*/
+                await GetMTLocationAndSendStatusAndPhotoToApro(locationController);
                 
                 await SendAsync();
                 
@@ -86,7 +86,7 @@ namespace integration
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-        private async Task GetMTLocation(LocationController locationController)
+        private async Task GetMTLocationAndSendStatusAndPhotoToApro(LocationController locationController)
         {
             try
             {
