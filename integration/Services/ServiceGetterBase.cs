@@ -36,8 +36,7 @@ public class ServiceGetterBase<T> : ServiceBase
         response.EnsureSuccessStatusCode();
         return response;
     }
-
-    // Получение списка сущностей
+    
     public async Task<List<T>> Get(string endpoint, bool isApro)
     {
         try
@@ -74,8 +73,7 @@ public class ServiceGetterBase<T> : ServiceBase
             throw;
         }
     }
-
-    // Загрузка фотографий для локации
+    
     public async Task<List<byte[]>> DownloadLocationPhotos(int locationId, string endpointTemplate, bool isApro)
     {
         var photoUrl = endpointTemplate + locationId;
@@ -136,7 +134,7 @@ public class ServiceGetterBase<T> : ServiceBase
             return await ProcessMultipartContent(combinedStream, boundary, locationId);
         }
         
-        _logger.LogWarning($"No boundary found, trying ZIP processing for location {locationId}");
+        _logger.LogWarning($"No boundary found for location {locationId}");
         return await ExtractPhotosFromZip(combinedStream);
     }
     

@@ -1,4 +1,5 @@
-﻿using integration.Context.MT;
+﻿using System.Security.Cryptography;
+using integration.Context.MT;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
@@ -18,7 +19,7 @@ public class LocationMTGetterService : ServiceGetterBase<LocationMTDataResponse>
     private readonly ILogger<LocationMTGetterService> _logger;
     private IHttpClientFactory _httpClientFactory;
     private ILocationMTStorageService _storageService;
-    private const string SAVEDIRECTORY = "C:\\Users\\zma20\\Downloads\\image_2025-06-11_15-56-31.jpg";
+    private const string SAVEDIRECTORY = "C:\\Users\\zma20\\Downloads\\";
     public LocationMTGetterService(IHttpClientFactory httpClientFactory,
         ILogger<LocationMTGetterService> logger,
         IAuthorizer authorizer, IOptions<AuthSettings> apiSettings,
@@ -59,53 +60,56 @@ public class LocationMTGetterService : ServiceGetterBase<LocationMTDataResponse>
             idAPRO = 3395571,
             idMT = 17784
         };
-        AddLocalImageToLocation(location, SAVEDIRECTORY);
-        /*try
+       // AddLocalImageToLocation(location, SAVEDIRECTORY);
+        try
         {
             location.images = await DownloadLocationPhotos(16777215, _photoEndpointTemplate, false);
-    
+
             if (location.images == null || location.images.Count == 0)
             {
                 Console.WriteLine("No photos downloaded");
                 return;
             }
-
+            _storageService.Set(location);
+            // Создаем экземпляр SHA-256 для всех файлов
+            using var sha256 = SHA256.Create();
+    
             // Сохраняем каждое фото в файл
             for (int i = 0; i < location.images.Count; i++)
             {
                 var imageBytes = location.images[i];
                 var filePath = Path.Combine(SAVEDIRECTORY, $"location_{location.idMT}_photo_{i}.jpg");
-        
+
+                // Сохраняем файл
                 await File.WriteAllBytesAsync(filePath, imageBytes);
+        
+                // Вычисляем хэш
+                byte[] hashBytes = sha256.ComputeHash(imageBytes);
+                string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+        
                 Console.WriteLine($"Saved: {filePath}");
+                Console.WriteLine($"SHA-256: {hashString}");
             }
-    
+
             Console.WriteLine($"Successfully saved {location.images.Count} photos to: {SAVEDIRECTORY}");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-        } 
-        _storageService.Set(location);
-        /*}*/
+        }
     }
+
     public void AddLocalImageToLocation(LocationMTDataResponse location, string filePath)
     {
         try
         {
-            // Проверяем существование файла
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"File not found: {filePath}");
             }
-
-            // Читаем файл в массив байтов
+            
             byte[] imageBytes = File.ReadAllBytes(filePath);
-        
-            // Инициализируем список изображений если нужно
             location.images ??= new List<byte[]>();
-        
-            // Добавляем изображение в локацию
             location.images.Add(imageBytes);
         
             Console.WriteLine($"Successfully added image: {Path.GetFileName(filePath)} ({imageBytes.Length} bytes)");

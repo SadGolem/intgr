@@ -51,7 +51,7 @@ namespace integration
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
-                await GetMTLEntryStatus(entryController);
+                /*await GetMTLEntryStatus(entryController);
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
                 await GetContract(contractController);
@@ -61,7 +61,7 @@ namespace integration
                 await SetStruct(_converterToStorageService);
                 
                 await StartEntry(entryController);
-                await CheckAndSendIntegrationToAPRO();
+                await CheckAndSendIntegrationToAPRO();*/
                 await GetMTLocationAndSendStatusAndPhotoToApro(locationController);
                 
                 await SendAsync();
