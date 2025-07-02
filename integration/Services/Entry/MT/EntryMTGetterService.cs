@@ -68,7 +68,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
     private async Task ProcessTimeChunk(DateTime startTime, DateTime endTime)
     {
         var endpoint = BuildEmitterEndpoint(startTime);
-        var response = await GetFullResponse<EntryMTDataResponse>(_httpClientFactory, endpoint, false);
+        var response = await GetFullResponse<EntryMTDataResponse>(endpoint, false);
         
         if (response?.Data != null)
         {

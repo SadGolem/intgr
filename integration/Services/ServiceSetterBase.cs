@@ -71,22 +71,11 @@ public class ServiceSetterBase<T> : ServiceBase
         bool isApro)
     {
         var client = await Authorize(isApro);
-    
-        /*// Устанавливаем обязательные заголовки
-        client.DefaultRequestHeaders.Add("X-Client-Version", "182");
-        client.DefaultRequestHeaders.Add("X-Client-Name", "1.1.4");
-        client.DefaultRequestHeaders.Add("X-Client-Build", "debug");
-        client.DefaultRequestHeaders.Add("X-Client-Package", "com.bigthree.aprodriver");
-        client.DefaultRequestHeaders.Add("X-Client-Username", "driverapp");*/
-
+        
         try
         {
-            // Для отладки можно сохранить сырые данные запроса
-            // await DebugSaveMultipart(content, "request.bin");
-        
             var response = await client.PostAsync(url, content);
-        
-            // Обрабатываем даже неуспешные ответы
+            
             var responseBody = await response.Content.ReadAsStringAsync();
         
             if (!response.IsSuccessStatusCode)
@@ -110,6 +99,35 @@ public class ServiceSetterBase<T> : ServiceBase
         {
             var jsonBody = JsonSerializer.Serialize(mappedData);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+            HttpResponseMessage response;
+            response = await client.PatchAsync(_connect, content);
+
+            response.EnsureSuccessStatusCode();  
+            var responseContent = await response.Content.ReadAsStringAsync();
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, $"HTTP error while patching data with id: {mappedData}");
+            throw;
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, $"Json Exception while patching data with id: {mappedData}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Unexpected Exception while patching data with id: {mappedData}");
+            throw;
+        }
+    }
+    public async Task Patch(IHttpClientFactory _httpClientFactory, string _connect, HttpContent mappedData, bool isApro)
+    {
+        var client = await Authorize(isApro);
+        try
+        {
+            var jsonBody = JsonSerializer.Serialize(mappedData);
+            var content = new StringContent(jsonBody, Encoding.UTF8, "image/json");
             HttpResponseMessage response;
             response = await client.PatchAsync(_connect, content);
 

@@ -70,7 +70,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
             foreach (var id in ids)
             {
                 var endpoint = BuildEmitterEndpoint(id.ToString());
-                var response = await Get(_httpClientFactory, endpoint, true);
+                var response = await Get(endpoint, true);
                 var emitter = response.FirstOrDefault();
                 emitter.id = _positionStorage.GetPosOn_ID(id).waste_source.id;
                 emitter.address = _positionStorage.GetPosOn_ID(id).waste_source.address;

@@ -47,7 +47,7 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
     }
     async Task GetPosition(int id)
     {
-        List<ContractPositionDataResponse> postionsList = await Get(_httpClientFactory, _aproConnect + id, true); //по позициям получаем всю инфу
+        List<ContractPositionDataResponse> postionsList = await Get(_aproConnect + id, true); //по позициям получаем всю инфу
             //_contractPositionStorageService.Set(postionsList); // тут мы отправляем данные в сторэйдж
         _contractPositionStorageService.Set(postionsList);
        

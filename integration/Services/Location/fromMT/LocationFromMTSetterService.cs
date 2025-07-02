@@ -122,17 +122,9 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
         
         var patchUrl = $"{_endpointSetPhotoToLocation}{loc}/";
         var patchBody = new { uploaded_files = new[] { fileId } };
-            
-        using var patchContent = new StringContent(
-            JsonSerializer.Serialize(patchBody),
-            Encoding.UTF8,
-            "application/json"
-        );
         
-        using var patchResponse = await _httpClientFactory.CreateClient()
-            .PatchAsync(patchUrl, patchContent);
-
-        patchResponse.EnsureSuccessStatusCode();
+        await Patch(_httpClientFactory, patchUrl, patchBody, true);
+        
     }
     private async Task SetStatus()
     {

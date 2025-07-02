@@ -15,10 +15,7 @@ public class ContractGetterService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ContractGetterService> _logger;
-
     private IContractStorageService _contractStorageService;
-
-    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
     private IContractPositionStorageService _contractPositionStorageService;
     private List<int> _locationIdSList;
 
@@ -69,7 +66,7 @@ public class ContractGetterService
         {
             try
             {
-                contractsList = await Get(_httpClientFactory, _aproConnect + id, true);
+                contractsList = await Get(_aproConnect + id, true);
                 if (contractsList.Count() > 0)
                     _contractStorageService.Set(contractsList.First());
             }
