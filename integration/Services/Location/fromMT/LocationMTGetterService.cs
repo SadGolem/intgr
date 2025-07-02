@@ -70,7 +70,7 @@ public class LocationMTGetterService : ServiceGetterBase<LocationMTDataResponse>
                 Console.WriteLine("No photos downloaded");
                 return;
             }
-            _storageService.Set(location);
+
             // Создаем экземпляр SHA-256 для всех файлов
             using var sha256 = SHA256.Create();
     
@@ -103,13 +103,19 @@ public class LocationMTGetterService : ServiceGetterBase<LocationMTDataResponse>
     {
         try
         {
+            // Проверяем существование файла
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"File not found: {filePath}");
             }
-            
+
+            // Читаем файл в массив байтов
             byte[] imageBytes = File.ReadAllBytes(filePath);
+        
+            // Инициализируем список изображений если нужно
             location.images ??= new List<byte[]>();
+        
+            // Добавляем изображение в локацию
             location.images.Add(imageBytes);
         
             Console.WriteLine($"Successfully added image: {Path.GetFileName(filePath)} ({imageBytes.Length} bytes)");
