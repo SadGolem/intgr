@@ -39,10 +39,10 @@ public class ServiceSetterBase<T> : ServiceBase
             throw;
         }
     }
-    public async Task<string> Post( // Изменён возвращаемый тип на Task<string>
+    public async Task<string> Post(
         IHttpClientFactory _httpClientFactory, 
         string _connect, 
-        HttpContent content, // Переименовано mappedData -> content
+        HttpContent content, 
         bool isApro)
     {
         var client = await Authorize(isApro);
@@ -60,6 +60,46 @@ public class ServiceSetterBase<T> : ServiceBase
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Unexpected Exception while posting data");
+            throw;
+        }
+    }
+    //для теста!
+    public async Task<string> PostPhoto(
+        IHttpClientFactory httpClientFactory,
+        string url,
+        HttpContent content,
+        bool isApro)
+    {
+        var client = await Authorize(isApro);
+    
+        /*// Устанавливаем обязательные заголовки
+        client.DefaultRequestHeaders.Add("X-Client-Version", "182");
+        client.DefaultRequestHeaders.Add("X-Client-Name", "1.1.4");
+        client.DefaultRequestHeaders.Add("X-Client-Build", "debug");
+        client.DefaultRequestHeaders.Add("X-Client-Package", "com.bigthree.aprodriver");
+        client.DefaultRequestHeaders.Add("X-Client-Username", "driverapp");*/
+
+        try
+        {
+            // Для отладки можно сохранить сырые данные запроса
+            // await DebugSaveMultipart(content, "request.bin");
+        
+            var response = await client.PostAsync(url, content);
+        
+            // Обрабатываем даже неуспешные ответы
+            var responseBody = await response.Content.ReadAsStringAsync();
+        
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError($"HTTP error {(int)response.StatusCode}: {responseBody}");
+                throw new HttpRequestException($"Server error: {response.StatusCode}");
+            }
+        
+            return responseBody;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "POST request failed");
             throw;
         }
     }

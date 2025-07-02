@@ -73,16 +73,30 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
         {
             try
             {
-                using var fileContent = new MultipartFormDataContent();
+                using var content = new MultipartFormDataContent();
+            
+                // Генерируем уникальное имя файла как в примере
+                string fileName = $"saved-{DateTime.Now:yyyyMMdd_HHmmss}_p{loc.idAPRO}.jpg";
+            
                 var imageBytes = image.ToArray();
                 var imageContent = new ByteArrayContent(imageBytes);
+            
+                // Устанавливаем заголовки как в примере
                 imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
-                fileContent.Add(imageContent, "file", "photo.jpg");
+                imageContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "file",
+                    FileName = fileName
+                };
+            
+                // Добавляем файл в контент
+                content.Add(imageContent);
 
-                var response = await Post(
+                // Отправляем запрос
+                var response = await PostPhoto(
                     _httpClientFactory,
-                    $"{_endpointSetPhoto}",
-                    fileContent,
+                    _endpointSetPhoto,
+                    content,
                     true
                 );
 
@@ -90,12 +104,16 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error uploading single file for location {loc.idAPRO}");
+                _logger.LogError(ex, $"Error uploading file for location {loc.idAPRO}");
             }
         }
-
     }
-
+    private async Task DebugSaveMultipart(MultipartFormDataContent content, string path)
+    {
+        using var stream = new MemoryStream();
+        await content.CopyToAsync(stream);
+        File.WriteAllBytes(path, stream.ToArray());
+    }
     private async Task SetFileToLocation(int loc, string response)
     {
         var jsonResponse = JsonSerializer.Deserialize<JsonElement>(response);
