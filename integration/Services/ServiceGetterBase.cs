@@ -27,8 +27,7 @@ public class ServiceGetterBase<T> : ServiceBase
             PropertyNameCaseInsensitive = true 
         };
     }
-
-    // Основной метод для выполнения GET-запросов
+    
     private async Task<HttpResponseMessage> ExecuteGetRequestAsync(string url, bool isApro)
     {
         var client = await Authorize(isApro);
@@ -56,8 +55,7 @@ public class ServiceGetterBase<T> : ServiceBase
             throw;
         }
     }
-
-    // Получение единичной сущности
+    
     public async Task<TResult> GetFullResponse<TResult>(string endpoint, bool isApro)
     {
         try
@@ -95,26 +93,18 @@ public class ServiceGetterBase<T> : ServiceBase
     {
         var contentType = response.Content.Headers.ContentType?.MediaType;
         var contentDisposition = response.Content.Headers.ContentDisposition?.ToString();
-
-        // Обработка мультипарт контента
+        
         if (contentType?.StartsWith("multipart/") == true ||
             (contentDisposition?.Contains("filename=") == true && contentDisposition.Contains("attachment")))
         {
             return await HandleMultipartResponse(response, locationId);
         }
-
-        // Обработка одиночного изображения
+        
         if (contentType?.StartsWith("image/") == true)
         {
             return new List<byte[]> { await response.Content.ReadAsByteArrayAsync() };
         }
-
-        // Обработка ZIP-архива
-        if (contentType == "application/zip")
-        {
-            return await ExtractPhotosFromZip(await response.Content.ReadAsStreamAsync());
-        }
-
+ 
         _logger.LogWarning($"Unsupported content type for photos: {contentType}");
         return new List<byte[]>();
     }
