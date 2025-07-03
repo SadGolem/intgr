@@ -81,11 +81,11 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
                     continue;
                 }
 
-                if (DetermineIsHasNotAAgreement(data))
+                /*if (DetermineIsHasNotAAgreement(data))
                 {
                     _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует соглашение", data.BtNumber);
                     continue;
-                }
+                }*/
 
                 await GetCapacity(data);
 
@@ -129,7 +129,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         Outdated
     }
 
-    private bool DetermineIsHasNotAAgreement(EntryDataResponse entry)
+    /*private bool DetermineIsHasNotAAgreement(EntryDataResponse entry)
     {
         if (entry.agreement is null)
         {
@@ -138,7 +138,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         }
 
         return false;
-    }
+    }*/
 
     private string BuildEmitterEndpoint(bool isCapacity)
     {

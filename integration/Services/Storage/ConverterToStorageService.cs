@@ -53,10 +53,10 @@ public class ConverterToStorageService : IConverterToStorageService
     public async Task ToStorage()
     {
         await GetAll();
-        await Mapping();
+        await CreateStruct();
     }
 
-    private async Task Mapping()
+    private async Task CreateStruct()
     {
         foreach (var position in contractPositions)
         {
