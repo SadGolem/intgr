@@ -1,7 +1,9 @@
 ﻿using integration.Context;
+using integration.Services.CheckUp;
 using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Emitter.Storage;
+using integration.Services.Integration;
 using integration.Services.Schedule;
 using integration.Services.Storage.Interfaces;
 using integration.Structs;
@@ -23,6 +25,7 @@ public class ConverterToStorageService : IConverterToStorageService
     private IStorageService<IntegrationStruct> _storageService;
     private IContractPositionStorageService _contractPositionStorageService;
     private IEmitterStorageService _emitterStorageService;
+    private readonly IntegrationStructValidator _validator;
     private List<ContractDataResponse> contracts = new List<ContractDataResponse>();
     private List<ScheduleDataResponse> schedules = new List<ScheduleDataResponse>();
     private List<EmitterDataResponse> emitters = new List<EmitterDataResponse>();
@@ -31,7 +34,8 @@ public class ConverterToStorageService : IConverterToStorageService
     
     public ConverterToStorageService(IScheduleStorageService scheduleStorage, IContractStorageService contractStorageService,
         IClientStorageService clientStorageService, IContractPositionStorageService contractPositionStorageService,
-        IEmitterStorageService emitterStorageService, IStorageService<IntegrationStruct> storageService)
+        IEmitterStorageService emitterStorageService, IStorageService<IntegrationStruct> storageService,
+        IntegrationStructValidator validator)
     {
         _scheduleStorage = scheduleStorage;
         _contractStorageService = contractStorageService;
@@ -39,6 +43,7 @@ public class ConverterToStorageService : IConverterToStorageService
         _contractPositionStorageService = contractPositionStorageService;
         _emitterStorageService = emitterStorageService; 
         _storageService = storageService;
+        _validator = validator;
     }
 
     public async Task GetAll()
@@ -60,7 +65,14 @@ public class ConverterToStorageService : IConverterToStorageService
     {
         foreach (var position in contractPositions)
         {
-            _storageService.Set(CreateStruct(position));
+            var integrationStruct = CreateStruct(position);
+            
+            if (!_validator.Validate(integrationStruct).Result)
+            {
+                continue;
+            }
+
+            _storageService.Set(integrationStruct);
         }
     }
 
@@ -96,6 +108,7 @@ public class ConverterToStorageService : IConverterToStorageService
             }
         }
 
+        
     return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatasResponse);
     }
 }

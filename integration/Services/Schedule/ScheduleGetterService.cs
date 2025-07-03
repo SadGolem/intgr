@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 
 public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataResponse>
 {
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ScheduleGetterService> _logger;
     private readonly IScheduleStorageService _scheduleStorage;
     private readonly IContractPositionStorageService _positionStorage;
@@ -27,7 +26,6 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
     )
         : base(httpClientFactory, logger, authorizer, apiSettings)
     {
-        _httpClientFactory = httpClientFactory;
         _logger = logger;
         _scheduleStorage = scheduleStorage;
         _positionStorage = positionStorage;
@@ -72,7 +70,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
     {
         using var client  = await Authorize(true);
 
-        var endpoint = BuildEndpointUrl(positionId);
+        var endpoint = await BuildEndpointUrl(positionId);
         var response = await client.GetAsync(endpoint);
 
         response.EnsureSuccessStatusCode();
@@ -80,7 +78,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
         return await DeserializeResponseAsync(response);
     }
 
-    private string BuildEndpointUrl(int positionId)
+    private async Task<string> BuildEndpointUrl(int positionId)
     {
         return $"{_apiSettings.BaseUrl}wf__wastesitescheduleset__waste_site_schedule_set/" +
                $"?position={positionId}" +
@@ -100,13 +98,5 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
             _logger.LogError(ex, "Failed to deserialize schedules response");
             throw;
         }
-    }
-    
-    public void Message(string message)
-    {
-        EmailMessageBuilder.PutInformation(
-            EmailMessageBuilder.ListType.getschedule,
-            $"Schedule sync message: {message[..50]}..." // Обрезаем длинные сообщения
-        );
     }
 }

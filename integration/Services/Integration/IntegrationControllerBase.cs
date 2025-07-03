@@ -16,10 +16,8 @@ public class IntegrationControllerBase : ControllerBase
     private readonly ILogger<ControllerBase> _logger; 
 
     public IntegrationControllerBase(
-        ILogger<IntegrationControllerBase> logger,
-        ICheckUpFactory<ClientDataResponse> checkUpFactory) 
+        ILogger<IntegrationControllerBase> logger) 
     {
-        _checkUpServiceClient = checkUpFactory.Create();
         _logger = logger;
     }
 

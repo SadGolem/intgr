@@ -92,7 +92,12 @@ builder.Services.AddTransient<IGetterServiceFactory<EntryDataResponse>, EntryGet
 builder.Services.AddTransient<IGetterService<EntryDataResponse>, EntryGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<LocationMTDataResponse>, LocationMTGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<LocationMTDataResponse>, LocationMTGetterService>();
+builder.Services.AddScoped<IClientCheckUpService, ClientCheckUpService>();
+builder.Services.AddScoped<IEmitterCheckUpService, EmitterCheckUpService>();
+builder.Services.AddScoped<ILocationCheckUpService, LocationCheckUpService>();
+builder.Services.AddScoped<IScheduleCheckUpService, ScheduleCheckUpService>();
 
+builder.Services.AddScoped<IntegrationStructValidator>();
 builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponse>, ContragentProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<LocationDataResponse>, LocationProcessor>();

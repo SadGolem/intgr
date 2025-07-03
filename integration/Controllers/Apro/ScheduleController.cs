@@ -51,15 +51,6 @@ namespace integration.Controllers.Apro
         {
             _scheduleGetterService = _serviceGetter.Create();
             await _scheduleGetterService.Get();
-
-            // await PostOrPatch(locations);
-            /*_locationIdService.SetLocation(locations);
-            _logger.LogInformation($"Received {locations.Count} locations");*/
-        }
-
-        void ToGetMessage(string ex)
-        {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getschedule, ex);
         }
     }
 }

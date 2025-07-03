@@ -64,13 +64,13 @@ namespace integration
                 await CheckAndSendIntegrationToAPRO();
                 //await GetMTLocationAndSendStatusAndPhotoToApro(locationController);
                 
-                await SendAsync();
+                await SendToEmail();
                 
                 EmailMessageBuilder.ClearList();
             }
         }
 
-        private async Task SendAsync()
+        private async Task SendToEmail()
         {
             await EmailSender.Send();
         }

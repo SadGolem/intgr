@@ -6,17 +6,14 @@ namespace integration.Services.Integration;
 
 public class IntegrationController : IntegrationControllerBase
 {
-    private readonly ICheckUpFactory<ClientDataResponse> _checkUpFactory; // Change to ClientDataResponse
-    private readonly ILogger<IntegrationControllerBase> _logger; // Change to ClientDataResponse
-    private readonly IIntegrationService _integrationService; // Change to ClientDataResponse
+    private readonly ILogger<IntegrationControllerBase> _logger; 
+    private readonly IIntegrationService _integrationService; 
 
     public IntegrationController(
         ILogger<IntegrationControllerBase> logger,
-        ICheckUpFactory<ClientDataResponse> checkUpFactory, // Change to ClientDataResponse
         IIntegrationService integrationService)
-        : base(logger, checkUpFactory)
+        : base(logger)
     {
-        _checkUpFactory = checkUpFactory;
         _logger = logger;
         _integrationService = integrationService;
     }
@@ -25,24 +22,12 @@ public class IntegrationController : IntegrationControllerBase
     {
         _logger.LogInformation("Starting sync integration set...");
         try
-        {
-            if (Check(_struct).Result.Item1)
-            {
-                await _integrationService.SendIntegrationDataAsync(_struct);
-            }
-            else
-            {
-                throw new Exception("Clients not found");
-            }
+        { 
+            await _integrationService.SendIntegrationDataAsync(_struct);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Sync failed");
         }
-    }
-    private async Task<(bool, string)> Check(IntegrationStruct _struct)
-    {
-        var _checkUpService = _checkUpFactory.Create();
-        return _checkUpService.Check(_struct);
     }
 }
