@@ -76,6 +76,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 emitter.address = _positionStorage.GetPosOn_ID(id).waste_source.address;
                 emitter.amount = GetVolume(emitter).ToString();
                 emitter.contractNumber = emitter.name;
+                emitter.participant = _positionStorage.GetPosOn_ID(id).contract.client;
                 emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null 
                     ? null 
                     : _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null ? null : _positionStorage.GetPosOn_ID(id).waste_site.ext_id;

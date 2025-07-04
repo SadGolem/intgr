@@ -27,9 +27,7 @@ namespace integration.Context
 
         [JsonPropertyName("waste_source_category")]
         public WasteSourceCategory waste_source_category { get; set; } 
-
-        [JsonPropertyName("participant")]
-        public ClientContact participant { get; set; }  // Изменен тип
+        public ClientDataResponse participant { get; set; }  // Изменен тип
 
         public class WasteSourceCategory
         {
