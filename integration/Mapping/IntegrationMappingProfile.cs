@@ -34,7 +34,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.participant.person_id))
             .ForMember(dest => dest.idConsumerType, opt => opt.MapFrom(src => src.typeConsumer))
-            .ForMember(dest => dest.amount, opt => opt.MapFrom(src => SafeParseInt(src.amount)))
+            .ForMember(dest => dest.amount, opt => opt.MapFrom(src => SafeParseDouble(src.amount)))
             .ForMember(dest => dest.consumerAddress, opt => opt.MapFrom(src => src.address))
             .ForMember(dest => dest.accountingType, opt => opt.MapFrom(src => src.normative))
             .ForMember(dest => dest.contractNumber, opt => opt.MapFrom(src => src.contractNumber))
@@ -43,7 +43,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idContract, opt => opt.MapFrom(src => src.idContract))
             .ForMember(dest => dest.contractStatus, opt => opt.MapFrom(src => src.contractStatus))
             .ForMember(dest => dest.addressBT, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.nameConsumer));
+            .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.));
 
         CreateMap<LocationDataResponse, LocationRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
@@ -99,6 +99,12 @@ public class IntegrationMappingProfile : Profile
     {
         if (string.IsNullOrWhiteSpace(value)) return 0;
         return int.TryParse(value, out int result) ? result : 0;
+    }
+    
+    private double SafeParseDouble(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return 0;
+        return double.TryParse(value, out double result) ? result : 0;
     }
     
     decimal TruncateDecimal(decimal value, int precision)

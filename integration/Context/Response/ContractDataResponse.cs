@@ -4,7 +4,7 @@ namespace integration.Context;
 
 public class ContractDataResponse : DataResponse
 {
-    [JsonPropertyName("id")] //id договора (возможно допника)
+    [JsonPropertyName("id")]
     public int id { get; set; }
     [JsonPropertyName("name")]
     public string name { get; set; }

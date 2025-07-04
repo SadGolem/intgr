@@ -31,6 +31,8 @@ namespace integration.Context
 
         public class WasteSourceCategory
         {
+            [JsonPropertyName("id")] public string id { get; set; }
+
             [JsonPropertyName("name")]
             public string name { get; set; }
         }
@@ -42,5 +44,6 @@ namespace integration.Context
         public string contractStatus { get; set; }
         public string typeConsumer { get; set; }
         public string nameConsumer { get; set; }
+        public string idConsumer { get; set; }
     }
 }

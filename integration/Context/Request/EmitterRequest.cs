@@ -4,8 +4,8 @@ public class EmitterRequest
 {
     public int? idAsuPro { get; set; }
     public int? idConsumer { get; set; }
-    public int? idConsumerType { get; set; }
-    public float? amount { get; set; }
+    public int idConsumerType { get; set; }
+    public double? amount { get; set; }
     public string? consumerAddress { get; set; }
     public string? accountingType { get; set; } //норматив
     public string? contractNumber { get; set; } 

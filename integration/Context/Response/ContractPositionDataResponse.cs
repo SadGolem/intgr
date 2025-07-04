@@ -31,11 +31,11 @@ public class ContractPositionDataResponse : DataResponse
 
     [JsonPropertyName("estimation_value")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public double? estimation_value { get; set; }  // Изменен тип на double?
+    public double? estimation_value { get; set; }  
 
     [JsonPropertyName("date_start")]
-    public string date_start { get; set; }  // Исправлено имя свойства
+    public string date_start { get; set; }  
 
     [JsonPropertyName("date_end")]
-    public string date_end { get; set; }  // Исправлено имя свойства
+    public string date_end { get; set; } 
 }
