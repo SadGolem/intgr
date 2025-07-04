@@ -16,7 +16,7 @@ namespace integration.Services.Location
         private readonly ConnectingStringApro _aproConnect;
         private readonly IOptions<AuthSettings> _configuration;
         private readonly JsonSerializerOptions _jsonOptions;
-
+        private static readonly HashSet<int> STATUSNOTNEEDS = new HashSet<int> { 52, 167, 67, 159, 70, 167 };
         public LocationGetterService(
             IHttpClientFactory httpClientFactory,
             ILogger<LocationGetterService> logger,
@@ -121,6 +121,7 @@ namespace integration.Services.Location
 
         private bool? DetermineIfNew(LocationDataResponse location, DateTime lastUpdate)
         {
+            if (STATUSNOTNEEDS.Contains(location.status.id)) return null;
             if (location.datetime_create > lastUpdate)
             {
                 return true;
