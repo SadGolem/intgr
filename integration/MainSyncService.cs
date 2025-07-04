@@ -172,9 +172,9 @@ namespace integration
                 _logger.LogError(ex, "Error while syncing contragents.");
             }
         }
-        
+
         private async Task CheckAndSendIntegrationToAPRO()
-        
+
         {
             List<IntegrationStruct> _structs = _storageService.Get();
             foreach (var _struct in _structs)
@@ -189,10 +189,9 @@ namespace integration
                     Console.WriteLine(e);
                     throw;
                 }
-                
             }
-           
         }
+
         private async Task StartEntry(EntryController entryController)
         {
             try

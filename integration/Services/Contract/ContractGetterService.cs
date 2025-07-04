@@ -41,10 +41,7 @@ public class ContractGetterService
 
     public async Task Get()
     {
-        //сначала получить uuid 
         await GetContractsToList();
-        //затем вывести все договоры 
-        //передать список в сторэйдж
     }
 
     private async Task GetContractsToList()
@@ -53,7 +50,8 @@ public class ContractGetterService
 
         foreach (var con in contractsPosList)
         {
-            root_ids.Add(con.contract.root_id);
+            if (!root_ids.Contains(con.contract.root_id))
+                root_ids.Add(con.contract.root_id);
         }
 
         await GetContractsDataFromAPRO();
@@ -67,7 +65,7 @@ public class ContractGetterService
             try
             {
                 contractsList = await Get(_aproConnect + id, true);
-                if (contractsList.Count() > 0)
+                if (contractsList.Count() > 0) 
                     _contractStorageService.Set(contractsList.First());
             }
             catch (Exception e)
