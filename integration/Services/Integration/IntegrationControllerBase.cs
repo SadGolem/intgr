@@ -20,8 +20,7 @@ public class IntegrationControllerBase : ControllerBase
     {
         _logger = logger;
     }
-
-    [HttpGet("sync")]
+    
     public async Task<IActionResult> Sync(IntegrationStruct _struct)
     {
         _logger.LogInformation("Starting sync...");

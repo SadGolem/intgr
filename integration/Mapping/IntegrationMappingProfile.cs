@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using AutoMapper;
+﻿using AutoMapper;
 using integration.Context;
 using integration.Context.MT;
 using integration.Context.Request;
@@ -43,7 +42,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idContract, opt => opt.MapFrom(src => src.idContract))
             .ForMember(dest => dest.contractStatus, opt => opt.MapFrom(src => src.contractStatus))
             .ForMember(dest => dest.addressBT, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.));
+            .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.nameConsumer));
 
         CreateMap<LocationDataResponse, LocationRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
