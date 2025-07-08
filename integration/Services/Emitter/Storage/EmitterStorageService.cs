@@ -13,7 +13,8 @@ public class EmitterStorageService : IEmitterStorageService
 
     public void Set(EmitterDataResponse dates)
     {
-        EmitterPositionList.Add(dates);
+        if(!EmitterPositionList.Contains(dates))
+            EmitterPositionList.Add(dates);
     }
 
     public void Set(List<EmitterDataResponse> dates)
@@ -26,7 +27,8 @@ public class EmitterStorageService : IEmitterStorageService
 
     public void ClearList(EmitterDataResponse date)
     {
-        EmitterPositionList.Remove(date);
+        if(EmitterPositionList.Contains(date))
+            EmitterPositionList.Remove(date);
     }
 
     public void ClearList()

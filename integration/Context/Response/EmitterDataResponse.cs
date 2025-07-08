@@ -10,8 +10,7 @@ namespace integration.Context
         public WasteSource WasteSource { get; set; }  // Новый класс-обёртка
         [JsonPropertyName("containers")]
         public List<Container>? container { get; set; }
-        [JsonPropertyName("external_id")]
-        public string ext_id { get; set; }
+        
         public string amount { get; set; } //объем
         public string contractNumber { get; set; }
         public string location_mt_id { get; set; }
@@ -34,11 +33,13 @@ namespace integration.Context
         [JsonPropertyName("name")]
         public string name { get; set; }
 
-        [JsonPropertyName("waste_source_category")]  // Теперь на правильном уровне
+        [JsonPropertyName("waste_source_category")]
         public WasteSourceCategory category { get; set; }
 
         [JsonPropertyName("normative_unit_value_exist")]
         public bool normative { get; set; }
+        [JsonPropertyName("external_id")]
+        public string ext_id { get; set; }
     }
 
     public class WasteSourceCategory {

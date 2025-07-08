@@ -18,10 +18,6 @@ public class ScheduleStorageService : IScheduleStorageService
     {
         return _SchedulesList;
     }
-    public List<ScheduleDataResponse> GetS(int idPositionData)
-    {
-        return _SchedulesList;
-    }
     public void Set(ScheduleDataResponse dates)
     {
         _SchedulesList.Add(dates);
@@ -36,12 +32,10 @@ public class ScheduleStorageService : IScheduleStorageService
                 _SchedulesList.Add(data);
         }
     }
-
     public void ClearList(ScheduleDataResponse dataResponse)
     {
         _SchedulesList.Remove(dataResponse);
     }
-    
     public void ClearList()
     {
         _SchedulesList.Clear();

@@ -18,7 +18,7 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
     private readonly string _aproBaseUrl;
     private readonly ILogger<EmitterProcessor> _logger;
     private readonly IMapper _mapper;
-    
+    private EmitterDataResponse _entity; 
 
     public EmitterProcessor(
         IApiClientService apiClientService, 
@@ -38,7 +38,8 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
 
     public async Task ProcessAsync(EmitterDataResponse entity)
     {
-        var isNew = string.IsNullOrEmpty(entity.ext_id);
+        _entity = entity;
+        var isNew = string.IsNullOrEmpty(entity.WasteSource.ext_id);
         var endpoint = isNew
             ? "api/v2/waste_generator/create_from_asupro"
             : "api/v2/waste_generator/update_from_asupro";
@@ -84,7 +85,7 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error processing emitter: {entity.ext_id}");
+            _logger.LogError(ex, $"Error processing emitter: {entity.WasteSource.ext_id}");
             throw;
         }
     }
@@ -120,7 +121,9 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
             var updateRequest = new { external_id = mtId };
         
             await _aproClientService.PatchAsync(aproEndpoint, updateRequest);
-        
+
+            _entity.WasteSource.ext_id = mtId.ToString();
+            
             _logger.LogInformation($"Updated ASU PRO {aproId} with MT ID {mtId}");
         }
         catch (Exception ex)

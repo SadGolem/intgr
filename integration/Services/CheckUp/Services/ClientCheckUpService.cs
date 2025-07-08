@@ -22,17 +22,8 @@ public class ClientCheckUpService : IClientCheckUpService
     {
         if (client == null)
         {
-            Message($"{idLocation} - client is not found");
             return false;
         }
-
         return true;
-    }
-    private void Message(string message)
-    {
-        EmailMessageBuilder.PutInformation(
-            EmailMessageBuilder.ListType.getemitter, 
-            message
-        );
     }
 }

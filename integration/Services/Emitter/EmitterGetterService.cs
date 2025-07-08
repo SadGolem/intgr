@@ -83,6 +83,7 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
                 emitter.contractStatus = StatusCoder.GetStatusContract(_positionStorage.GetPosOn_ID(id).contract?.status?.Name);
                 emitter.nameConsumer = _positionStorage.GetPosOn_ID(id).contract.client.consumerName;
+                _positionStorage.GetPosOn_ID(id).waste_source = emitter;
                 _emitterStorage.Set(emitter);
             }
         }

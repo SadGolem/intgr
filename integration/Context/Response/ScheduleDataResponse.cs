@@ -7,7 +7,7 @@ namespace integration.Context
         public new string nameFileTime = "schedule";
 
         [JsonPropertyName("id")]
-        public int id_oob { get; set; }
+        public int id { get; set; }
         [JsonPropertyName("waste_site")]
         public Location location { get; set; }
         [JsonPropertyName("containers")]
@@ -20,7 +20,8 @@ namespace integration.Context
         public string? ext_id;
         public EmitterDataResponse? emitter { get; set; }
         public LocationDataResponse? LocationDataResponse { get; set; }
-        public int idContainerType { get; set; }
+        
+        public int? idContainerType { get; set; }
     }
 }
 

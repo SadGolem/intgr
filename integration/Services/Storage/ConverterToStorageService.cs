@@ -86,11 +86,10 @@ public class ConverterToStorageService : IConverterToStorageService
         LocationDataResponse locationDatasResponse = new LocationDataResponse();
 
         int idPos = context.id;
-        contractDatas = contracts;
         emitterDatas = emitters;
         clientDatas = clients;
         locationDatasResponse = context.waste_site;
-        foreach (var schedule in scheduleDatas)
+        foreach (var schedule in schedules)
         {
             if (locationDatasResponse.id == schedule.location.id)
             {
@@ -99,7 +98,7 @@ public class ConverterToStorageService : IConverterToStorageService
             }
         }
 
-        foreach (var contract in contractDatas)
+        foreach (var contract in contracts)
         {
             if (context.contract.root_id == contract.root_id)
             {

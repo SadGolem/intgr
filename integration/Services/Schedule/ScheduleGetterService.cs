@@ -6,6 +6,7 @@ using integration.Services;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Schedule;
+using integration.Utilities;
 using Microsoft.Extensions.Options;
 
 public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataResponse>
@@ -58,7 +59,15 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
         try
         {
             var schedules = await FetchSchedulesAsync(position.id);
-            _scheduleStorage.Set(schedules);
+            if (schedules.Count > 0)
+            {
+                var schedule = schedules.First();
+                schedule.emitter = position.waste_source;
+                schedule.idContainerType = ContainerFinder.FindContainerId(schedule.containers.First().capacity.id,
+                    schedule.containers.First().type.id);
+
+                _scheduleStorage.Set(schedules);
+            }
         }
         catch (Exception ex)
         {
@@ -82,7 +91,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
     {
         return $"{_apiSettings.BaseUrl}wf__wastesitescheduleset__waste_site_schedule_set/" +
                $"?position={positionId}" +
-               "&query={id,waste_site{id},containers{id},schedule,dates}";
+               "&query={id,waste_site{id},containers{id,type{id},capacity{id}},schedule,dates}";
     }
 
     private async Task<List<ScheduleDataResponse>> DeserializeResponseAsync(HttpResponseMessage response)
