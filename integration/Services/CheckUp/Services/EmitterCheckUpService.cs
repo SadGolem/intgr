@@ -25,13 +25,13 @@ public class EmitterCheckUpService : IEmitterCheckUpService
             return false;
         }
 
-        if (emitter.participant == null)
+        if (emitter.participant_id == null)
         {
             Message($"{idLocation} - in emitter client is not found");
             return false;
         }
 
-        if (emitter.address == null)
+        if (emitter.WasteSource.address == null)
         {
             Message($"{idLocation} - in emitter address is not found");
             return false;

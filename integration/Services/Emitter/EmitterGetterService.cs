@@ -72,18 +72,17 @@ public class EmitterGetterService : ServiceGetterBase<EmitterDataResponse>,
                 var endpoint = BuildEmitterEndpoint(id.ToString());
                 var response = await Get(endpoint, true);
                 var emitter = response.FirstOrDefault();
-                emitter.id = _positionStorage.GetPosOn_ID(id).waste_source.id;
-                emitter.address = _positionStorage.GetPosOn_ID(id).waste_source.address;
                 emitter.amount = GetVolume(emitter).ToString();
-                emitter.typeConsumer = emitter.waste_source_category.id.ToString();
-                emitter.contractNumber = emitter.name;
-                emitter.participant = _positionStorage.GetPosOn_ID(id).contract.client;
+                emitter.typeConsumer = emitter.WasteSource.category.id.ToString();
+                emitter.contractNumber = _positionStorage.GetPosOn_ID(id).contract.name;
+                emitter.participant_id = Convert.ToInt32(_positionStorage.GetPosOn_ID(id).contract.client.idAsuPro);
                 emitter.location_mt_id = _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null 
                     ? null 
                     : _positionStorage.GetPosOn_ID(id).waste_site.ext_id == null ? null : _positionStorage.GetPosOn_ID(id).waste_site.ext_id;
                 emitter.executorName = _positionStorage.GetPosOn_ID(id)?.contract?.assignee?.name;
                 emitter.idContract = _positionStorage.GetPosOn_ID(id).contract.id;
                 emitter.contractStatus = StatusCoder.GetStatusContract(_positionStorage.GetPosOn_ID(id).contract?.status?.Name);
+                emitter.nameConsumer = _positionStorage.GetPosOn_ID(id).contract.client.consumerName;
                 _emitterStorage.Set(emitter);
             }
         }

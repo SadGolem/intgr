@@ -30,18 +30,18 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idOrganization, opt => opt.MapFrom(src => src.root_company.id));
 
         CreateMap<EmitterDataResponse, EmitterRequest>()
-            .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
-            .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.participant.person_id))
+            .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.WasteSource.id))
+            .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.participant_id))
             .ForMember(dest => dest.idConsumerType, opt => opt.MapFrom(src => src.typeConsumer))
-            .ForMember(dest => dest.amount, opt => opt.MapFrom(src => SafeParseDouble(src.amount)))
-            .ForMember(dest => dest.consumerAddress, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.accountingType, opt => opt.MapFrom(src => src.normative))
+            .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.amount))
+            .ForMember(dest => dest.consumerAddress, opt => opt.MapFrom(src => src.WasteSource.address))
+            .ForMember(dest => dest.accountingType, opt => opt.MapFrom(src => src.WasteSource.normative))
             .ForMember(dest => dest.contractNumber, opt => opt.MapFrom(src => src.contractNumber))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location_mt_id))
             .ForMember(dest => dest.executorName, opt => opt.MapFrom(src => src.executorName))
             .ForMember(dest => dest.idContract, opt => opt.MapFrom(src => src.idContract))
             .ForMember(dest => dest.contractStatus, opt => opt.MapFrom(src => src.contractStatus))
-            .ForMember(dest => dest.addressBT, opt => opt.MapFrom(src => src.address))
+            .ForMember(dest => dest.addressBT, opt => opt.MapFrom(src => src.WasteSource.address))
             .ForMember(dest => dest.usernameBT, opt => opt.MapFrom(src => src.nameConsumer));
 
         CreateMap<LocationDataResponse, LocationRequest>()
@@ -57,7 +57,7 @@ public class IntegrationMappingProfile : Profile
 
 
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
-            .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.id))
+            .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.id))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.emitter.amount))
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))

@@ -1,7 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net;
+using System.Text.RegularExpressions;
 using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
+using integration.Exceptions;
 using integration.Helpers.Auth;
 using integration.Services.Integration.Interfaces;
 using Microsoft.Extensions.Options;
@@ -36,28 +38,44 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
 
     public async Task ProcessAsync(EmitterDataResponse entity)
     {
-        var isNew = entity.ext_id == 0;
-        var endpoint = isNew 
-            ? "api/v2/waste_generator/create_from_asupro" 
+        var isNew = string.IsNullOrEmpty(entity.ext_id);
+        var endpoint = isNew
+            ? "api/v2/waste_generator/create_from_asupro"
             : "api/v2/waste_generator/update_from_asupro";
-        
+
         var url = $"{_baseUrl}{endpoint}";
-        var method = isNew ? HttpMethod.Post : HttpMethod.Patch;
         try
         {
             var entityRequest = _mapper.Map<EmitterRequest>(entity);
-        
+
             if (isNew)
             {
-                string response = await _apiClientService.SendAndGetStringAsync(entityRequest, url, HttpMethod.Post);
-                var mtId = ParseMtIdFromResponse(response);
-            
-                if (!mtId.HasValue)
+                try
                 {
-                    _logger.LogError($"Failed to parse MT ID for emitter: {entity.id}");
+                    string response =
+                        await _apiClientService.SendAndGetStringAsync(entityRequest, url, HttpMethod.Post);
+                    var mtId = ParseMtIdFromResponse(response);
+
+                    if (!mtId.HasValue)
+                    {
+                        _logger.LogError($"Failed to parse MT ID for emitter: {entity.WasteSource.id}");
+                        return;
+                    }
+
+                    await UpdateAproEntity(entity.WasteSource.id, mtId.Value);
                 }
-            
-                await UpdateAproEntity(entity.id, mtId.Value);
+                catch (HttpRequestException ex) when (ex.Message.Contains("400"))
+                {
+                    if (TryParseExistingMtId(ex.Message, out long existingMtId))
+                    {
+                        Message(
+                            $"Emitter already exists in MT. Updating local ID: {entity.WasteSource.id} -> {existingMtId}");
+                
+                        return;
+                    }
+
+                    throw;
+                }
             }
             else
             {
@@ -67,10 +85,23 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Error processing emitter: {entity.ext_id}");
-
             throw;
         }
     }
+
+    private bool TryParseExistingMtId(string errorMessage, out long mtId)
+    {
+        mtId = 0;
+
+        if (!errorMessage.Contains("already exist") || !errorMessage.Contains("MT id is"))
+            return false;
+
+        var match = Regex.Match(errorMessage, @"MT id is (\d+)\.");
+        if (!match.Success) return false;
+
+        return long.TryParse(match.Groups[1].Value, out mtId);
+    }
+
     public int? ParseMtIdFromResponse(string response)
     {
         var match = Regex.Match(response, @"id is (\d+)$");
@@ -83,7 +114,7 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
     {
         try
         {
-            string endpointPath = $"wf__contractpositionemitter__contract_position_takeout/{aproId}/";
+            string endpointPath = $"wf__wastesource__waste_source/{aproId}/";
         
             var aproEndpoint = _aproBaseUrl + endpointPath;
             var updateRequest = new { external_id = mtId };
@@ -97,5 +128,13 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
             _logger.LogError(ex, $"Error updating ASU PRO entity {aproId}");
             throw;
         }
+    }
+
+    public void Message(string message)
+    {
+        EmailMessageBuilder.PutInformation(
+            EmailMessageBuilder.ListType.getemitter,
+            message
+        );
     }
 }
