@@ -57,7 +57,7 @@ public class IntegrationMappingProfile : Profile
 
 
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
-            .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.id))
+            .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.ext_id))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.emitter.container.Count))
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))

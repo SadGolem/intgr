@@ -106,7 +106,6 @@ public class ConverterToStorageService : IConverterToStorageService
                 break;
             }
         }
-
         
     return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatasResponse);
     }

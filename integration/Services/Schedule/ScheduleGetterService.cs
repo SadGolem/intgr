@@ -91,7 +91,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
     {
         return $"{_apiSettings.BaseUrl}wf__wastesitescheduleset__waste_site_schedule_set/" +
                $"?position={positionId}" +
-               "&query={id,waste_site{id},containers{id,type{id},capacity{id}},schedule,dates}";
+               "&query={id,waste_site{id,address},containers{id,type{id},capacity{id}},schedule,dates}";
     }
 
     private async Task<List<ScheduleDataResponse>> DeserializeResponseAsync(HttpResponseMessage response)

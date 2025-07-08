@@ -17,6 +17,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
     private readonly IAproClientService _aproClientService;
     private readonly string _baseUrl;
     private readonly string _aproBaseUrl;
+    private readonly string _mtAgreUrl;
     private readonly ILogger<LocationProcessor> _logger;
     private readonly IMapper _mapper;
 
@@ -31,6 +32,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
         _aproClientService = aproClientService;
         _baseUrl = mtSettings.Value.MTconnect.BaseUrl;
         _aproBaseUrl = mtSettings.Value.APROconnect.BaseUrl;
+        _mtAgreUrl = mtSettings.Value.MTconnect.BaseUrl;
         _logger = logger;
         _mapper = mapper;
     }
@@ -76,6 +78,11 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
         }
     }
 
+    private async Task PostAgreComment()
+    {
+        
+    }
+    
     public int? ParseMtIdFromResponse(string response)
     {
         var match = Regex.Match(response, @"id (\d+)$");
