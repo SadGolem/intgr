@@ -19,7 +19,15 @@ public class StorageService : IIntegrationStructStorageService
 
     public void Set(IntegrationStruct data)
     {
-        integrationDataList.Add(data);
+        if (integrationDataList.Count == 0) integrationDataList.Add(data);
+        
+        foreach (var pos in integrationDataList)
+        {
+            if (pos.location.id != data.location.id)
+            {
+                integrationDataList.Add(data);
+            }
+        }
     }
 
     public void Set(List<IntegrationStruct> datas)
