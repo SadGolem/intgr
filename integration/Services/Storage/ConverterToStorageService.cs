@@ -86,9 +86,11 @@ public class ConverterToStorageService : IConverterToStorageService
         LocationDataResponse locationDatasResponse = new LocationDataResponse();
 
         int idPos = context.id;
+        
         emitterDatas = emitters;
         clientDatas = clients;
         locationDatasResponse = context.waste_site;
+        
         foreach (var schedule in schedules)
         {
             if (locationDatasResponse.id == schedule.location.id)
@@ -106,7 +108,8 @@ public class ConverterToStorageService : IConverterToStorageService
                 break;
             }
         }
-        
+
+        locationDatasResponse.author_update = contractDatas.First().assignee.name;
     return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatasResponse);
     }
 }

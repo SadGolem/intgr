@@ -84,7 +84,7 @@ namespace integration.Services.Location
                 _logger.LogWarning(ex, "Failed to read response content");
             }
         }
-
+        
         private async Task<List<(LocationDataResponse Location, bool IsNew)>> ProcessLocationsByDate(List<LocationDataResponse> locations)
         {
             if (!locations.Any())

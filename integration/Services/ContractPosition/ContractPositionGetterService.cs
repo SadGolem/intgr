@@ -1,9 +1,9 @@
-﻿using integration.Context;
-using integration.Helpers.Auth;
+﻿using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
+using integration.Utilities;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.ContractPosition;
@@ -48,9 +48,19 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
     async Task GetPosition(int id)
     {
         List<ContractPositionDataResponse> postionsList = await Get(_aproConnect + id, true); //по позициям получаем всю инфу
-            //_contractPositionStorageService.Set(postionsList); // тут мы отправляем данные в сторэйдж
+        await CommentTrimmer(postionsList);
+        
         _contractPositionStorageService.Set(postionsList);
        }
+
+    private async Task CommentTrimmer(List<ContractPositionDataResponse> postionsList)
+    {
+        foreach (var pos in postionsList)
+        {
+            pos.waste_site.comment = StringHandler.SanitizeComment(pos.waste_site.comment);
+        }
+    }
+    
 
     private void GetLocationsId()
     {
