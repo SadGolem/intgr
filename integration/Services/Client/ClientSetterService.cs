@@ -4,7 +4,6 @@ using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using integration.Services.Location;
-using integration.Services.Storage;
 using integration.Services.Storage.Interfaces;
 using Microsoft.Extensions.Options;
 

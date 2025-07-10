@@ -6,7 +6,6 @@ using integration.Services.Client.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location.fromMT.Storage;
 using Microsoft.Extensions.Options;
-using Moq;
 
 namespace integration.Services.Location.fromMT;
 

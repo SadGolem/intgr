@@ -1,9 +1,5 @@
-﻿using System.Text;
-using System.Text.Json;
-using integration;
-using integration.Helpers.Auth;
+﻿using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services;
 using integration.Services.Location;
 using Microsoft.Extensions.Options;
 

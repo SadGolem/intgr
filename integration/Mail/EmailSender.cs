@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using static EmailMessageBuilder;
 using System.Text;
 

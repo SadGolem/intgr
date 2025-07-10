@@ -1,6 +1,4 @@
-﻿using integration.Context;
-using Microsoft.AspNetCore.Mvc;
-
+﻿
 namespace integration.Services.Interfaces
 {
     public interface IGetterService<T> : IService

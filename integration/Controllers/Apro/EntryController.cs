@@ -1,5 +1,4 @@
-﻿using integration.Context.MT;
-using integration.Context.Request.MT;
+﻿using integration.Context.Request.MT;
 using integration.Factory.GET.Interfaces;
 using integration.Factory.SET.Interfaces;
 using Microsoft.AspNetCore.Mvc;

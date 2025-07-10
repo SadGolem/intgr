@@ -1,12 +1,9 @@
 ﻿using integration.Factory.GET.Interfaces;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.ContractPosition.Storage;
-using integration.Services.Emitter.Storage;
 using integration.Services.Entry;
 using integration.Services.Entry.Storage;
 using integration.Services.Interfaces;
-using integration.Services.Storage;
 using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET;

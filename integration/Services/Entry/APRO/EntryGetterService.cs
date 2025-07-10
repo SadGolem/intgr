@@ -1,5 +1,4 @@
-﻿using System.Net;
-using integration.Context;
+﻿using integration.Context;
 using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
@@ -8,7 +7,6 @@ using integration.Services.Interfaces;
 using integration.Services.Location;
 using integration.Utilities;
 using Microsoft.Extensions.Options;
-using Type = integration.Context.Type;
 
 namespace integration.Services.Entry;
 

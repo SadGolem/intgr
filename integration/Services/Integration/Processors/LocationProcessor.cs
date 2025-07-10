@@ -1,9 +1,7 @@
-﻿using System.Net;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
-using integration.Exceptions;
 using integration.Helpers.Auth;
 using integration.Services.Integration.Interfaces;
 using Microsoft.Extensions.Options;

@@ -1,5 +1,4 @@
-﻿using integration.Context;
-using integration.Factory.GET.Interfaces;
+﻿using integration.Factory.GET.Interfaces;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.ContractPosition;

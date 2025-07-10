@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using integration.Context;
 using integration.Context.Request;
 using integration.Helpers.Auth;

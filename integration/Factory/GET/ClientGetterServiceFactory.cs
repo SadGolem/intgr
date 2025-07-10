@@ -7,7 +7,6 @@ using integration.Services.Client.Storage;
 using integration.Services.ContractPosition.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Storage;
-using integration.Services.Storage.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace integration.Factory;

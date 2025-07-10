@@ -1,16 +1,12 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using AutoMapper;
-using integration.Context;
 using integration.Context.MT;
 using integration.Context.Request.MT;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
 using integration.Services.Location.fromMT.Storage;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location.fromMT;
