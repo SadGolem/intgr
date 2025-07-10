@@ -59,7 +59,6 @@ builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>()
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
 builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
 builder.Services.AddSingleton<IContractStorageService, ContractStorageService>();
-//builder.Services.AddSingleton<IIntegrationStructStorageService, StorageService>();
 builder.Services.AddSingleton<IStorageService<IntegrationStruct>, StorageService>();
 builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
 builder.Services.AddSingleton<IEmitterStorageService, EmitterStorageService>();
