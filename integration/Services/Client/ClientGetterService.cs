@@ -1,4 +1,5 @@
-﻿using integration.Context;
+﻿using System.Diagnostics.Contracts;
+using integration.Context;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Client.Storage;
@@ -83,6 +84,13 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
         {
             if (client.idAsuPro == pos.contract.client.idAsuPro)
             {
+                if (string.IsNullOrEmpty(pos.contract.contractType.name) || 
+                    string.IsNullOrEmpty(pos.contract.client.consumerName))
+                {
+                    //Message($"Contract id {pos.contract.id} and number {pos.contract.name} don't have a contract type.");
+                    return;
+                }
+                
                 var type = pos.contract.contractType.name;
                 client.type_ka = StatusCoder.GetTypeContragent(type);
                 client.doc_type = pos.contract.client.doc_type;

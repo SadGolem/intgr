@@ -48,8 +48,14 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
     async Task GetPosition(int id)
     {
         List<ContractPositionDataResponse> postionsList = await Get(_aproConnect + id, true); //по позициям получаем всю инфу
-        await CommentTrimmer(postionsList);
         
+        if (postionsList.Count == 0)
+        {
+            Message($"Location id {id} is not has a contract position.\n");
+            return;
+        }
+        
+        await CommentTrimmer(postionsList);
         _contractPositionStorageService.Set(postionsList);
        }
 
@@ -61,13 +67,12 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
         }
     }
     
-
     private void GetLocationsId()
     {
         _locationIdSList = _locationIdService?.GetLocationIds() ?? _locationIdSList;
     }
     public void Message(string ex)
     {
-        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getall, ex);
+        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
     }
 }

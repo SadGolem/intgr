@@ -10,9 +10,9 @@ using Microsoft.Extensions.Options;
 public class ContragentProcessor : BaseProcessor, IIntegrationProcessor<ClientDataResponse>
 {
     private readonly IApiClientService _apiClientService;
-    private readonly IAproClientService _aproClientService; // Новый сервис для работы с АСУ ПРО
+    private readonly IAproClientService _aproClientService;
     private readonly string _baseUrl;
-    private readonly string _aproBaseUrl; // Базовый URL АСУ ПРО
+    private readonly string _aproBaseUrl;
     private readonly ILogger<ContragentProcessor> _logger;
     private readonly IMapper _mapper;
 
@@ -33,7 +33,7 @@ public class ContragentProcessor : BaseProcessor, IIntegrationProcessor<ClientDa
 
     public async Task ProcessAsync(ClientDataResponse entity)
     {
-        var isNew = entity.ext_id == null;
+        var isNew = string.IsNullOrEmpty(entity.ext_id);
         var endpoint = isNew 
             ? "api/v2/consumer/create_from_asupro" 
             : "api/v2/consumer/update_from_asupro";
@@ -46,11 +46,11 @@ public class ContragentProcessor : BaseProcessor, IIntegrationProcessor<ClientDa
         {
             if (isNew)
             {
-                string response = await _apiClientService.SendAndGetStringAsync<ClientRequest>(
+                string response = await _apiClientService.SendAndGetStringAsync(
                     entityRequest, url, method);
             
                 var mtId = ParseMtIdFromResponse(response);
-                await UpdateAproEntity(entity.idAsuPro, mtId.Id, entity.doc_type.name == "Юридические лица");
+                await UpdateAproEntity(entity.idAsuPro, mtId.Result.Value, entity.doc_type.name == "Юридические лица");
             }
             else
             {

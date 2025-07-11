@@ -105,7 +105,6 @@ namespace integration.Services.Location
                     if (isNew.HasValue)
                     {
                         result.Add((location, isNew.Value));
-                        Message("id: " + location.id + "\n");
                         _locationIdService.SetLocationIds(location.id);
                     }
                 }
@@ -134,14 +133,7 @@ namespace integration.Services.Location
             
             return null;
         }
-
-        public void Message(string message)
-        {
-            EmailMessageBuilder.PutInformation(
-                EmailMessageBuilder.ListType.getlocation, 
-                message
-            );
-        }
+        
 
         // Реализация неиспользуемых методов интерфейса
         public Task Get() => Task.CompletedTask;

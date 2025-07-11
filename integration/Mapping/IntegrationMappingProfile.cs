@@ -11,24 +11,21 @@ public class IntegrationMappingProfile : Profile
         CreateMap<ClientDataResponse, ClientRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.idAsuPro))
             .ForMember(dest => dest.consumerName, opt => opt.MapFrom(src => src.consumerName))
-            .ForMember(dest => dest.inn, opt => opt.MapFrom(src => 
-                SafeParseLong(src.inn)))
-            .ForMember(dest => dest.kpp, opt => opt.MapFrom(src => 
-                SafeParseInt(src.kpp)))
+            .ForMember(dest => dest.inn, opt => opt.MapFrom(src => SafeParseLong(src.inn)))
+            .ForMember(dest => dest.kpp, opt => opt.MapFrom(src => SafeParseInt(src.kpp)))
             .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.bik, opt => opt.MapFrom(src => 
-                SafeParseLong(src.bik)))
+            .ForMember(dest => dest.bik, opt => opt.MapFrom(src => SafeParseLong(src.bik)))
             .ForMember(dest => dest.mailAddress, opt => opt.MapFrom(src => src.mailAddress))
-            .ForMember(dest => dest.ogrn, opt => opt.MapFrom(src => 
-                SafeParseLong(src.ogrn)))
-            .ForMember(dest => dest.consumerType, opt => opt.MapFrom(src => 
-                src.type_ka))
-            .ForMember(dest => dest.idPerson, opt => opt.MapFrom(src => 
-                SafeParseInt(src.person_id)))
-            .ForMember(dest => dest.idBoss, opt => opt.MapFrom(src => src.boss.id))
-            .ForMember(dest => dest.idBT, opt => opt.MapFrom(src => src.ext_id))
-            .ForMember(dest => dest.idOrganization, opt => opt.MapFrom(src => src.root_company.id));
-
+            .ForMember(dest => dest.ogrn, opt => opt.MapFrom(src => SafeParseLong(src.ogrn)))
+            .ForMember(dest => dest.consumerType, opt => opt.MapFrom(src => src.type_ka))
+            .ForMember(dest => dest.idPerson, opt => opt.MapFrom(src => SafeParseInt(src.person_id)))
+            .ForMember(dest => dest.idBoss, opt => opt.MapFrom(src => 
+                src.boss != null ? src.boss.id : 0))
+            /*.ForMember(dest => dest.idBT, opt => opt.MapFrom(src => 
+                SafeParseInt(src.ext_id)))*/
+            .ForMember(dest => dest.idOrganization, opt => opt.MapFrom(src => 
+                src.root_company != null ? src.root_company.id : 0));
+        
         CreateMap<EmitterDataResponse, EmitterRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.WasteSource.id))
             .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.participant_id))
@@ -54,7 +51,6 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => 
                 (double)Math.Round((decimal)src.lon, 5, MidpointRounding.ToZero)
             ));
-
 
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
             .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.ext_id))
@@ -88,17 +84,17 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.images));
     }
 
-    private long SafeParseLong(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return 0;
-        return long.TryParse(value, out long result) ? result : 0;
-    }
+private static long SafeParseLong(string value)
+{
+    if (string.IsNullOrWhiteSpace(value)) return 0;
+    return long.TryParse(value, out var result) ? result : 0;
+}
 
-    private int SafeParseInt(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return 0;
-        return int.TryParse(value, out int result) ? result : 0;
-    }
+private static int SafeParseInt(string value)
+{
+    if (string.IsNullOrWhiteSpace(value)) return 0;
+    return int.TryParse(value, out var result) ? result : 0;
+}
     
     private double SafeParseDouble(string value)
     {

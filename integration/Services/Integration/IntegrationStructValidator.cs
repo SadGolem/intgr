@@ -27,7 +27,7 @@ public class IntegrationStructValidator
         var clientValid = _clientCheckUp.Check(str);
         if (!clientValid.Item1)
         {
-            await Message(clientValid.Item2, EmailMessageBuilder.ListType.getcontragent);
+            //await Message(clientValid.Item2, EmailMessageBuilder.ListType.getcontragent);
             return false;
         }
         

@@ -3,7 +3,7 @@ using integration.Structs;
 
 namespace integration.Services.CheckUp.Services;
 
-public class ClientCheckUpService : IClientCheckUpService
+public class ClientCheckUpService : BaseCheckUpService, IClientCheckUpService
 {
     public (bool, string) Check(IntegrationStruct str)
     {
@@ -11,7 +11,6 @@ public class ClientCheckUpService : IClientCheckUpService
 
         foreach (var client in clientDatas)
         {
-            
             if (!Check(client, str.location.id))
                 return new (false, $"{client} not found");
         }
@@ -20,10 +19,25 @@ public class ClientCheckUpService : IClientCheckUpService
 
     private bool Check(ClientDataResponse client, int idLocation)
     {
-        if (client == null)
+        if (client == null) return false;
+        if (string.IsNullOrEmpty(client.type_ka))
         {
+            Message($"Location id {idLocation} - contract has not a type", EmailMessageBuilder.ListType.getlocation);
             return false;
         }
+
+        if (string.IsNullOrEmpty(client.doc_type?.name))
+        {
+            Message($"Location id {idLocation} - contract has not a type", EmailMessageBuilder.ListType.getlocation);
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(client.address))
+        {
+            Message($"Location id {idLocation} - address not found", EmailMessageBuilder.ListType.getlocation);
+            return false;
+        }
+        
         return true;
     }
 }
