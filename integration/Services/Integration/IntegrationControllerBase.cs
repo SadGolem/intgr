@@ -52,31 +52,11 @@ public class IntegrationControllerBase : ControllerBase
                     {
                         return Ok();
                     }
-                    else
-                    {
-                        Message(schedule.Item2, EmailMessageBuilder.ListType.setschedule);
-                    }
                 }
-                else
-                {
-                    Message(location.Item2, EmailMessageBuilder.ListType.setlocation);
-                }
-
-            }
-            else
-            {
-                Message(emitter.Item2, EmailMessageBuilder.ListType.setemitter);
             }
         }
-
-        Message(client.Item2, EmailMessageBuilder.ListType.setcontragent);
-        
         
         return StatusCode(500, "There are mistakes in the data");
     }
-
-    public void Message(string ex, EmailMessageBuilder.ListType type)
-    {
-        EmailMessageBuilder.PutInformation(type, ex);
-    }
+    
 }

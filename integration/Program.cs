@@ -29,6 +29,7 @@ using AutoMapper;
 using integration.Context.MT;
 using integration.Context.Request.MT;
 using integration.Factory.GET.MT;
+using integration.Services.Container;
 using integration.Services.Emitter;
 using integration.Services.Emitter.Storage;
 using integration.Services.Entry;
@@ -67,6 +68,8 @@ builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<LocationMTDataResponse>, LocationMTGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<LocationMTDataResponse>, LocationMTGetterService>();
+builder.Services.AddTransient<IGetterServiceFactory<Container>, ContainerGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<Container>, ContainerGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationDataResponse>, LocationSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationDataResponse>, LocationSetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<EntryDataResponse>, EntrySetterServiceFactory>();

@@ -13,7 +13,7 @@ public class ClientRequest
     public string address { get; set; }
     public long bik { get; set; } 
     public string mailAddress { get; set; }
-    //public int? idBT { get; set; }
+    public int? idBT { get; set; }
     public int idOrganization { get; set; } 
     public long ogrn { get; set; } 
 

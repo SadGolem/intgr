@@ -14,7 +14,7 @@ public class ClientCheckUpService : BaseCheckUpService, IClientCheckUpService
             if (!Check(client, str.location.id))
                 return new (false, $"{client} not found");
         }
-        return (true, "Clients found");
+        return (true, "");
     }
 
     private bool Check(ClientDataResponse client, int idLocation)

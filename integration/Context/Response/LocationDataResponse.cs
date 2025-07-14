@@ -12,7 +12,7 @@ namespace integration.Context
         [JsonPropertyName("ext_id_2")] public string? ext_id { get; set; }
         [JsonPropertyName("comment")] public string? comment { get; set; }
         
-        [JsonIgnore] // Игнорируем при сериализации
+        [JsonIgnore]
         public bool IsNew => !string.IsNullOrEmpty(ext_id) && 
                              int.TryParse(ext_id, out int parsed) && 
                              parsed == 0;
@@ -24,5 +24,8 @@ namespace integration.Context
             [JsonPropertyName("id")] public int id { get; set; }
             [JsonPropertyName("name")] public string name { get; set; }
         }
+        
+        [JsonIgnore]
+        public List<Container> containers;
     }
 }

@@ -27,14 +27,12 @@ public class IntegrationStructValidator
         var clientValid = _clientCheckUp.Check(str);
         if (!clientValid.Item1)
         {
-            //await Message(clientValid.Item2, EmailMessageBuilder.ListType.getcontragent);
             return false;
         }
         
         var emitterValid = _emitterCheckUp.Check(str);
         if (!emitterValid.Item1)
         {
-            await Message(clientValid.Item2, EmailMessageBuilder.ListType.getemitter);
             return false;
         }
 
@@ -48,7 +46,6 @@ public class IntegrationStructValidator
         var scheduleValid = _scheduleCheckUp.Check(str);
         if (!scheduleValid.Item1)
         {
-            await Message(clientValid.Item2, EmailMessageBuilder.ListType.getschedule);
             return false;
         }
         

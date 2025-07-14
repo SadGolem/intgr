@@ -23,4 +23,5 @@ public class ApiClientSettings
         public string LocationSetPhoto{ get; set; }
         public string LocationSETStatusFromMT{ get; set; }
         public string AgreEndpointCreate{ get; set; }
+        public string ContainersEndpoint{ get; set; }
 }

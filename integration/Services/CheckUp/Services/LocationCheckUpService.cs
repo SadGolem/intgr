@@ -11,20 +11,26 @@ public class LocationCheckUpService : ILocationCheckUpService
         if (!Check(location))
                 return new (false, $"{location.id} not founded");
         
-        return (true, "Location founded");
+        return (true, "");
     }
 
     private bool Check(LocationDataResponse location)
     {
         if (location == null)
         {
-            Message($"{location.id} - is not found");
+            Message($"{location.id} - not found");
             return false;
         }
 
         if (location.address == "")
         {
-            Message($"{location.id} - address is not found");
+            Message($"{location.id} - address not found");
+            return false;
+        }
+        
+        if (location.containers.Count == 0)
+        {
+            Message($"{location.id} - containers not found");
             return false;
         }
         
