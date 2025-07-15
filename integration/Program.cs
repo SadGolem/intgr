@@ -28,10 +28,13 @@ using integration.Services.Token.Interfaces;
 using AutoMapper;
 using integration.Context.MT;
 using integration.Context.Request.MT;
+using integration.Context.Response;
 using integration.Factory.GET.MT;
 using integration.Services.Container;
 using integration.Services.Emitter;
 using integration.Services.Emitter.Storage;
+using integration.Services.Employers;
+using integration.Services.Employers.Storage;
 using integration.Services.Entry;
 using integration.Services.Entry.MT;
 using integration.Services.Entry.MT.Storage;
@@ -63,6 +66,9 @@ builder.Services.AddSingleton<IContractStorageService, ContractStorageService>()
 builder.Services.AddSingleton<IStorageService<IntegrationStruct>, StorageService>();
 builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
 builder.Services.AddSingleton<IEmitterStorageService, EmitterStorageService>();
+builder.Services.AddSingleton<IEmployersStorageService, EmployersStorageService>();
+builder.Services.AddTransient<IGetterServiceFactory<EmployerDataResponse>, EmployersGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<EmployerDataResponse>, EmployerGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<DataResponse>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse>, LocationGetterServiceFactory>();
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
@@ -118,6 +124,7 @@ builder.Services.AddScoped<ICheckUpFactory<LocationDataResponse>, LocationCheckU
 builder.Services.AddScoped<ICheckUpService<LocationDataResponse>, LocationCheckUpService>();
 
 builder.Services.AddSingleton<TokenController>();
+builder.Services.AddSingleton<EmployerController>();
 builder.Services.AddSingleton<LocationController>();
 builder.Services.AddSingleton<ScheduleController>();
 builder.Services.AddSingleton<ContractPositionController>();

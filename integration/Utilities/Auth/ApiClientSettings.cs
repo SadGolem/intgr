@@ -24,4 +24,5 @@ public class ApiClientSettings
         public string LocationSETStatusFromMT{ get; set; }
         public string AgreEndpointCreate{ get; set; }
         public string ContainersEndpoint{ get; set; }
+        public string EmployersEndpoint{ get; set; }
 }

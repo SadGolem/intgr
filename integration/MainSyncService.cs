@@ -43,6 +43,7 @@ namespace integration
 
                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
                 
+                var employersController =  scope.ServiceProvider.GetRequiredService<EmployerController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
                 var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
@@ -51,6 +52,7 @@ namespace integration
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
                 var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
 
+                await GetEmployers(employersController);
                 //await GetMTLEntryStatus(entryController);
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
@@ -80,6 +82,17 @@ namespace integration
             try
             {
                 await scheduleController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing employers.");
+            }
+        }
+        private async Task GetEmployers(EmployerController employerController)
+        {
+            try
+            {
+                await employerController.Sync();
             }
             catch (Exception ex)
             {
