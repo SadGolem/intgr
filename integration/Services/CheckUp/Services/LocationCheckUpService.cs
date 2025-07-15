@@ -33,6 +33,15 @@ public class LocationCheckUpService : ILocationCheckUpService
             Message($"{location.id} - containers not found");
             return false;
         }
+
+        foreach (var container in location.containers)
+        {
+            if (container.type == null || container.type?.id == 0)
+            {
+                Message($"{location.id} - container id {container.id} type not correct");
+                return false;
+            }
+        }
         
         return true;
     }
