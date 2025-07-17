@@ -49,6 +49,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
             try
             {
                 await ProcessIntegrationData(integrationData);
+                Message($"{integrationData.location.id} SUCCESS");
             }
             catch (Exception ex)
             {
@@ -78,6 +79,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
         
         await Task.WhenAll(items.Select(item => 
             processor.ProcessAsync(item)));
+        
     }
 
     private async Task ProcessEntityAsync<T>(T? entity, IIntegrationProcessor<T> processor) 

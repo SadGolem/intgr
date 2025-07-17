@@ -42,7 +42,7 @@ namespace integration.Services
 
         public void Message(string ex)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getcontragent, ex);
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
         }
 
         private async Task<string> GetTokenAsync(AuthType authType)
