@@ -15,8 +15,6 @@ namespace integration.Controllers.Apro
         private ISetterServiceFactory<EntryDataResponse> _setterServiceFactory;
         private ISetterServiceFactory<EntryMTRequest> _setterFromMTToAproStatusServiceFactory;
         private IGetterServiceFactory<EntryMTDataResponse> _getterServiceFactoryMT;
-        public static List<EntryDataResponse> newEntry = new List<EntryDataResponse>();
-        public static List<EntryDataResponse> updateEntry = new List<EntryDataResponse>();
 
         public EntryController(
             ILogger<EntryController> logger, ISetterServiceFactory<EntryMTRequest> setterFromMTToAproStatusServiceFactory,

@@ -35,7 +35,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
         _logger = logger;
         _apiSettings = apiSettings.Value.APROconnect;
         _endpointSetPhoto = _apiSettings.BaseUrl + _apiSettings.ApiClientSettings.SetPhoto;
-        _endpointSetPhotoToLocation = _apiSettings.BaseUrl + _apiSettings.ApiClientSettings.LocationSetPhoto;
+        _endpointSetPhotoToLocation = _apiSettings.BaseUrl + _apiSettings.ApiClientSettings.LocationGetEndpoint;
         _endpointSetStatus = _apiSettings.BaseUrl + _apiSettings.ApiClientSettings.LocationSETStatusFromMT;
         _mapper = mapper;
         _storage = storage;
