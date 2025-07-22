@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location.fromMT;
 
-public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataResponse>, ISetterService<LocationMTDataResponse>
+public class LocationFromMTSetterService : ServiceSetterBase<LocationMTPhotoDataResponse>, ISetterService<LocationMTPhotoDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILocationMTStorageService _storage;
@@ -21,7 +21,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
     private readonly string _endpointSetPhotoToLocation;
     private readonly string _endpointSetStatus;
     private readonly IMapper _mapper;
-    private List<LocationMTDataResponse> _locations;
+    private List<LocationMTPhotoDataResponse> _locations;
 
     public LocationFromMTSetterService(IHttpClientFactory httpClientFactory,
         ILogger<LocationFromMTSetterService> logger,
@@ -63,7 +63,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
         }
     }
 
-    private async Task UploadFile(LocationMTDataResponse loc)
+    private async Task UploadFile(LocationMTPhotoDataResponse loc)
     {
         foreach (var image in loc.images)
         {
@@ -126,7 +126,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
     {
         foreach (var loc in _locations)
         {
-            var responce = _mapper.Map<LocationMTDataResponse, LocationMTRequest>(loc);
+            var responce = _mapper.Map<LocationMTPhotoDataResponse, LocationMTPhotoRequest>(loc);
 
             var requestBody = new
             {

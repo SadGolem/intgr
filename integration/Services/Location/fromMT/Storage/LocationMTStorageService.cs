@@ -4,25 +4,25 @@ namespace integration.Services.Location.fromMT.Storage;
 
 public class LocationMTStorageService : ILocationMTStorageService
 {
-    private static List<LocationMTDataResponse> locationMtDatas = new List<LocationMTDataResponse>();
-    public List<LocationMTDataResponse> Get()
+    private static List<LocationMTPhotoDataResponse> locationMtDatas = new List<LocationMTPhotoDataResponse>();
+    public List<LocationMTPhotoDataResponse> Get()
     {
         return locationMtDatas;
     }
 
-    public void Set(LocationMTDataResponse data)
+    public void Set(LocationMTPhotoDataResponse photoData)
     {
-        locationMtDatas.Add(data);
+        locationMtDatas.Add(photoData);
     }
 
-    public void Set(List<LocationMTDataResponse> datas)
+    public void Set(List<LocationMTPhotoDataResponse> datas)
     {
         locationMtDatas = datas;
     }
 
-    public void ClearList(LocationMTDataResponse data)
+    public void ClearList(LocationMTPhotoDataResponse photoData)
     {
-        locationMtDatas.Remove(data);
+        locationMtDatas.Remove(photoData);
     }
 
     public void ClearList()

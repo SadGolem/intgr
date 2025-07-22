@@ -1,6 +1,6 @@
 ﻿namespace integration.Context.Request.MT;
 
-public class LocationMTRequest
+public class LocationMTPhotoRequest
 {
     public int id { get; set; }
     public int status_id { get; set; }

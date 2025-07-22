@@ -67,7 +67,7 @@ namespace integration
                 
                 //await StartEntry(entryController); 
                 await CheckAndSendIntegrationToAPRO();
-                //await GetMTLocationAndSendStatusAndPhotoToApro(locationController);
+                await GetMTLocationAndSendStatusAndPhotoToApro(locationController);
                 
                 await SendToEmail();
                 

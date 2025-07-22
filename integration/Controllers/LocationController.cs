@@ -15,16 +15,17 @@ namespace integration.Controllers
         private readonly ILogger<LocationController> _logger;
         private readonly IGetterLocationServiceFactory<LocationDataResponse> _serviceGetter;
         private readonly ISetterServiceFactory<LocationDataResponse> _serviceSetter;
-        private readonly ISetterServiceFactory<LocationMTDataResponse> _serviceSetterFromMTtoAPRO;
+        private readonly ISetterServiceFactory<LocationMTPhotoDataResponse> _serviceSetterFromMTtoAPRO;
         private IGetterLocationService<LocationDataResponse> _locationServiceGetter;
-        private IGetterServiceFactory<LocationMTDataResponse> _locationMTServiceGetter;
+        private IGetterServiceFactory<LocationMTPhotoDataResponse> _locationMTServiceGetter;
         private ISetterService<LocationDataResponse> _locationServiceSetter;
         private ILocationIdService _locationIdService;
-        
-        public LocationController(ILogger<LocationController> logger, 
-            IGetterLocationServiceFactory<LocationDataResponse> serviceGetter, IGetterServiceFactory<LocationMTDataResponse> locationMTServiceGetter,
+
+        public LocationController(ILogger<LocationController> logger,
+            IGetterLocationServiceFactory<LocationDataResponse> serviceGetter,
+            IGetterServiceFactory<LocationMTPhotoDataResponse> locationMTServiceGetter,
             ISetterServiceFactory<LocationDataResponse> serviceSetter,
-            ISetterServiceFactory<LocationMTDataResponse> serviceSetterFromMTtoApro,
+            ISetterServiceFactory<LocationMTPhotoDataResponse> serviceSetterFromMTtoApro,
             ILocationIdService locationIdService
         )
         {
@@ -35,14 +36,14 @@ namespace integration.Controllers
             _locationIdService = locationIdService;
             _serviceSetterFromMTtoAPRO = serviceSetterFromMTtoApro;
         }
-       
+
         public async Task<IActionResult> Sync()
         {
             _logger.LogInformation("Starting manual location sync...");
             try
             {
                 await FetchtLocations();
-                
+
                 return Ok("Locations synced successfully.");
             }
             catch (Exception ex)
@@ -51,12 +52,13 @@ namespace integration.Controllers
                 return StatusCode(500, "Error during location sync.");
             }
         }
+
         private async Task FetchtLocations()
         {
-            List<(LocationDataResponse,bool)> locations = new List<(LocationDataResponse,bool)>();
+            List<(LocationDataResponse, bool)> locations = new List<(LocationDataResponse, bool)>();
             _locationServiceGetter = _serviceGetter.Create();
             locations = await _locationServiceGetter.GetSync();
-            
+
             _locationIdService.SetLocation(locations);
             _logger.LogInformation($"Received {locations.Count} locations");
         }
@@ -67,7 +69,7 @@ namespace integration.Controllers
             {
                 var getterMT = _locationMTServiceGetter.Create();
                 await getterMT.Get();
-                
+
                 return Ok("Locations get from MT successfully.");
             }
             catch (Exception ex)
@@ -83,7 +85,7 @@ namespace integration.Controllers
             {
                 var service = _serviceSetterFromMTtoAPRO.Create();
                 await service.Set();
-                
+
                 return Ok("Locations set from MT successfully.");
             }
             catch (Exception ex)

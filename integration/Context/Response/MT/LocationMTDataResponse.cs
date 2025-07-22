@@ -2,16 +2,24 @@
 
 namespace integration.Context.MT;
 
-public class LocationMTDataResponse : DataResponse
+public class LocationMTDataResponse
 {
-    [JsonPropertyName("idAsuPro")]
-    public int idAPRO { get; set; }
-    [JsonPropertyName("id")]
-    public int idMT { get; set; }
-    [JsonPropertyName("status")]
-    public int status { get; set; }
-    [JsonPropertyName("updateDate")]
-    public int datetime_update { get; set; }
-    [JsonPropertyName("imageBytesList")]
-    public List<byte[]> images { get; set; }
+    [JsonPropertyName("message")] public string Message { get; set; }
+
+    [JsonPropertyName("timestamp")] public DateTime Timestamp { get; set; }
+
+    [JsonPropertyName("count")] public int Count { get; set; }
+
+    [JsonPropertyName("data")] public List<LocationData>? Data { get; set; }
+}
+
+public class LocationData
+{
+    [JsonPropertyName("idAsuPro")] public int id { get; set; }
+
+    [JsonPropertyName("id")] public string idLocMT { get; set; } = string.Empty;
+
+    [JsonPropertyName("modified")] public DateTime Timestamp { get; set; }
+
+    [JsonPropertyName("status")] public string status { get; set; } = string.Empty;
 }

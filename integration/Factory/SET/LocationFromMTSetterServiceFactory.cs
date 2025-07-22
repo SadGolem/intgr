@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.SET;
 
-public class LocationFromMTSetterServiceFactory:  ISetterServiceFactory<LocationMTDataResponse>
+public class LocationFromMTSetterServiceFactory:  ISetterServiceFactory<LocationMTPhotoDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LocationFromMTSetterService> _logger;
@@ -34,7 +34,7 @@ public class LocationFromMTSetterServiceFactory:  ISetterServiceFactory<Location
         _mapper = mapper;
         _storageService = storageService;
     }
-    public ISetterService<LocationMTDataResponse> Create()
+    public ISetterService<LocationMTPhotoDataResponse> Create()
     {
         return new LocationFromMTSetterService(_httpClientFactory, _logger, _authorizer, _apiSettings, _mapper, _storageService);
     }

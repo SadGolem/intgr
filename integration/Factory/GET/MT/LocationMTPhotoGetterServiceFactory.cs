@@ -9,17 +9,17 @@ using Microsoft.Extensions.Options;
 
 namespace integration.Factory.GET.MT;
 
-public class LocationMTGetterServiceFactory: IGetterServiceFactory<LocationMTDataResponse>
+public class LocationMTPhotoGetterServiceFactory: IGetterServiceFactory<LocationMTPhotoDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger<LocationMTGetterService> _logger;
+    private readonly ILogger<LocationMTPhotoGetterService> _logger;
     private readonly IAuthorizer _authorizer;
     private readonly IOptions<AuthSettings> _configuration;
     private ILocationMTStorageService _storageService;
 
-    public LocationMTGetterServiceFactory(
+    public LocationMTPhotoGetterServiceFactory(
         IHttpClientFactory httpClientFactory,
-        ILogger<LocationMTGetterService> logger,
+        ILogger<LocationMTPhotoGetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> configuration,
         ILocationMTStorageService storageService)
@@ -31,9 +31,9 @@ public class LocationMTGetterServiceFactory: IGetterServiceFactory<LocationMTDat
         _storageService = storageService;
     }
 
-    public IGetterService<LocationMTDataResponse> Create()
+    public IGetterService<LocationMTPhotoDataResponse> Create()
     {
-        return new LocationMTGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _storageService);
+        return new LocationMTPhotoGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _storageService);
     }
     
 }
