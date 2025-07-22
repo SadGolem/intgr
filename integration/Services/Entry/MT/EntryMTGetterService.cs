@@ -34,42 +34,36 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
     {
         var now = DateTime.UtcNow;
         var lastUpdate = TimeManager.GetLastUpdateTime("entryMT");
-
-        // Корректная обработка будущего времени
+        
         if (lastUpdate > now)
         {
             _logger.LogWarning($"Last update time is in future: {lastUpdate}. Resetting to 30 minutes ago.");
             lastUpdate = now.AddMinutes(-CHUNK_SIZE_MINUTES);
             TimeManager.SetLastUpdateTime("entryMT", lastUpdate);
         }
-
-        // Обработка до текущего момента включительно
+        
         while (lastUpdate <= now)
         {
             var chunkEnd = lastUpdate.AddMinutes(CHUNK_SIZE_MINUTES);
-
-            // Всегда включаем текущий момент в последний чанк
+            
             if (chunkEnd > now) chunkEnd = now;
 
             try
             {
                 _logger.LogInformation($"Processing time range: {lastUpdate:o} - {chunkEnd:o}");
                 await ProcessTimeChunk(lastUpdate, chunkEnd);
-
-                // Обновляем только если успешно обработали
+                
                 TimeManager.SetLastUpdateTime("entryMT", chunkEnd);
                 lastUpdate = chunkEnd;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Failed to process time chunk: {lastUpdate:o} - {chunkEnd:o}");
-
-                // Увеличиваем задержку при ошибках
+                
                 await Task.Delay(5000);
-                continue; // Повторяем попытку для этого же интервала
+                continue; 
             }
-
-            // Короткая пауза между запросами
+            
             if (lastUpdate < now)
             {
                 await Task.Delay(500);
@@ -83,14 +77,12 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         var response = await GetFullResponse<EntryMTDataResponse>(endpoint, false);
 
         if (response?.Data == null) return;
-
-        // Устанавливаем timestamp по умолчанию
+        
         foreach (var entry in response.Data.Where(e => e.Timestamp == default))
         {
             entry.Timestamp = response.Timestamp;
         }
-
-        // Фильтруем записи по временному интервалу (включая конечную границу)
+        
         var filteredEntries = response.Data
             .Where(e => e.Timestamp >= startTime && e.Timestamp <= endTime)
             .ToList();
@@ -118,7 +110,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error saving entries to storage");
-            throw; // Пробрасываем исключение для повторной попытки
+            throw;
         }
     }
 

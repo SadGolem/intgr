@@ -15,7 +15,6 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
     private readonly string _connectionString;
     private readonly IOptions<AuthSettings> _apiSettings;
     private readonly ILogger<EntryGetterService> _logger;
-    private IHttpClientFactory _httpClientFactory;
     private IEntryStorageService<EntryDataResponse> _storageService;
 
     public EntryGetterService(
@@ -26,7 +25,6 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         IEntryStorageService<EntryDataResponse> storageService)
         : base(httpClientFactory, logger, authorizer, apiSettings)
     {
-        _httpClientFactory = httpClientFactory;
         _logger = logger;
         _apiSettings = apiSettings;
         _storageService = storageService;

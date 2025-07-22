@@ -84,7 +84,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.images));
 
         CreateMap<AgreData, AgreRequest>()
-            .ForMember(dest => dest.comment_disp, opt => opt.MapFrom(src => src.comment));
+            .ForMember(dest => dest.comment_disp, opt => opt.MapFrom(src =>$"{src.username}: {src.comment}"));
     }
 
 private static long SafeParseLong(string value)

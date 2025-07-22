@@ -27,9 +27,12 @@ using integration.Services.Token;
 using integration.Services.Token.Interfaces;
 using AutoMapper;
 using integration.Context.MT;
+using integration.Context.Request;
 using integration.Context.Request.MT;
 using integration.Context.Response;
 using integration.Factory.GET.MT;
+using integration.Services.Agre;
+using integration.Services.Agre.Storage;
 using integration.Services.Container;
 using integration.Services.Emitter;
 using integration.Services.Emitter.Storage;
@@ -56,6 +59,7 @@ builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IAuthorizer, Authorizer>();
 builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
+builder.Services.AddSingleton<IAgreStorageService, AgreStorageService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();
 builder.Services.AddSingleton<ILocationMTStorageService, LocationMTStorageService>();
@@ -69,6 +73,12 @@ builder.Services.AddSingleton<IEmitterStorageService, EmitterStorageService>();
 builder.Services.AddSingleton<IEmployersStorageService, EmployersStorageService>();
 builder.Services.AddTransient<IGetterServiceFactory<EmployerDataResponse>, EmployersGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<EmployerDataResponse>, EmployerGetterService>();
+
+builder.Services.AddTransient<IGetterServiceFactory<AgreMTDataResponse>, AgreMTGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<AgreMTDataResponse>, AgreMTGetterService>();
+builder.Services.AddTransient<ISetterServiceFactory<AgreRequest>, AgreSetterServiceFactory>();
+builder.Services.AddTransient<ISetterService<AgreRequest>, AgreSetterService>();
+
 builder.Services.AddTransient<IGetterServiceFactory<DataResponse>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse>, LocationGetterServiceFactory>();
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
@@ -125,6 +135,7 @@ builder.Services.AddScoped<ICheckUpService<LocationDataResponse>, LocationCheckU
 
 builder.Services.AddSingleton<TokenController>();
 builder.Services.AddSingleton<EmployerController>();
+builder.Services.AddSingleton<AgreController>();
 builder.Services.AddSingleton<LocationController>();
 builder.Services.AddSingleton<ScheduleController>();
 builder.Services.AddSingleton<ContractPositionController>();

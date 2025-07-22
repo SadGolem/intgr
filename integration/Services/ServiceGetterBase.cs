@@ -55,6 +55,25 @@ public class ServiceGetterBase<T> : ServiceBase
             throw;
         }
     }
+    public async Task<List<T>> Get<T>(string endpoint, bool isApro)
+    {
+        try
+        {
+            using var response = await ExecuteGetRequestAsync(endpoint, isApro);
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<T>>(content, _jsonOptions) ?? new List<T>();
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, $"HTTP error while getting data from {endpoint}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Unexpected error while getting data from {endpoint}");
+            throw;
+        }
+    }
     
     public async Task<TResult> GetFullResponse<TResult>(string endpoint, bool isApro)
     {

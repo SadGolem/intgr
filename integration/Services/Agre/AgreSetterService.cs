@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using integration.Context.MT;
 using integration.Context.Request;
-using integration.Context.Request.MT;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.Entry.MT;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using Microsoft.Extensions.Options;
@@ -33,7 +31,7 @@ public class AgreSetterService : ServiceSetterBase<AgreRequest>, ISetterService<
         _logger = logger;
         _apiSettings = apiSettings;
         _connectionString = _apiSettings.Value.APROconnect.BaseUrl
-                            + _apiSettings.Value.APROconnect.ApiClientSettings.EntryEndpointPATCH;
+                            + _apiSettings.Value.APROconnect.ApiClientSettings.LocationGetEndpoint;
         _mapper = mapper;
         _storageService = storageService;
 
@@ -62,7 +60,6 @@ public class AgreSetterService : ServiceSetterBase<AgreRequest>, ISetterService<
                 requestBody,
                 true
             );
-
         }
     }
 }

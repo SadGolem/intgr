@@ -1,20 +1,14 @@
-﻿using System.Data;
-using integration.Context;
-using integration.Context.MT;
+﻿using integration.Context.MT;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Agre.Storage;
-using integration.Services.Client.Storage;
-using integration.Services.ContractPosition.Storage;
-using integration.Services.Emitter;
-using integration.Services.Emitter.Storage;
 using integration.Services.Interfaces;
 using integration.Services.Location;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Agre;
 
-public class AgreMTGetterService: ServiceGetterBase<AgreMTDataResponse>,
+public class AgreMTGetterService : ServiceGetterBase<AgreMTDataResponse>,
     IGetterService<AgreMTDataResponse>
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -22,9 +16,10 @@ public class AgreMTGetterService: ServiceGetterBase<AgreMTDataResponse>,
     private readonly string _apiSettings;
     private readonly string _connectionStringGetLocation;
     private readonly IAgreStorageService _storage;
-    private List<AgreMTDataResponse> _agreList = new List<AgreMTDataResponse>();
-    
-    public AgreMTGetterService(IHttpClientFactory httpClientFactory, 
+    private AgreMTDataResponse agre;
+    private const int CHUNK_SIZE_MINUTES = 30;
+
+    public AgreMTGetterService(IHttpClientFactory httpClientFactory,
         ILogger<AgreMTGetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
@@ -35,49 +30,110 @@ public class AgreMTGetterService: ServiceGetterBase<AgreMTDataResponse>,
         _apiSettings = apiSettings.Value.MTconnect.BaseUrl +
                        apiSettings.Value.MTconnect.ApiClientSettings.AgreEndpointGet;
         _storage = storage;
-        _connectionStringGetLocation = apiSettings.Value.APROconnect.BaseUrl 
+        _connectionStringGetLocation = apiSettings.Value.APROconnect.BaseUrl
                                        + apiSettings.Value.APROconnect.ApiClientSettings.LocationGetEndpoint;
     }
+
     public async Task Get()
     {
-        await GetAgreFromMT();
+        await GetAgre();
     }
 
-    private async Task GetAgreFromMT()
+    public async Task GetAgre()
     {
-        try
+        var now = DateTime.UtcNow;
+        var lastUpdate = TimeManager.GetLastUpdateTime("agreMT");
+
+        if (lastUpdate == DateTime.MinValue)
         {
-            _agreList = await Get(_apiSettings, false);
-            await SetToListAgre(_agreList);
+            _logger.LogInformation("First run detected. Setting last update to 30 minutes ago.");
+            lastUpdate = now.AddMinutes(-CHUNK_SIZE_MINUTES);
+            TimeManager.SetLastUpdateTime("agreMT", lastUpdate);
         }
-        catch (Exception ex)
+        else if (lastUpdate > now)
         {
-            _logger.LogError(ex, "Agre getter service failed");
-            throw;
+            _logger.LogWarning($"Last update time is in future: {lastUpdate}. Resetting to 30 minutes ago.");
+            lastUpdate = now.AddMinutes(-CHUNK_SIZE_MINUTES);
+            TimeManager.SetLastUpdateTime("agreMT", lastUpdate);
+        }
+
+        while (lastUpdate <= now)
+        {
+            var chunkEnd = lastUpdate.AddMinutes(CHUNK_SIZE_MINUTES);
+
+            try
+            {
+                _logger.LogInformation($"Processing agre time range: {lastUpdate:o} - {chunkEnd:o}");
+                await ProcessTimeChunk(lastUpdate, chunkEnd);
+
+                TimeManager.SetLastUpdateTime("agreMT", chunkEnd);
+                lastUpdate = chunkEnd;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to process agre time chunk: {lastUpdate:o} - {chunkEnd:o}");
+                await Task.Delay(5000);
+                continue;
+            }
+
+            if (lastUpdate < now)
+            {
+                await Task.Delay(500);
+            }
         }
     }
 
-    private async Task SetToListAgre(List<AgreMTDataResponse> list)
+    private async Task ProcessTimeChunk(DateTime startTime, DateTime endTime)
     {
-        foreach (var agreMt in _agreList)
+        var endpoint = BuildEmitterEndpoint(startTime);
+        var responses = await GetFullResponse<AgreMTDataResponse>(endpoint, false);
+
+        if (responses == null) return;
+
+        /*var allFilteredAgres = new List<AgreData>();*/
+
+        if (responses?.Data == null) return;
+
+        foreach (var agre in responses.Data.Where(a => a.Timestamp == default))
+        {
+            agre.Timestamp = responses.Timestamp;
+        }
+
+        /*var filteredAgres = responses.Data
+            .Where(a => a.Timestamp >= startTime && a.Timestamp <= endTime)
+            .ToList();
+        allFilteredAgres.AddRange(filteredAgres);
+
+        if (allFilteredAgres.Count == 0) return;*/
+
+        // Обрабатываем отфильтрованные записи
+        foreach (var agre in responses.Data)
         {
             try
             {
+                var locationEndpoint = BuildLocationEndpoint(agre.idLocation);
+                var locResponse = await Get<Context.Location>(locationEndpoint, true);
 
+                _storage.Set((agre, Convert.ToInt32(locResponse.FirstOrDefault().id)));
             }
-            catch (
-
+            catch (Exception ex)
             {
-                Exception
-            } e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            foreach (var agre in agreMt.Data)
-            {
-                _storage.Set((agre, Convert.ToInt32(agre.idLocation)));
+                _logger.LogError(ex, $"Error processing agre with idLocation={agre.idLocation}");
             }
         }
+
+        _logger.LogInformation($"Processed {responses.Data.Count} agre records");
+    }
+
+    private string BuildEmitterEndpoint(DateTime startTime)
+    {
+        DateTimeOffset startDto = new DateTimeOffset(startTime, TimeSpan.Zero);
+        DateTimeOffset inPlus7 = startDto.ToOffset(TimeSpan.FromHours(7));
+        return _apiSettings + inPlus7.ToString("yyyy-MM-ddTHH:mm:ss");
+    }
+
+    private string BuildLocationEndpoint(string loc)
+    {
+        return _connectionStringGetLocation + "?query={id}&ext_id_2=" + loc;
     }
 }

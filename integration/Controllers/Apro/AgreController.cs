@@ -11,11 +11,11 @@ public class AgreController: BaseSyncController<AgreMTDataResponse>
 {
     private string _aproConnectSettings;
     private readonly ILogger<EntryController> _logger;
-    private ISetterServiceFactory<AgreMTRequest> _setterServiceFactory;
+    private ISetterServiceFactory<AgreRequest> _setterServiceFactory;
     
     public AgreController(ILogger<BaseSyncController<AgreMTDataResponse>> logger,
         IGetterServiceFactory<AgreMTDataResponse> serviceGetter,
-        ISetterServiceFactory<AgreMTRequest> serviceSetter
+        ISetterServiceFactory<AgreRequest> serviceSetter
         ) : base(logger, serviceGetter)
     {
         _setterServiceFactory = serviceSetter;
@@ -24,6 +24,7 @@ public class AgreController: BaseSyncController<AgreMTDataResponse>
     public async Task<IActionResult> Sync()
     {
         await base.Sync();
+        await Set();
         return Ok();
     }
     
@@ -36,10 +37,5 @@ public class AgreController: BaseSyncController<AgreMTDataResponse>
     public async Task Set()
     {
         await TryPostAndPatch();
-    }
-    
-    public void Message(string ex)
-    {
-        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getentry, ex);
     }
 }

@@ -4,7 +4,7 @@ namespace integration.Services.Agre.Storage;
 
 public class AgreStorageService: IAgreStorageService
 {
-    private static List<(AgreData, int)> _datas;
+    private static List<(AgreData, int)> _datas = new List<(AgreData, int)>();
     
     public List<(AgreData, int)> Get()
     {

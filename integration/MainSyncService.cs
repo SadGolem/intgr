@@ -44,16 +44,19 @@ namespace integration
                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
                 
                 var employersController =  scope.ServiceProvider.GetRequiredService<EmployerController>();
+                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
+                var agreController = scope.ServiceProvider.GetRequiredService<AgreController>();
                 var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
                 var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
                 var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
                 var contractController = scope.ServiceProvider.GetRequiredService<ContractController>();
                 var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
                 var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
-                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
+                
 
                 await GetEmployers(employersController);
                 //await GetMTLEntryStatus(entryController);
+                await GetMTAgre(agreController);
                 await GetLocation(locationController);
                 await GetContractPosition(contractPositionController);
                 await GetContract(contractController);
@@ -69,6 +72,18 @@ namespace integration
                 await SendToEmail();
                 
                 EmailMessageBuilder.ClearList();
+            }
+        }
+
+        private async Task GetMTAgre(AgreController agreController)
+        {
+            try
+            {
+                await agreController.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while syncing agre.");
             }
         }
 
