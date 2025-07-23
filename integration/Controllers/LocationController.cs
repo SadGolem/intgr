@@ -18,12 +18,14 @@ namespace integration.Controllers
         private readonly ISetterServiceFactory<LocationMTPhotoDataResponse> _serviceSetterFromMTtoAPRO;
         private IGetterLocationService<LocationDataResponse> _locationServiceGetter;
         private IGetterServiceFactory<LocationMTPhotoDataResponse> _locationMTServiceGetter;
+        private IGetterServiceFactory<LocationMTDataResponse> _locationMTStatusServiceGetter;
         private ISetterService<LocationDataResponse> _locationServiceSetter;
         private ILocationIdService _locationIdService;
 
         public LocationController(ILogger<LocationController> logger,
             IGetterLocationServiceFactory<LocationDataResponse> serviceGetter,
             IGetterServiceFactory<LocationMTPhotoDataResponse> locationMTServiceGetter,
+            IGetterServiceFactory<LocationMTDataResponse> locationMTStatusServiceGetter,
             ISetterServiceFactory<LocationDataResponse> serviceSetter,
             ISetterServiceFactory<LocationMTPhotoDataResponse> serviceSetterFromMTtoApro,
             ILocationIdService locationIdService
@@ -33,6 +35,7 @@ namespace integration.Controllers
             _serviceGetter = serviceGetter;
             _serviceSetter = serviceSetter;
             _locationMTServiceGetter = locationMTServiceGetter;
+            _locationMTStatusServiceGetter = locationMTStatusServiceGetter;
             _locationIdService = locationIdService;
             _serviceSetterFromMTtoAPRO = serviceSetterFromMTtoApro;
         }
@@ -69,6 +72,9 @@ namespace integration.Controllers
             {
                 var getterMT = _locationMTServiceGetter.Create();
                 await getterMT.Get();
+                
+                var getterMTStatus = _locationMTStatusServiceGetter.Create();
+                await getterMTStatus.Get();
 
                 return Ok("Locations get from MT successfully.");
             }

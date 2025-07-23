@@ -63,6 +63,7 @@ builder.Services.AddSingleton<IAgreStorageService, AgreStorageService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
 builder.Services.AddSingleton<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();
 builder.Services.AddSingleton<ILocationMTStorageService, LocationMTStorageService>();
+builder.Services.AddSingleton<ILocationMTStatusStorageService, LocationMtStatusStorageStorageService>();
 builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
 builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
 builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
@@ -84,6 +85,12 @@ builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<LocationMTPhotoDataResponse>, LocationMTPhotoGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<LocationMTPhotoDataResponse>, LocationMTPhotoGetterService>();
+
+builder.Services.AddTransient<IGetterServiceFactory<LocationMTDataResponse>, LocationMtGetterServiceFactory>();
+builder.Services.AddTransient<IGetterService<LocationMTDataResponse>, LocationMTGetterService>();
+builder.Services.AddTransient<ISetterServiceFactory<LocationMTDataResponse>, LocationFromMTSetterServiceFactory>();
+builder.Services.AddTransient<ISetterService<LocationMTDataResponse>, LocationFromMTSetterService>();
+
 builder.Services.AddTransient<IGetterServiceFactory<Container>, ContainerGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<Container>, ContainerGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationDataResponse>, LocationSetterServiceFactory>();
@@ -93,8 +100,8 @@ builder.Services.AddTransient<IGetterServiceFactory<EntryMTDataResponse>, EntryM
 builder.Services.AddTransient<ISetterService<EntryDataResponse>, EntrySetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<EntryMTRequest>, EntryFromMTServiceFactory>();
 builder.Services.AddTransient<ISetterService<EntryMTRequest>, EntryFromMTSetterService>();
-builder.Services.AddTransient<ISetterServiceFactory<LocationMTPhotoDataResponse>, LocationFromMTSetterServiceFactory>();
-builder.Services.AddTransient<ISetterService<LocationMTPhotoDataResponse>, LocationFromMTSetterService>();
+builder.Services.AddTransient<ISetterServiceFactory<LocationMTPhotoDataResponse>, LocationFromMTPhotoSetterServiceFactory>();
+builder.Services.AddTransient<ISetterService<LocationMTPhotoDataResponse>, LocationFromMTPhotoSetterService>();
 builder.Services.AddScoped<ILocationValidator, LocationValidator>();
 builder.Services.AddTransient<IGetterServiceFactory<ScheduleDataResponse>, ScheduleGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ScheduleDataResponse>, ScheduleGetterService>();

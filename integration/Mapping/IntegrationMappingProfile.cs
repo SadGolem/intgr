@@ -80,8 +80,10 @@ public class IntegrationMappingProfile : Profile
 
         CreateMap<LocationMTPhotoDataResponse, LocationMTPhotoRequest>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.idAPRO))
-            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.ToCorrectLocationStatus(src.status,src.idMT )))
             .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.images));
+
+        CreateMap<LocationData, LocationMTStatusRequest>()
+            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => src.status));
 
         CreateMap<AgreData, AgreRequest>()
             .ForMember(dest => dest.comment_disp, opt => opt.MapFrom(src =>$"{src.username}: {src.comment}"));
