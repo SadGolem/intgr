@@ -15,7 +15,8 @@ namespace integration.Controllers
         private readonly ILogger<LocationController> _logger;
         private readonly IGetterLocationServiceFactory<LocationDataResponse> _serviceGetter;
         private readonly ISetterServiceFactory<LocationDataResponse> _serviceSetter;
-        private readonly ISetterServiceFactory<LocationMTPhotoDataResponse> _serviceSetterFromMTtoAPRO;
+        private readonly ISetterServiceFactory<LocationMTPhotoDataResponse> _serviceSetterFromMTPhototoAPRO;
+        private readonly ISetterServiceFactory<LocationMTDataResponse> _serviceSetterFromMTtoAPRO;
         private IGetterLocationService<LocationDataResponse> _locationServiceGetter;
         private IGetterServiceFactory<LocationMTPhotoDataResponse> _locationMTServiceGetter;
         private IGetterServiceFactory<LocationMTDataResponse> _locationMTStatusServiceGetter;
@@ -27,7 +28,8 @@ namespace integration.Controllers
             IGetterServiceFactory<LocationMTPhotoDataResponse> locationMTServiceGetter,
             IGetterServiceFactory<LocationMTDataResponse> locationMTStatusServiceGetter,
             ISetterServiceFactory<LocationDataResponse> serviceSetter,
-            ISetterServiceFactory<LocationMTPhotoDataResponse> serviceSetterFromMTtoApro,
+            ISetterServiceFactory<LocationMTPhotoDataResponse> serviceSetterFromMTPhototoApro,
+            ISetterServiceFactory<LocationMTDataResponse> serviceSetterFromMTtoApro,
             ILocationIdService locationIdService
         )
         {
@@ -37,6 +39,7 @@ namespace integration.Controllers
             _locationMTServiceGetter = locationMTServiceGetter;
             _locationMTStatusServiceGetter = locationMTStatusServiceGetter;
             _locationIdService = locationIdService;
+            _serviceSetterFromMTPhototoAPRO = serviceSetterFromMTPhototoApro;
             _serviceSetterFromMTtoAPRO = serviceSetterFromMTtoApro;
         }
 
@@ -91,7 +94,10 @@ namespace integration.Controllers
             {
                 var service = _serviceSetterFromMTtoAPRO.Create();
                 await service.Set();
-
+                
+                var servicePhoto = _serviceSetterFromMTPhototoAPRO.Create();
+                await servicePhoto.Set();
+                
                 return Ok("Locations set from MT successfully.");
             }
             catch (Exception ex)
