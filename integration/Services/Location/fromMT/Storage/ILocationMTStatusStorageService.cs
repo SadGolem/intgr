@@ -3,6 +3,6 @@ using integration.Services.Storage.Interfaces;
 
 namespace integration.Services.Location.fromMT.Storage;
 
-public interface ILocationMTStatusStorageService : IStorageService<LocationMTDataResponse>
+public interface ILocationMTStatusStorageService : IStorageService<LocationData>
 {
 }

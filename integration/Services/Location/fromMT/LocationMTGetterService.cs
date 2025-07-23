@@ -33,15 +33,15 @@ public class LocationMTGetterService : ServiceGetterBase<LocationMTDataResponse>
 
     public async Task Get()
     {
-        var locationsStatus = await Get(BuildEndpoint().Result, false);
-        _storageService.Set(locationsStatus);
+        var locationsStatus = await GetFullResponse<LocationMTDataResponse>(_getEndpoint, false);
+        _storageService.Set(locationsStatus.Data);
     }
 
-    private async Task<string> BuildEndpoint()
+    /*private string BuildEndpoint()
     {
-        DateTimeOffset startDto = new DateTimeOffset(DateTime.Now, TimeSpan.Zero);
-        DateTimeOffset inPlus7 = startDto.ToOffset(TimeSpan.FromHours(7));
-        
+        DateTimeOffset localNow = DateTimeOffset.Now;
+        DateTimeOffset inPlus7 = localNow.ToOffset(TimeSpan.FromHours(7));
+    
         return _getEndpoint + inPlus7.AddMinutes(-ONE_HOUR_CONST).ToString("yyyy-MM-ddTHH:mm:ss");
-    }
+    }*/
 }

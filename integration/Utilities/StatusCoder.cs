@@ -131,7 +131,7 @@ namespace integration.Context
             {
                 if (item.Value == status)
                 {
-                    if (item.Key == 74 && !item.isNew) continue;
+                   // if (item.Key == 74) continue;
                     return item.Key;
                 }
             }

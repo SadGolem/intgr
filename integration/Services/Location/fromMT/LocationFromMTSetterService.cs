@@ -18,7 +18,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
     private readonly IAuth _apiSettings;
     private readonly string _endpointSetStatus;
     private readonly IMapper _mapper;
-    private List<LocationMTDataResponse> _locations = new List<LocationMTDataResponse>();
+    private List<LocationData> _locations = new List<LocationData>();
 
     public LocationFromMTSetterService(IHttpClientFactory httpClientFactory,
         ILogger<LocationFromMTSetterService> logger,
@@ -49,7 +49,7 @@ public class LocationFromMTSetterService : ServiceSetterBase<LocationMTDataRespo
 
     private async Task SetStatus()
     {
-        foreach (var loc in _locations.FirstOrDefault().Data)
+        foreach (var loc in _locations)
         {
             var responce = _mapper.Map<LocationData, LocationMTStatusRequest>(loc);
 

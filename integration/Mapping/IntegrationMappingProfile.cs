@@ -83,7 +83,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.images));
 
         CreateMap<LocationData, LocationMTStatusRequest>()
-            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.ToCorrectLocationStatus(src.status)));
+            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.FromCorrectLocationStatus(src.status)));
 
         CreateMap<AgreData, AgreRequest>()
             .ForMember(dest => dest.comment_disp, opt => opt.MapFrom(src =>$"{src.username}: {src.comment}"));
