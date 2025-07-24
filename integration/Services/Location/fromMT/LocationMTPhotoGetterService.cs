@@ -17,7 +17,7 @@ public class LocationMTPhotoGetterService : ServiceGetterBase<LocationMTPhotoDat
     private readonly ILogger<LocationMTPhotoGetterService> _logger;
     private IHttpClientFactory _httpClientFactory;
     private ILocationMTStorageService _storageService;
-    private const string SAVEDIRECTORY = "C:\\Users\\zma20\\Downloads\\";
+    private const string SAVEDIRECTORY = "C:\\Users\\zma20\\Downloads\\photo_2025-07-24_11-42-53.jpg";
     public LocationMTPhotoGetterService(IHttpClientFactory httpClientFactory,
         ILogger<LocationMTPhotoGetterService> logger,
         IAuthorizer authorizer, IOptions<AuthSettings> apiSettings,
@@ -33,7 +33,6 @@ public class LocationMTPhotoGetterService : ServiceGetterBase<LocationMTPhotoDat
 
     /*public async Task Get()
     {
-        // Получаем статусы локаций
         var locationsStatus = await base.Get(_httpClientFactory, _getEndpoint, false);
 
         if (locationsStatus != null)
@@ -56,7 +55,8 @@ public class LocationMTPhotoGetterService : ServiceGetterBase<LocationMTPhotoDat
             idAPRO = 3395571,
             idMT = 17784
         };
-       // AddLocalImageToLocation(location, SAVEDIRECTORY);
+        AddLocalImageToLocation(location, SAVEDIRECTORY);
+            /*
         try
         {
             location.images = await DownloadLocationPhotos(16777215, _photoEndpointTemplate, false);
@@ -66,20 +66,16 @@ public class LocationMTPhotoGetterService : ServiceGetterBase<LocationMTPhotoDat
                 Console.WriteLine("No photos downloaded");
                 return;
             }
-
-            // Создаем экземпляр SHA-256 для всех файлов
+            
             using var sha256 = SHA256.Create();
-    
-            // Сохраняем каждое фото в файл
+            
             for (int i = 0; i < location.images.Count; i++)
             {
                 var imageBytes = location.images[i];
                 var filePath = Path.Combine(SAVEDIRECTORY, $"location_{location.idMT}_photo_{i}.jpg");
-
-                // Сохраняем файл
+                
                 await File.WriteAllBytesAsync(filePath, imageBytes);
-        
-                // Вычисляем хэш
+                
                 byte[] hashBytes = sha256.ComputeHash(imageBytes);
                 string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         
@@ -93,25 +89,22 @@ public class LocationMTPhotoGetterService : ServiceGetterBase<LocationMTPhotoDat
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+       */ 
     }
 
     public void AddLocalImageToLocation(LocationMTPhotoDataResponse location, string filePath)
     {
         try
         {
-            // Проверяем существование файла
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"File not found: {filePath}");
             }
-
-            // Читаем файл в массив байтов
+            
             byte[] imageBytes = File.ReadAllBytes(filePath);
-        
-            // Инициализируем список изображений если нужно
+            
             location.images ??= new List<byte[]>();
-        
-            // Добавляем изображение в локацию
+            
             location.images.Add(imageBytes);
         
             Console.WriteLine($"Successfully added image: {Path.GetFileName(filePath)} ({imageBytes.Length} bytes)");

@@ -2,7 +2,6 @@
 using System.Text.Json;
 using AutoMapper;
 using integration.Context.MT;
-using integration.Context.Request.MT;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Interfaces;
@@ -42,7 +41,7 @@ public class LocationFromMTPhotoSetterService : ServiceSetterBase<LocationMTPhot
     public async Task Set()
     {
         await GetLocation();
-            // await SetStatus();
+        
         await SetPhoto();
     }
 
@@ -68,25 +67,21 @@ public class LocationFromMTPhotoSetterService : ServiceSetterBase<LocationMTPhot
             try
             {
                 using var content = new MultipartFormDataContent();
-            
-                // Генерируем уникальное имя файла как в примере
+                
                 string fileName = $"saved-{DateTime.Now:yyyyMMdd_HHmmss}_p{loc.idAPRO}.jpg";
             
                 var imageBytes = image.ToArray();
                 var imageContent = new ByteArrayContent(imageBytes);
-            
-                // Устанавливаем заголовки как в примере
+                
                 imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
                 imageContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
                 {
                     Name = "file",
                     FileName = fileName
                 };
-            
-                // Добавляем файл в контент
+                
                 content.Add(imageContent);
-
-                // Отправляем запрос
+                
                 var response = await PostPhoto(
                     _httpClientFactory,
                     _endpointSetPhoto,
@@ -118,7 +113,5 @@ public class LocationFromMTPhotoSetterService : ServiceSetterBase<LocationMTPhot
         var patchBody = new { uploaded_files = new[] { fileId } };
         
         await Patch(_httpClientFactory, patchUrl, patchBody, true);
-        
     }
-   
 }
