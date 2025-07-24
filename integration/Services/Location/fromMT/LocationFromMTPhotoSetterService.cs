@@ -97,12 +97,6 @@ public class LocationFromMTPhotoSetterService : ServiceSetterBase<LocationMTPhot
             }
         }
     }
-    private async Task DebugSaveMultipart(MultipartFormDataContent content, string path)
-    {
-        using var stream = new MemoryStream();
-        await content.CopyToAsync(stream);
-        File.WriteAllBytes(path, stream.ToArray());
-    }
     private async Task SetFileToLocation(int loc, string response)
     {
         var jsonResponse = JsonSerializer.Deserialize<JsonElement>(response);

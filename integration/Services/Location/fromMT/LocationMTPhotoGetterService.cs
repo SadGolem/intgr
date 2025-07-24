@@ -44,11 +44,6 @@ public class LocationMTPhotoGetterService : ServiceGetterBase<LocationMTPhotoDat
     //тест
     public async Task Get()
     {
-        /*// Получаем статусы локаций
-        var locationsStatus = await base.Get(_httpClientFactory, _getEndpoint, false);
-
-        if (locationsStatus != null)
-        {*/
         var location = new LocationMTPhotoDataResponse
         {
             datetime_create = DateTime.MinValue,
