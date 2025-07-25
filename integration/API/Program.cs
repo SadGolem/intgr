@@ -31,6 +31,7 @@ using integration.Context.Request;
 using integration.Context.Request.MT;
 using integration.Context.Response;
 using integration.Factory.GET.MT;
+using integration.Infrastructure;
 using integration.Services.Agre;
 using integration.Services.Agre.Storage;
 using integration.Services.Container;
@@ -46,6 +47,7 @@ using integration.Services.Location.fromMT;
 using integration.Services.Location.fromMT.Storage;
 using integration.Services.Storage.Interfaces;
 using integration.Structs;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,10 @@ builder.Services.AddMemoryCache();
 
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
+
+//Registration postgresql
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
 
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
