@@ -5,16 +5,28 @@ namespace integration.Infrastructure;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<DataEntity> DataRecords { get; set; }
+    public DbSet<LocationEntity> LocationRecords { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<DataEntity>(e => 
+        modelBuilder.Entity<LocationEntity>(entity =>
         {
-            e.Property(x => x.CreatedAt).IsRequired();
-            e.HasIndex(x => x.CreatedAt); // Для эффективной очистки
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Status)
+                .HasConversion<string>()
+                .IsRequired();
+            entity.Property(e => e.IdAsuPro).IsRequired();
+            entity.Property(e => e.Address).IsRequired();
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.ExpirationDate).IsRequired();
+            entity.HasIndex(e => e.ExpirationDate)
+                .HasDatabaseName("IX_LocationEntities_ExpirationDate");
+            entity.Property(e => e.Longitude)
+                .HasColumnType("decimal(9,6)");
+            entity.Property(e => e.Latitude)
+                .HasColumnType("decimal(9,6)");
         });
     }
 }
