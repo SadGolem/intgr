@@ -1,33 +1,32 @@
-﻿using integration.Context.Response;
-using integration.Factory.GET.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-
-namespace integration.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EmployerController: BaseSyncController<EmployerDataResponse>
+public class EmployerController : ControllerBase
 {
-    private string _aproConnectSettings;
+    private readonly IEmployerManagerService _employerSyncService;
     private readonly ILogger<EmployerController> _logger;
-    private IGetterServiceFactory<EmployerDataResponse> _getterServiceFactory;
-    
-    public EmployerController(ILogger<BaseSyncController<EmployerDataResponse>> logger, 
-        IGetterServiceFactory<EmployerDataResponse> serviceGetter) 
-        : base(logger, serviceGetter)
+
+    public EmployerController(
+        IEmployerManagerService employerSyncService,
+        ILogger<EmployerController> logger)
     {
-        _getterServiceFactory = serviceGetter;
+        _employerSyncService = employerSyncService;
+        _logger = logger;
     }
-    
+
+    [HttpPost("sync")]
     public async Task<IActionResult> Sync()
     {
-        await Get();
-        return Ok();
-    }
-        
-    private async Task Get()
-    {
-        var service = _getterServiceFactory.Create();
-        await service.Get();
+        try
+        {
+            await _employerSyncService.SyncAsync();
+            return Ok("Employer sync completed");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Employer sync error");
+            return StatusCode(500, "Internal server error");
+        }
     }
 }

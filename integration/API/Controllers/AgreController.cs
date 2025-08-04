@@ -1,41 +1,32 @@
-﻿using integration.Context.MT;
-using integration.Context.Request;
-using integration.Factory.GET.Interfaces;
-using integration.Factory.SET.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace integration.Controllers.Apro;
 [ApiController]
 [Route("api/[controller]")]
-public class AgreController: BaseSyncController<AgreMTDataResponse>
+public class AgreController : ControllerBase
 {
-    private string _aproConnectSettings;
-    private readonly ILogger<EntryController> _logger;
-    private ISetterServiceFactory<AgreRequest> _setterServiceFactory;
-    
-    public AgreController(ILogger<BaseSyncController<AgreMTDataResponse>> logger,
-        IGetterServiceFactory<AgreMTDataResponse> serviceGetter,
-        ISetterServiceFactory<AgreRequest> serviceSetter
-        ) : base(logger, serviceGetter)
+    private readonly IAgreManagerService _agreSyncService;
+    private readonly ILogger<AgreController> _logger;
+
+    public AgreController(
+        IAgreManagerService agreSyncService,
+        ILogger<AgreController> logger)
     {
-        _setterServiceFactory = serviceSetter;
-    }
-    
-    public async Task<IActionResult> Sync()
-    {
-        await base.Sync();
-        await Set();
-        return Ok();
-    }
-    
-    private async Task TryPostAndPatch()
-    {
-        var service = _setterServiceFactory.Create(); 
-        await service.Set();
+        _agreSyncService = agreSyncService;
+        _logger = logger;
     }
 
-    public async Task Set()
+    [HttpPost("sync")]
+    public async Task<IActionResult> Sync()
     {
-        await TryPostAndPatch();
+        try
+        {
+            await _agreSyncService.SyncAsync();
+            return Ok("Agre sync completed");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Agre sync error");
+            return StatusCode(500, "Internal server error");
+        }
     }
 }

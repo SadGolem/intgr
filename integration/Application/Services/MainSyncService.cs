@@ -10,20 +10,12 @@ namespace integration
     {
         private readonly ILogger<MainSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private  IConverterToStorageService _converterToStorageService;
-        private  IStorageService<IntegrationStruct> _storageService;
-        private IntegrationController _multipartSetterController;
         private Timer? _timer;
         private const int _updateTime = 30;
-
-        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider, 
-            IConverterToStorageService converterToStorageService, IStorageService<IntegrationStruct> storageService, IntegrationController multipartSetterController)
+        public MainSyncService(ILogger<MainSyncService> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
-            _converterToStorageService = converterToStorageService;
-            _storageService = storageService;
-            _multipartSetterController = multipartSetterController;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -38,48 +30,51 @@ namespace integration
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var tokenController = scope.ServiceProvider.GetService<TokenController>();
-                await tokenController.GetTokens();
+                var tokenManager = scope.ServiceProvider.GetRequiredService<ITokenManagerService>();
+                await tokenManager.GetTokensAsync();
 
-               // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
-                
-                var employersController =  scope.ServiceProvider.GetRequiredService<EmployerController>();
-                var entryController = scope.ServiceProvider.GetRequiredService<EntryController>();
-                var agreController = scope.ServiceProvider.GetRequiredService<AgreController>();
-                var locationController = scope.ServiceProvider.GetRequiredService<LocationController>();
-                var scheduleController = scope.ServiceProvider.GetRequiredService<ScheduleController>();
-                var contractPositionController = scope.ServiceProvider.GetRequiredService<ContractPositionController>();
-                var contractController = scope.ServiceProvider.GetRequiredService<ContractController>();
-                var contragentController = scope.ServiceProvider.GetRequiredService<ClientController>();
-                var emitterController = scope.ServiceProvider.GetRequiredService<EmitterController>(); 
-                
+                // var getterAPI = scope.ServiceProvider.GetRequiredService<GetterAPIService>();
 
-                await GetEmployers(employersController);
-                //await GetMTLEntryStatus(entryController);
-                await GetMTAgre(agreController);
-                await GetLocation(locationController);
-                await GetContractPosition(contractPositionController);
-                await GetContract(contractController);
-                await GetClient(contragentController);
-                await GetEmitter(emitterController);
-                await GetSchedule(scheduleController);
-                await SetStruct(_converterToStorageService);
-                
-                //await StartEntry(entryController); 
-                await CheckAndSendIntegrationToAPRO();
-                await GetMTLocationAndSendStatusAndPhotoToApro(locationController);
-                
+                var contractPositionSync = scope.ServiceProvider.GetRequiredService<IContractPositionManagerService>();
+                var contractSync = scope.ServiceProvider.GetRequiredService<IContractManagerService>();
+                var emitterSync = scope.ServiceProvider.GetRequiredService<IEmitterManagerService>();
+                var employerSync = scope.ServiceProvider.GetRequiredService<IEmployerManagerService>();
+                var entrySync = scope.ServiceProvider.GetRequiredService<IEntryManagerService>();
+                var clientSync = scope.ServiceProvider.GetRequiredService<IClientManagerService>();
+                var agreSync = scope.ServiceProvider.GetRequiredService<IAgreManagerService>();
+                var locationSync = scope.ServiceProvider.GetRequiredService<ILocationManagerService>();
+                var scheduleSync = scope.ServiceProvider.GetRequiredService<IScheduleManagerService>();
+                var converter = scope.ServiceProvider.GetRequiredService<IConverterToStorageService>();
+                var storage = scope.ServiceProvider.GetRequiredService<IStorageService<IntegrationStruct>>();
+                var integrationService = scope.ServiceProvider.GetRequiredService<IIntegrationService>();
+                var validationService = scope.ServiceProvider.GetRequiredService<IIntegrationValidationService>();
+
+                await GetEmployers(employerSync);
+                //await GetMTLEntryStatus(entrySync);
+                await GetMTAgre(agreSync);
+                await GetLocation(locationSync);
+                await GetContractPosition(contractPositionSync);
+                await GetContract(contractSync);
+                await GetClient(clientSync);
+                await GetEmitter(emitterSync);
+                await GetSchedule(scheduleSync);
+                await SetStruct(converter);
+
+                await StartEntry(entrySync); 
+                await CheckAndSendIntegrationToAPRO(storage, integrationService);
+                await GetMTLocationAndSendStatusAndPhotoToApro(locationSync);
+
                 await SendToEmail();
-                
+
                 EmailMessageBuilder.ClearList();
             }
         }
 
-        private async Task GetMTAgre(AgreController agreController)
+        private async Task GetMTAgre(IAgreManagerService agreController)
         {
             try
             {
-                await agreController.Sync();
+                await agreController.SyncAsync();
             }
             catch (Exception ex)
             {
@@ -92,57 +87,57 @@ namespace integration
             await EmailSender.Send();
         }
 
-        private async Task GetSchedule(ScheduleController scheduleController)
+        private async Task GetSchedule(IScheduleManagerService scheduleController)
         {
             try
             {
-                await scheduleController.Sync();
+                await scheduleController.SyncAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing employers.");
             }
         }
-        private async Task GetEmployers(EmployerController employerController)
+        private async Task GetEmployers(IEmployerManagerService employerController)
         {
             try
             {
-                await employerController.Sync();
+                await employerController.SyncAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-        private async Task GetMTLocationAndSendStatusAndPhotoToApro(LocationController locationController)
+        private async Task GetMTLocationAndSendStatusAndPhotoToApro(ILocationManagerService locationController)
         {
             try
             {
-                await locationController.Get();
-                await locationController.Set();
+                await locationController.GetFromMTAsync();
+                await locationController.SetFromMTAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-        private async Task GetMTLEntryStatus(EntryController entryController)
+        private async Task GetMTLEntryStatus(IEntryManagerService entryController)
         {
             try
             {
-                await entryController.GetMT();
-                await entryController.SetToMT();
+                await entryController.GetMTAsync();
+                await entryController.SetToMTAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-        private async Task GetEmitter(EmitterController emitterController)
+        private async Task GetEmitter(IEmitterManagerService emitterController)
         {
             try
             {
-                await emitterController.Sync();
+                await emitterController.SyncAsync();
             }
             catch (Exception ex)
             {
@@ -150,22 +145,22 @@ namespace integration
             }
         }
 
-        private async Task GetLocation(LocationController locationController)
+        private async Task GetLocation(ILocationManagerService locationController)
         {
             try
             {
-                await locationController.Sync();
+                await locationController.SyncLocationsAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while syncing locations.");
             }
         }
-        private async Task GetContractPosition(ContractPositionController contractPositionController)
+        private async Task GetContractPosition(IContractPositionManagerService contractPositionController)
         {
             try
             {
-                await contractPositionController.Sync();
+                await contractPositionController.SyncAsync();
             }
             catch (Exception ex)
             {
@@ -173,11 +168,11 @@ namespace integration
             }
         }
 
-        private async Task GetContract(ContractController contractController)
+        private async Task GetContract(IContractManagerService contractController)
         {
             try
             {
-                await contractController.Sync();
+                await contractController.SyncAsync();
             }
             catch (Exception ex)
             {
@@ -189,11 +184,11 @@ namespace integration
         {
             await converter.ToStorage();
         }
-        private async Task GetClient(ClientController clientController)
+        private async Task GetClient(IClientManagerService clientController)
         {
             try
             {
-                await clientController.Sync();
+                await clientController.SyncAsync();
             }
             catch (Exception ex)
             {
@@ -201,7 +196,7 @@ namespace integration
             }
         }
 
-        private async Task CheckAndSendIntegrationToAPRO()
+        private async Task CheckAndSendIntegrationToAPRO(IStorageService<IntegrationStruct> _storageService, IIntegrationService _multipartSetterController)
 
         {
             List<IntegrationStruct> _structs = _storageService.Get();
@@ -209,7 +204,7 @@ namespace integration
             {
                 try
                 {
-                    await _multipartSetterController.Sync(_struct);
+                    await _multipartSetterController.SendIntegrationDataAsync(_struct);
                     _logger.LogInformation("MultipartSetter was finished");
                 }
                 catch (Exception e)
@@ -220,12 +215,11 @@ namespace integration
             }
         }
 
-        private async Task StartEntry(EntryController entryController)
+        private async Task StartEntry(IEntryManagerService entryController)
         {
             try
             {
-                await entryController.Sync();
-                await entryController.Set();
+                await entryController.SyncAsync();
             }
             catch (Exception ex)
             {

@@ -1,58 +1,32 @@
-﻿using integration.Context;
-using Microsoft.AspNetCore.Mvc;
-using integration.Factory.GET.Interfaces;
-using integration.Helpers;
-using integration.Helpers.Auth;
-using integration.Services.Interfaces;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace integration.Controllers.Apro
+[ApiController]
+[Route("api/[controller]")]
+public class ScheduleController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ScheduleController :  ControllerBase, IController
-    {
-        private readonly string _aproConnectSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<ScheduleController> _logger;
-        private IGetterService<ScheduleDataResponse> _scheduleGetterService;
-        private readonly IGetterServiceFactory<ScheduleDataResponse> _serviceGetter;
-        private string url = "wf__waste_site_schedule_set__waste_site_schedule_set/?query={id,waste_site{id},datetime_create, datetime_update, dates, schedule, containers{id, type {id}}}";
+    private readonly IScheduleManagerService _scheduleSyncService;
+    private readonly ILogger<ScheduleController> _logger;
 
-        public ScheduleController(
-            IHttpClientFactory httpClientFactory,
-            ILogger<ScheduleController> logger,
-            IOptions<AuthSettings> configuration, IGetterServiceFactory<ScheduleDataResponse> serviceGetter
-            )
+    public ScheduleController(
+        IScheduleManagerService scheduleSyncService,
+        ILogger<ScheduleController> logger)
+    {
+        _scheduleSyncService = scheduleSyncService;
+        _logger = logger;
+    }
+
+    [HttpPost("sync")]
+    public async Task<IActionResult> Sync()
+    {
+        try
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-            ConnectingStringApro connectingStringApro = new ConnectingStringApro(configuration, url);
-            _aproConnectSettings = connectingStringApro.GetAproConnectSettings();
-            _serviceGetter = serviceGetter;
+            await _scheduleSyncService.SyncAsync();
+            return Ok("Schedule sync completed");
         }
-        
-        public async Task<IActionResult> Sync()
+        catch (Exception ex)
         {
-            _logger.LogInformation("Starting manual schedule sync...");
-            try
-            {
-                await Fetcht();
-                
-                return Ok("Schedules synced successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during schedule sync.");
-                return StatusCode(500, "Error during schedule sync.");
-            }
-        }
-        private async Task Fetcht()
-        {
-            _scheduleGetterService = _serviceGetter.Create();
-            await _scheduleGetterService.Get();
+            _logger.LogError(ex, "Schedule sync error");
+            return StatusCode(500, "Internal server error");
         }
     }
 }
-
-

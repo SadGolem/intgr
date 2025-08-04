@@ -1,30 +1,32 @@
-﻿using integration.Context;
-using integration.Factory.GET.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-
-namespace integration.Controllers.Apro
+[ApiController]
+[Route("api/[controller]")]
+public class EmitterController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class EmitterController : BaseSyncController<EmitterDataResponse>
+    private readonly IEmitterManagerService _emitterSyncService;
+    private readonly ILogger<EmitterController> _logger;
+
+    public EmitterController(
+        IEmitterManagerService emitterSyncService,
+        ILogger<EmitterController> logger)
     {
-        public EmitterController(
-            ILogger<EmitterController> logger,
-            IGetterServiceFactory<EmitterDataResponse> serviceGetter)
-            : base(logger, serviceGetter) { }
-    
-        public async Task<IActionResult> Sync()
+        _emitterSyncService = emitterSyncService;
+        _logger = logger;
+    }
+
+    [HttpPost("sync")]
+    public async Task<IActionResult> Sync()
+    {
+        try
         {
-            return await base.Sync();
+            await _emitterSyncService.SyncAsync();
+            return Ok("Emitter sync completed");
         }
-        void ToGetMessage(string ex)
+        catch (Exception ex)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getemitter, ex);
+            _logger.LogError(ex, "Emitter sync error");
+            return StatusCode(500, "Internal server error");
         }
     }
 }
-
-        
-
-

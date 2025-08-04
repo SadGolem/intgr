@@ -1,7 +1,5 @@
 using integration;
 using integration.Context;
-using integration.Controllers;
-using integration.Controllers.Apro;
 using integration.Factory;
 using integration.Factory.GET;
 using integration.Factory.GET.Interfaces;
@@ -51,52 +49,77 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Добавление сервисов
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
+builder.Services.AddLogging(logging => 
+{
+    logging.AddConsole();
+    logging.AddDebug();
+    logging.SetMinimumLevel(LogLevel.Debug);
+});
 
+// Конфигурация
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
 
-//Registration postgresql
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
+// Регистрация DbContext - ИСПРАВЛЕННАЯ
+builder.Services.AddDbContext<AppDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")),
+    ServiceLifetime.Scoped);
+
+// Регистрация сервисов - ВСЕ СЕРВИСЫ РАБОТАЮЩИЕ С БД ДОЛЖНЫ БЫТЬ SCOPED
 
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddScoped<ITokenManagerService, TokenManagerService>();
 builder.Services.AddSingleton<IAuthorizer, Authorizer>();
-builder.Services.AddSingleton<ILocationIdService, LocationIdService>();
-builder.Services.AddSingleton<IAgreStorageService, AgreStorageService>();
-builder.Services.AddSingleton<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
-builder.Services.AddSingleton<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();
-builder.Services.AddSingleton<ILocationMTStorageService, LocationMTStorageService>();
-builder.Services.AddSingleton<ILocationMTStatusStorageService, LocationMtStatusStorageStorageService>();
-builder.Services.AddSingleton<IScheduleStorageService, ScheduleStorageService>();
-builder.Services.AddSingleton<IContractPositionStorageService, ContractPositionStorageService>();
-builder.Services.AddSingleton<IClientStorageService, ClientStorageService>();
-builder.Services.AddSingleton<IContractStorageService, ContractStorageService>();
-builder.Services.AddSingleton<IStorageService<IntegrationStruct>, StorageService>();
-builder.Services.AddSingleton<IConverterToStorageService, ConverterToStorageService>();
-builder.Services.AddSingleton<IEmitterStorageService, EmitterStorageService>();
-builder.Services.AddSingleton<IEmployersStorageService, EmployersStorageService>();
+builder.Services.AddScoped<ILocationIdService, LocationIdService>();
+
+// Регистрация sync-сервисов
+// Регистрация sync-сервисов
+builder.Services.AddScoped<IAgreManagerService, AgreManagerService>();
+builder.Services.AddScoped<IClientManagerService, ClientManagerService>();
+builder.Services.AddScoped<IContractManagerService, ContractManagerService>();
+builder.Services.AddScoped<IContractPositionManagerService, ContractPositionManagerService>();
+builder.Services.AddScoped<IEmitterManagerService, EmitterManagerService>();
+builder.Services.AddScoped<IEmployerManagerService, EmployerManagerService>();
+builder.Services.AddScoped<IEntryManagerService, EntryManagerService>();
+builder.Services.AddScoped<ILocationManagerService, LocationManagerService>();
+builder.Services.AddScoped<IScheduleManagerService, ScheduleManagerService>();
+builder.Services.AddScoped<IIntegrationService, IntegrationService>();
+
+// Storage services - ВСЕ Scoped
+builder.Services.AddScoped<IAgreStorageService, AgreStorageService>();
+builder.Services.AddScoped<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
+builder.Services.AddScoped<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();
+builder.Services.AddScoped<ILocationMTStorageService, LocationMTStorageService>();
+builder.Services.AddScoped<ILocationMTStatusStorageService, LocationMtStatusStorageStorageService>();
+builder.Services.AddScoped<IScheduleStorageService, ScheduleStorageService>();
+builder.Services.AddScoped<IContractPositionStorageService, ContractPositionStorageService>();
+builder.Services.AddScoped<IClientStorageService, ClientStorageService>();
+builder.Services.AddScoped<IContractStorageService, ContractStorageService>();
+builder.Services.AddScoped<IStorageService<IntegrationStruct>, StorageService>();
+builder.Services.AddScoped<IConverterToStorageService, ConverterToStorageService>();
+builder.Services.AddScoped<IEmitterStorageService, EmitterStorageService>();
+builder.Services.AddScoped<IEmployersStorageService, EmployersStorageService>();
+
+// Фабрики и сервисы получения данных
 builder.Services.AddTransient<IGetterServiceFactory<EmployerDataResponse>, EmployersGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<EmployerDataResponse>, EmployerGetterService>();
-
 builder.Services.AddTransient<IGetterServiceFactory<AgreMTDataResponse>, AgreMTGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<AgreMTDataResponse>, AgreMTGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<AgreRequest>, AgreSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<AgreRequest>, AgreSetterService>();
-
 builder.Services.AddTransient<IGetterServiceFactory<DataResponse>, DataGetterServiceFactory>(); 
 builder.Services.AddTransient<IGetterLocationServiceFactory<LocationDataResponse>, LocationGetterServiceFactory>();
 builder.Services.AddTransient<IGetterLocationService<LocationDataResponse>, LocationGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<LocationMTPhotoDataResponse>, LocationMTPhotoGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<LocationMTPhotoDataResponse>, LocationMTPhotoGetterService>();
-
 builder.Services.AddTransient<IGetterServiceFactory<LocationMTDataResponse>, LocationMtGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<LocationMTDataResponse>, LocationMTGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationMTDataResponse>, LocationFromMTSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationMTDataResponse>, LocationFromMTSetterService>();
-
 builder.Services.AddTransient<IGetterServiceFactory<Container>, ContainerGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<Container>, ContainerGetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationDataResponse>, LocationSetterServiceFactory>();
@@ -108,7 +131,10 @@ builder.Services.AddTransient<ISetterServiceFactory<EntryMTRequest>, EntryFromMT
 builder.Services.AddTransient<ISetterService<EntryMTRequest>, EntryFromMTSetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationMTPhotoDataResponse>, LocationFromMTPhotoSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationMTPhotoDataResponse>, LocationFromMTPhotoSetterService>();
+
+// Сервисы валидации и проверок
 builder.Services.AddScoped<ILocationValidator, LocationValidator>();
+builder.Services.AddScoped<IIntegrationValidationService, IntegrationValidationService>();
 builder.Services.AddTransient<IGetterServiceFactory<ScheduleDataResponse>, ScheduleGetterServiceFactory>();
 builder.Services.AddTransient<IGetterService<ScheduleDataResponse>, ScheduleGetterService>();
 builder.Services.AddTransient<IGetterServiceFactory<ContractPositionDataResponse>, ContractPositionGetterServiceFactory>();
@@ -128,15 +154,13 @@ builder.Services.AddScoped<IEmitterCheckUpService, EmitterCheckUpService>();
 builder.Services.AddScoped<ILocationCheckUpService, LocationCheckUpService>();
 builder.Services.AddScoped<IScheduleCheckUpService, ScheduleCheckUpService>();
 
+// Интеграционные сервисы
 builder.Services.AddScoped<IntegrationStructValidator>();
 builder.Services.AddScoped<IIntegrationProcessor<ClientDataResponse>, ContragentProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<EmitterDataResponse>, EmitterProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<LocationDataResponse>, LocationProcessor>();
 builder.Services.AddScoped<IIntegrationProcessor<ScheduleDataResponse>, ScheduleProcessor>();
 builder.Services.AddScoped<IAproClientService, AproClientService>();
-
-builder.Services.AddScoped<IApiClientService, ApiClientService>();
-builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddScoped<ICheckUpFactory<ClientDataResponse>, ClientCheckUpFactory>();
 builder.Services.AddScoped<ICheckUpService<ClientDataResponse>, ClientCheckUpService>();
 builder.Services.AddScoped<ICheckUpFactory<EmitterDataResponse>, EmitterCheckUpFactory>();
@@ -146,48 +170,56 @@ builder.Services.AddScoped<ICheckUpService<ScheduleDataResponse>, ScheduleCheckU
 builder.Services.AddScoped<ICheckUpFactory<LocationDataResponse>, LocationCheckUpFactory>();
 builder.Services.AddScoped<ICheckUpService<LocationDataResponse>, LocationCheckUpService>();
 
-builder.Services.AddSingleton<TokenController>();
-builder.Services.AddSingleton<EmployerController>();
-builder.Services.AddSingleton<AgreController>();
-builder.Services.AddSingleton<LocationController>();
-builder.Services.AddSingleton<ScheduleController>();
-builder.Services.AddSingleton<ContractPositionController>();
-builder.Services.AddSingleton<ContractController>();
-builder.Services.AddSingleton<ClientController>();
-builder.Services.AddSingleton<EmitterController>();
-builder.Services.AddSingleton<EntryController>();
-builder.Services.AddSingleton<ScheduleController>();
-builder.Services.AddSingleton<IntegrationController>();
+// Фоновый сервис с правильной обработкой Scoped-зависимостей - ИСПРАВЛЕННЫЙ
 builder.Services.AddHostedService<MainSyncService>();
+
+// Автоматическая регистрация контроллеров
 builder.Services.AddControllers();
+
+// Swagger и API Explorer
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Аутентификация и авторизация
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
+// AutoMapper
 var mapperConfig = new MapperConfiguration(cfg => 
 {
     cfg.AddProfile<IntegrationMappingProfile>();
 });
-
 builder.Services.AddSingleton<IMapper>(sp => mapperConfig.CreateMapper());
+
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// Конвейер middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
+// Применение миграций
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        //db.Database.Migrate(); 
-    db.Database.EnsureCreated();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while applying migrations");
+    }
 }
 
 app.Run();
-

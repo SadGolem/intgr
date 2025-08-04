@@ -1,68 +1,48 @@
-﻿using integration.Context.Request.MT;
-using integration.Factory.GET.Interfaces;
-using integration.Factory.SET.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using integration.Services.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace integration.Controllers.Apro
+[ApiController]
+[Route("api/[controller]")]
+public class EntryController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class EntryController : BaseSyncController<EntryDataResponse>, ISetterService<EntryDataResponse>
+    private readonly IEntryManagerService _entrySyncService;
+    private readonly ILogger<EntryController> _logger;
+
+    public EntryController(
+        IEntryManagerService entrySyncService,
+        ILogger<EntryController> logger)
     {
-        private string _aproConnectSettings;
-        private readonly ILogger<EntryController> _logger;
-        private ISetterServiceFactory<EntryDataResponse> _setterServiceFactory;
-        private ISetterServiceFactory<EntryMTRequest> _setterFromMTToAproStatusServiceFactory;
-        private IGetterServiceFactory<EntryMTDataResponse> _getterServiceFactoryMT;
+        _entrySyncService = entrySyncService;
+        _logger = logger;
+    }
 
-        public EntryController(
-            ILogger<EntryController> logger, ISetterServiceFactory<EntryMTRequest> setterFromMTToAproStatusServiceFactory,
-            IGetterServiceFactory<EntryDataResponse> serviceGetter,
-            ISetterServiceFactory<EntryDataResponse> serviceSetter, IGetterServiceFactory<EntryMTDataResponse> serviceGetterMT)
-            : base(logger, serviceGetter)
+    [HttpPost("sync")]
+    public async Task<IActionResult> Sync()
+    {
+        try
         {
-            _setterServiceFactory = serviceSetter;
-            _setterFromMTToAproStatusServiceFactory = setterFromMTToAproStatusServiceFactory;
-            _getterServiceFactoryMT = serviceGetterMT;
+            await _entrySyncService.SyncAsync();
+            return Ok("Entry sync completed");
         }
-        
-        public async Task<IActionResult> Sync()
+        catch (Exception ex)
         {
-            await Get();
-            return Ok();
+            _logger.LogError(ex, "Entry sync error");
+            return StatusCode(500, "Internal server error");
         }
-        
-        private async Task Get()
-        {
-            await base.Sync();
-        }
-        
-        public async Task GetMT()
-        {
-            var service = _getterServiceFactoryMT.Create();
-            await service.Get();
-        }
+    }
 
-        private async Task TryPostAndPatch()
+    [HttpPost("syncMT")]
+    public async Task<IActionResult> SyncMT()
+    {
+        try
         {
-            var service = _setterServiceFactory.Create(); 
-            await service.Set();
+            await _entrySyncService.GetMTAsync();
+            await _entrySyncService.SetToMTAsync();
+            return Ok("Entry MT sync completed");
         }
-
-        public async Task Set()
+        catch (Exception ex)
         {
-            await TryPostAndPatch();
-        }
-        
-        public async Task SetToMT()
-        {
-            var service = _setterFromMTToAproStatusServiceFactory.Create(); 
-            await service.Set();
-        }
-        public void Message(string ex)
-        {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getentry, ex);
+            _logger.LogError(ex, "Entry MT sync error");
+            return StatusCode(500, "Internal server error");
         }
     }
 }

@@ -5,7 +5,8 @@ using integration.Services.Location;
 using Microsoft.AspNetCore.Mvc;
 
 namespace integration.Controllers.Apro;
-
+[ApiController]
+[Route("api/[controller]")]
 public class ContractPositionController : ControllerBase, IController
 {
     private readonly ILogger<ContractPositionController> _logger;

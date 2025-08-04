@@ -4,5 +4,6 @@ namespace integration.Services.Integration;
 
 public interface IIntegrationService
 {
-    public Task SendIntegrationDataAsync(IntegrationStruct _struct);
+    Task SendIntegrationDataAsync(IntegrationStruct integrationStruct);
+    Task<bool> ValidateIntegrationDataAsync(IntegrationStruct integrationStruct);
 }

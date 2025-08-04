@@ -28,6 +28,12 @@ public class LocationCheckUpService : ILocationCheckUpService
             return false;
         }
         
+        if (location.containers == null)
+        {
+            Message($"{location.id} - containers not found");
+            return false;
+        }
+        
         if (location.containers.Count == 0)
         {
             Message($"{location.id} - containers not found");

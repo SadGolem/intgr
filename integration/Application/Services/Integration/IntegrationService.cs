@@ -3,6 +3,7 @@ using integration.Context;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services;
+using integration.Services.CheckUp;
 using integration.Services.Integration;
 using integration.Services.Integration.Interfaces;
 using integration.Structs;
@@ -17,6 +18,10 @@ public class IntegrationService : ServiceBase, IIntegrationService
     private readonly IIntegrationProcessor<EmitterDataResponse> _emitterProcessor;
     private readonly IIntegrationProcessor<LocationDataResponse> _locationProcessor;
     private readonly IIntegrationProcessor<ScheduleDataResponse> _scheduleProcessor;
+    private readonly ICheckUpService<ClientDataResponse> _checkUpServiceClient;
+        private readonly ICheckUpService<EmitterDataResponse> _checkUpServiceEmitter;
+        private readonly ICheckUpService<LocationDataResponse> _checkUpServiceLocation;
+        private readonly ICheckUpService<ScheduleDataResponse> _checkUpServiceSchedule;
     private IMapper _mapper;
 
     public IntegrationService(
@@ -29,6 +34,10 @@ public class IntegrationService : ServiceBase, IIntegrationService
         IIntegrationProcessor<EmitterDataResponse> emitterProcessor,
         IIntegrationProcessor<LocationDataResponse> locationProcessor,
         IIntegrationProcessor<ScheduleDataResponse> scheduleProcessor,
+        ICheckUpService<ClientDataResponse> checkUpServiceClient,
+        ICheckUpService<EmitterDataResponse> checkUpServiceEmitter,
+        ICheckUpService<LocationDataResponse> checkUpServiceLocation,
+        ICheckUpService<ScheduleDataResponse> checkUpServiceSchedule,
         IMapper mapper) 
         : base(httpClientFactory, logger, authorizer, mtSettings)
     {
@@ -39,6 +48,10 @@ public class IntegrationService : ServiceBase, IIntegrationService
         _emitterProcessor = emitterProcessor;
         _locationProcessor = locationProcessor;
         _scheduleProcessor = scheduleProcessor;
+        _checkUpServiceClient = checkUpServiceClient;
+        _checkUpServiceEmitter = checkUpServiceEmitter;
+        _checkUpServiceLocation = checkUpServiceLocation;
+        _checkUpServiceSchedule = checkUpServiceSchedule;
         _mapper = mapper;
     }
 
@@ -56,6 +69,33 @@ public class IntegrationService : ServiceBase, IIntegrationService
                 _logger.LogError(ex, "Error processing integration data");
                 throw;
             }
+        }
+    }
+
+    public async Task<bool> ValidateIntegrationDataAsync(IntegrationStruct integrationStruct)
+    {
+        try
+        {
+            _logger.LogInformation("Validating integration data...");
+            
+            var clientValid = _checkUpServiceClient.Check(integrationStruct);
+            if (!clientValid.Item1) return false;
+            
+            var emitterValid =  _checkUpServiceEmitter.Check(integrationStruct);
+            if (!emitterValid.Item1) return false;
+            
+            var locationValid = _checkUpServiceLocation.Check(integrationStruct);
+            if (!locationValid.Item1) return false;
+            
+            var scheduleValid = _checkUpServiceSchedule.Check(integrationStruct);
+            
+            _logger.LogInformation("Integration data validation completed");
+            return scheduleValid.Item1;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Validation error");
+            return false;
         }
     }
 
