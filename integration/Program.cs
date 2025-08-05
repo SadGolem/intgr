@@ -77,7 +77,6 @@ builder.Services.AddSingleton<IAuthorizer, Authorizer>();
 builder.Services.AddScoped<ILocationIdService, LocationIdService>();
 
 // Регистрация sync-сервисов
-// Регистрация sync-сервисов
 builder.Services.AddScoped<IAgreManagerService, AgreManagerService>();
 builder.Services.AddScoped<IClientManagerService, ClientManagerService>();
 builder.Services.AddScoped<IContractManagerService, ContractManagerService>();
