@@ -1,28 +1,34 @@
-integration/bin/Debug/net8.0/integration.exe
-integration/bin/Debug/net8.0/integration.dll
-integration/bin/Debug/net8.0/integration.dll
-integration/bin/Debug/net8.0/integration.exe
-integration/bin/Debug/net8.0/integration.pdb
-integration/obj/Debug/net8.0/apphost.exe
-integration/obj/Debug/net8.0/integration.AssemblyInfoInputs.cache
-integration/obj/Debug/net8.0/integration.pdb
-integration/obj/Debug/net8.0/integration.sourcelink.json
-integration/obj/Debug/net8.0/ref/integration.dll
-integration/obj/Debug/net8.0/refint/integration.dll
-saves/save01.txt
-integration/bin/Debug/net8.0/integration.dll
-integration/bin/Debug/net8.0/integration.exe
-integration/bin/Debug/net8.0/integration.pdb
-integration/obj/Debug/net8.0/apphost.exe
-integration/obj/Debug/net8.0/integration.AssemblyInfoInputs.cache
-integration/obj/Debug/net8.0/integration.csproj.CoreCompileInputs.cache
-integration/obj/Debug/net8.0/integration.dll
-integration/obj/Debug/net8.0/integration.pdb
-integration/obj/Debug/net8.0/integration.sourcelink.json
-integration/obj/Debug/net8.0/ref/integration.dll
-integration/obj/Debug/net8.0/refint/integration.dll
-*.dll
-/integration/obj
-/integration/bin
-/integration/obj
-*.dll
+# Common IntelliJ Platform excludes
+
+# User specific
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
+**/.idea/shelf/*
+**/.idea/dictionaries
+**/.idea/httpRequests/
+
+# Sensitive or high-churn files
+**/.idea/**/dataSources/
+**/.idea/**/dataSources.ids
+**/.idea/**/dataSources.xml
+**/.idea/**/dataSources.local.xml
+**/.idea/**/sqlDataSources.xml
+**/.idea/**/dynamic.xml
+
+# Rider
+# Rider auto-generates .iml files, and contentModel.xml
+**/.idea/**/*.iml
+**/.idea/**/contentModel.xml
+**/.idea/**/modules.xml
+
+*.suo
+*.user
+.vs/
+[Bb]in/
+[Oo]bj/
+_UpgradeReport_Files/
+[Pp]ackages/
+
+Thumbs.db
+Desktop.ini
+.DS_Store
