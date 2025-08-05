@@ -1,0 +1,286 @@
+﻿
+namespace integration.Context
+{
+    public static class StatusCoder
+    {
+        private static Dictionary<int, string> _statusEntryAPRO = new Dictionary<int, string>
+        {
+            { 537, "Выполнена" },
+            { 538, "Не выполнена" },
+            { 543, "Отменено" },
+            { 539, "Согласовано и принято в работу" },
+            { 52, "Черновик" }
+        };
+        private static List<(string, string)> _statusEntryAPROtoMT = new List<(string, string)>
+        {
+            {( "Выполнена", "Выполена" )},
+            {( "Закрыта", "Выполена" )},
+            {( "Передано перевозчику", "Согласовано и принято в работу" )},
+            {( "Отменено", "Отменено") },
+            {( "Черновик", "Новая") },
+        };
+
+
+        private static List<(int Key, string Value, bool isNew)> _statusLocation = new List<(int Key, string Value, bool isNew)>
+        {
+            ( 52, "Новая", true),
+            ( 74, "Заявка на проверку", false),
+            ( 167, "Проверенная", false),
+            ( 74, "Изменена", false), //не готово
+            ( 167, "Инспекция", false),
+            ( 14, "Действующая", false),
+            ( 67, "Фактическая", false),
+            ( 74, "Плановая", false),
+            ( 159, "Неизвестная", false),
+            ( 70, "Закрыта", false),
+            ( 167, "Проинспектирована", false)
+        };
+        
+        private static List<(string Key, string Value)> _statusContract = new List<(string Key, string Value)>
+        {
+            ( "На доработке", "Отклонен" ), 
+            ( "Подписан РО по ЭЦП", "Подписан" ),
+            ( "Подписан одной стороной", "Подписан" ),
+            ( "Подписан контрагентом вручную", "Подписан" ),
+            ( "Подписан всеми сторонами", "Подписан" ),
+            ( "Подписан всеми сторонами по ЭЦП", "Подписан" ),
+            ( "Черновик", "Проект договора" ),
+            ( "На внутреннем согласовании в РО", "Проект договора" ),
+            ( "Расторгнут", "Расторгнут" ),
+            ( "Оферта", "Оферта" ),
+        };
+
+
+        private static Dictionary<int, double> _containersCapacityMapping = new Dictionary<int, double>
+        {
+            { 1, 1.1 },
+            { 2, 0.77 },
+            { 3, 0.66 },
+            { 4, 0.36 },
+            { 5, 0.24 },
+            { 6, 0.12 },
+            { 11, 0.8 },
+            { 15, 0.9 },
+            { 21, 1.1 },
+            { 39, 1.1 },
+            { 42, 0.12 },
+            { 45, 0.75 },
+            { 54, 0.24 },
+            { 124, 0.1 },
+            { 432, 24 },
+            { 1184, 0.75 },
+            { 1187, 0.6 },
+            { 1255, 0.66 },
+            { 1262, 0.77 },
+            { 1263, 0.6 },
+            { 1267, 0.65 },
+            { 1268, 0.4 },
+            { 1270, 0.63 },
+            { 1273, 0.55 },
+            { 1274, 0.64 },
+            { 1288, 1 },
+            { 1293, 0.65 },
+            { 1586, 1 },
+            { 2402, 8 },
+            { 2424, 0.61 },
+            { 2446, 0.36 },
+            { 2449, 6 },
+            { 2450, 0.57 },
+            { 2452, 72 },
+            { 2453, 36 },
+            { 2455, 0.59 },
+            { 2459, 0.11 },
+            { 2460, 0.67 },
+            { 2462, 1.2 },
+            { 2516, 0.2 },
+            { 2517, 11 },
+            { 2520, 27 },
+            { 2521, 30 },
+            { 2522, 6.3 },
+            { 2523, 6.4 },
+            { 2524, 6.5 },
+            { 2525, 6.7 },
+            { 2526, 6.9 },
+            { 2527, 7.2 },
+            { 2528, 7.3 },
+            { 2529, 7.8 },
+            { 2530, 7 },
+            { 2531, 0.62 },
+            { 2532, 4 },
+            { 2533, 6.24 },
+            { 2534, 48 }
+        };
+
+        private static List<(int Key, int Value)> _containersMapping = new List<(int Key, int Value)>
+        {
+            (3, 153), (19, 99), (7, 142), (7, 103), (4, 98), (38, 102), (3, 111),
+            (4, 34), (3, 114), (3, 105), (3, 137), (3, 139), (3, 132), (3, 138),
+            (3, 136), (3, 135), (2, 145), (3, 143), (4, 37), (3, 134), (3, 106),
+            (3, 2), (4, 160), (4, 96), (3, 148), (3, 146), (29, 36), (3, 108),
+            (4, 97), (20, 152), (3, 157), (29, 117), (29, 113), (8, 110), (29, 133),
+            (29, 115), (29, 129), (29, 128), (29, 140), (29, 107), (29, 130),
+            (29, 118), (29, 19), (29, 112), (29, 151), (3, 155), (8, 154), (4, 131),
+            (4, 104), (4, 150), (3, 165), (3, 159), (8, 109), (8, 162), (29, 166),
+            (29, 164), (8, 161), (3, 141), (3, 156), (19, 101), (19, 149), (19, 158),
+            (19, 163), (19, 100), (19, 144), (4, 147)
+        };
+        
+        public static int FromCorrectLocationStatus(string status)
+        {
+            foreach (var item in _statusLocation)
+            {
+                if (item.Value == status)
+                {
+                   // if (item.Key == 74) continue;
+                    return item.Key;
+                }
+            }
+
+            // Если статус не найден
+            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation,
+                $"Reverse status not found: {status}");
+            return 0;
+        }
+
+        public static string ToCorrectStatusEntryToMT(EntryDataResponse entry)
+        {
+            if (entry?.status == null)
+                return "Новая";
+            
+            int statusId = entry.status;
+            
+            if (!_statusEntryAPRO.TryGetValue(statusId, out string aproStatus))
+            {
+                return "Новая";
+            }
+
+            string result = aproStatus;
+            
+            foreach (var mapping in _statusEntryAPROtoMT)
+            {
+                if (mapping.Item1 == aproStatus)
+                {
+                    result = mapping.Item2;
+                }
+            }
+
+            return result;
+        }
+        public static int GetStatusId(string externalStatus)
+        {
+            string internalStatus = null;
+            foreach (var mapping in _statusEntryAPROtoMT)
+            {
+                if (mapping.Item1 == externalStatus)
+                {
+                    internalStatus = mapping.Item2;
+                    break;
+                }
+            }
+            
+            internalStatus ??= externalStatus;
+            
+            foreach (var entry in _statusEntryAPRO)
+            {
+                if (entry.Value == internalStatus)
+                {
+                    return entry.Key;
+                }
+            }
+
+            throw new KeyNotFoundException($"Статус '{internalStatus}' не найден в словаре");
+        }
+
+        public static string GetStatusContract(string key)
+        {
+            var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["На доработке"] = "Отклонен" ,
+                ["Подписан РО по ЭЦП"] = "Подписан",
+                ["Подписан одной стороной"] = "Подписан",
+                ["Подписан контрагентом вручную"] = "Подписан",
+                ["Подписан всеми сторонами"] = "Подписан",
+                ["Подписан всеми сторонами по ЭЦП"] = "Подписан",
+                ["В договоре"] = "Подписан",
+                ["Черновик"] = "Проект договора",
+                ["На внутреннем согласовании в РО"] = "Проект договора",
+                ["Расторгнут"] = "Расторгнут",
+                ["Оферта"] = "Оферта"
+            };
+
+            return mapping.TryGetValue(key, out var value) ? value : null;
+        }
+        
+        public static string GetTypeContragent(string key)
+        {
+            var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["по 44 ФЗ(Бюджет)"] = "consumer_phy",
+                ["АДМИНИСТРАЦИЯ"] = "consumer_org",
+                ["БЮДЖЕТНАЯ ОРГАНИЗАЦИЯ"] = "consumer_budget_org",
+                ["МКД С УК"] = "consumer_mfh_direct",
+                ["ОРГАНИЗАЦИЯ"] = "consumer_org",
+                ["по 223 ФЗ"] = "consumer_phy",
+                ["ЮЛ"] = "consumer_person",
+                ["ИП"] = "consumer_person",
+                ["ФЛ - коммерческое помещение"] = "consumer_phy",
+                ["ФЛ - жилое помещение"] = "consumer_phy",
+                ["Управляющая организация (ТСЖ, ЖСК, иное) - помещения МКД"] = "consumer_org"
+            };
+
+            return mapping.TryGetValue(key, out var value) ? value : null;
+        }
+        public static string ToCorrectStatus(EntryDataResponse wasteDataResponse)
+        {
+            int status = wasteDataResponse.status;
+            if (status == 0)
+                return "";
+            else if (status != 179 && status != 302 && status != 282)
+                return "";
+            else if (_statusEntryAPRO.TryGetValue(status, out string? value))
+            {
+                return value;  // Перекодируем статус если он существует в словаре
+            }
+            return "";
+        }
+        
+
+        public static double ToCorrectCapacity(int idCapacity)
+        {
+            if (idCapacity == null) return -1;
+
+            if (_containersCapacityMapping.ContainsKey(idCapacity))
+            {
+                return _containersCapacityMapping[idCapacity];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public static string ToCorrectLocationStatus(int id, int idLocation) 
+        {
+            string results = "";
+            foreach (var item in _statusLocation)
+            {
+                if (item.Key == id)
+                {
+                    if (item.Key == 74)
+                        if (!item.isNew)
+                            return results = "Изменена";
+                    return results = item.Value;
+                }
+            }
+
+            if (results == "")
+            {
+                EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation,
+                    "Status is not found idLocation - " + idLocation);
+                return "0";
+            }
+            return results; 
+        }
+
+    }
+}
