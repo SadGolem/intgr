@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using integration.Context;
+using integration.Domain.Entities;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
+using integration.Infrastructure;
 using integration.Services;
 using integration.Services.CheckUp;
 using integration.Services.Integration;
@@ -19,9 +21,10 @@ public class IntegrationService : ServiceBase, IIntegrationService
     private readonly IIntegrationProcessor<LocationDataResponse> _locationProcessor;
     private readonly IIntegrationProcessor<ScheduleDataResponse> _scheduleProcessor;
     private readonly ICheckUpService<ClientDataResponse> _checkUpServiceClient;
-        private readonly ICheckUpService<EmitterDataResponse> _checkUpServiceEmitter;
-        private readonly ICheckUpService<LocationDataResponse> _checkUpServiceLocation;
-        private readonly ICheckUpService<ScheduleDataResponse> _checkUpServiceSchedule;
+    private readonly ICheckUpService<EmitterDataResponse> _checkUpServiceEmitter;
+    private readonly ICheckUpService<LocationDataResponse> _checkUpServiceLocation;
+    private readonly ICheckUpService<ScheduleDataResponse> _checkUpServiceSchedule;
+    private readonly AppDbContext _dbContext;
     private IMapper _mapper;
 
     public IntegrationService(
@@ -38,6 +41,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
         ICheckUpService<EmitterDataResponse> checkUpServiceEmitter,
         ICheckUpService<LocationDataResponse> checkUpServiceLocation,
         ICheckUpService<ScheduleDataResponse> checkUpServiceSchedule,
+        AppDbContext dbContext,
         IMapper mapper) 
         : base(httpClientFactory, logger, authorizer, mtSettings)
     {
@@ -52,6 +56,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
         _checkUpServiceEmitter = checkUpServiceEmitter;
         _checkUpServiceLocation = checkUpServiceLocation;
         _checkUpServiceSchedule = checkUpServiceSchedule;
+        _dbContext = dbContext;
         _mapper = mapper;
     }
 
@@ -127,5 +132,59 @@ public class IntegrationService : ServiceBase, IIntegrationService
     {
         if (entity == null) return;
         await processor.ProcessAsync(entity);
+    }
+    
+    public async Task SaveIntegrationDataAsync(IntegrationStruct integrationData)
+    {
+        using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        
+        try
+        {
+            _logger.LogInformation("Saving integration data to database...");
+            
+            // Сохранение контрагентов
+            if (integrationData.contragentList?.Any() == true)
+            {
+                var clientEntities = _mapper.Map<List<ClientEntity>>(integrationData.contragentList);
+                await _dbContext.ClientsRecords.AddRangeAsync(clientEntities);
+                _logger.LogInformation($"Saved {clientEntities.Count} clients");
+            }
+
+            // Сохранение локаций
+            if (integrationData.location != null)
+            {
+                var locationEntity = _mapper.Map<LocationEntity>(integrationData.location);
+                await _dbContext.LocationRecords.AddAsync(locationEntity);
+                _logger.LogInformation("Saved location: {LocationId}", locationEntity.Id);
+            }
+
+            // Сохранение эмиттеров
+            if (integrationData.emittersList?.Any() == true)
+            {
+                var emitterEntities = _mapper.Map<List<EmitterEntity>>(integrationData.emittersList);
+                await _dbContext.EmitterRecords.AddRangeAsync(emitterEntities);
+                _logger.LogInformation($"Saved {emitterEntities.Count} emitters");
+            }
+
+            // Сохранение расписаний
+            if (integrationData.schedulesList?.Any() == true)
+            {
+                var scheduleEntities = _mapper.Map<List<ScheduleEntity>>(integrationData.schedulesList);
+                await _dbContext.ScheduleRecords.AddRangeAsync(scheduleEntities);
+                _logger.LogInformation($"Saved {scheduleEntities.Count} schedules");
+            }
+            
+            // Сохранение изменений
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            
+            _logger.LogInformation("All integration data saved successfully");
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            _logger.LogError(ex, "Error saving integration data to database");
+            throw;
+        }
     }
 }
