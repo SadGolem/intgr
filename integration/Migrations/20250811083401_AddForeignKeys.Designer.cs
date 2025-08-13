@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using integration.Infrastructure;
@@ -12,9 +13,11 @@ using integration.Infrastructure;
 namespace integration.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250811083401_AddForeignKeys")]
+    partial class AddForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,14 +127,17 @@ namespace integration.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<string>("Bik")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Boss")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("ConsumerName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -154,30 +160,37 @@ namespace integration.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Inn")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Kpp")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("MailAddress")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Ogrn")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Person_id")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Root_company")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("ShortName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -190,9 +203,6 @@ namespace integration.Migrations
 
                     b.HasIndex("ExpirationDate")
                         .HasDatabaseName("IX_ClientEntities_ExpirationDate");
-
-                    b.HasIndex("IdAsuPro")
-                        .IsUnique();
 
                     b.ToTable("ClientEntity");
                 });
@@ -273,8 +283,8 @@ namespace integration.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int?>("ClientIdAsuPro")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Comment")
                         .HasMaxLength(1000)
@@ -293,6 +303,9 @@ namespace integration.Migrations
                     b.Property<int>("IdAsuPro")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("IdClient")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("IdParticipant")
                         .HasColumnType("integer");
 
@@ -308,7 +321,7 @@ namespace integration.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientIdAsuPro");
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ExpirationDate")
                         .HasDatabaseName("IX_LocationEntities_ExpirationDate");
@@ -375,9 +388,9 @@ namespace integration.Migrations
                 {
                     b.HasOne("integration.Domain.Entities.ClientEntity", "Client")
                         .WithMany("Locations")
-                        .HasForeignKey("ClientIdAsuPro")
-                        .HasPrincipalKey("IdAsuPro")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Client");
                 });

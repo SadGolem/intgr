@@ -56,11 +56,6 @@ public class LocationManagerService : ILocationManagerService
             var locations = await locationServiceGetter.GetSync();
 
             _locationIdService.SetLocation(locations);
-
-            foreach (var location in locations)
-            {
-                await AddLocationAsync(location.Item1);
-            }
         }
         catch (Exception ex)
         {
@@ -69,24 +64,9 @@ public class LocationManagerService : ILocationManagerService
         }
     }
 
-    public async Task AddLocationAsync(LocationDataResponse location)
+    public Task AddLocationAsync(LocationDataResponse location)
     {
-        var entity = new LocationEntity
-        {
-            IdAsuPro = location.id,
-            Address = location.address?.Length > 500 ? location.address[..500] : location.address,
-            Status = StatusCoder.ToCorrectLocationStatus(location.status.id, location.id),
-            Latitude = Math.Round(location.lat, 6),
-            Longitude = Math.Round(location.lon, 6),
-            Comment = location.comment?.Length > 1000 ? location.comment[..1000] : location.comment,
-            IdParticipant = location.participant?.id,
-            IdClient = location.client?.id,
-            AuthorUpdate = location.author_update?.Length > 100 ? location.author_update[..100] : location.author_update,
-            ExtId = location.ext_id?.Length > 100 ? location.ext_id[..100] : location.ext_id
-        };
-
-        _context.LocationRecords.Add(entity);
-        await _context.SaveChangesAsync();
+        throw new NotImplementedException();
     }
 
     public async Task GetFromMTAsync()

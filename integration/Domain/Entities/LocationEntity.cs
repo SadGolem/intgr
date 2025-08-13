@@ -31,9 +31,13 @@ public class LocationEntity : EntityBase
     public string? Comment { get; set; }
     
     public int? IdParticipant { get; set; }
-    
-    public int? IdClient { get; set; }
 
     [MaxLength(100)]
     public string? AuthorUpdate { get; set; }
+    
+    public int? ClientIdAsuPro { get; set; }  
+
+    [ForeignKey("ClientIdAsuPro")]  
+    public ClientEntity? Client { get; set; }
+    public ICollection<ScheduleEntity> Schedules { get; set; } = new List<ScheduleEntity>();
 }

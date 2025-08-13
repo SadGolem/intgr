@@ -20,13 +20,13 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.ogrn, opt => opt.MapFrom(src => SafeParseLong(src.ogrn)))
             .ForMember(dest => dest.consumerType, opt => opt.MapFrom(src => src.type_ka))
             .ForMember(dest => dest.idPerson, opt => opt.MapFrom(src => SafeParseInt(src.person_id)))
-            .ForMember(dest => dest.idBoss, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.idBoss, opt => opt.MapFrom(src =>
                 src.boss != null ? src.boss.id : 0))
-            /*.ForMember(dest => dest.idBT, opt => opt.MapFrom(src => 
+            /*.ForMember(dest => dest.idBT, opt => opt.MapFrom(src =>
                 SafeParseInt(src.ext_id)))*/
-            .ForMember(dest => dest.idOrganization, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.idOrganization, opt => opt.MapFrom(src =>
                 src.root_company != null ? src.root_company.id : 0));
-        
+
         CreateMap<EmitterDataResponse, EmitterRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.WasteSource.id))
             .ForMember(dest => dest.idConsumer, opt => opt.MapFrom(src => src.participant_id))
@@ -45,15 +45,17 @@ public class IntegrationMappingProfile : Profile
         CreateMap<LocationDataResponse, LocationRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.status, opt => opt.MapFrom(src => (StatusCoder.ToCorrectLocationStatus(src.status.id, src.id))))
-            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.status,
+                opt => opt.MapFrom(src => (StatusCoder.ToCorrectLocationStatus(src.status.id, src.id))))
+            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src =>
                 (double)Math.Round((decimal)src.lat, 5, MidpointRounding.ToZero)
             ))
-            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src =>
                 (double)Math.Round((decimal)src.lon, 5, MidpointRounding.ToZero)
             ));
 
         CreateMap<LocationDataResponse, LocationEntity>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.IdAsuPro, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
                 src.address != null
@@ -64,6 +66,8 @@ public class IntegrationMappingProfile : Profile
                     ? StatusCoder.ToCorrectLocationStatus(src.status.id, src.id)
                     : "UNKNOWN"
             ))
+            .ForMember(dest => dest.ClientIdAsuPro, opt => opt.MapFrom(src => 
+                src.client != null ? src.client.id : (int?)null))
             .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src =>
                 Math.Round(src.lat, 6)))
             .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src =>
@@ -74,8 +78,6 @@ public class IntegrationMappingProfile : Profile
                     : null))
             .ForMember(dest => dest.IdParticipant, opt => opt.MapFrom(src =>
                 src.participant != null ? src.participant.id : (int?)null))
-            .ForMember(dest => dest.IdClient, opt => opt.MapFrom(src =>
-                src.client != null ? src.client.id : (int?)null))
             .ForMember(dest => dest.AuthorUpdate, opt => opt.MapFrom(src =>
                 src.author_update != null
                     ? src.author_update.Substring(0, Math.Min(src.author_update.Length, 100))
@@ -87,6 +89,7 @@ public class IntegrationMappingProfile : Profile
 
         CreateMap<ClientDataResponse, ClientEntity>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
+           // .ForMember(dest => dest.ClientId, opt => opt.Ignore())
             .ForMember(dest => dest.IdAsuPro, opt => opt.MapFrom(src => src.idAsuPro))
             .ForMember(dest => dest.Bik, opt => opt.MapFrom(src => src.bik))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.address))
@@ -101,9 +104,9 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.MailAddress, opt => opt.MapFrom(src => src.mailAddress))
             .ForMember(dest => dest.ShortName, opt => opt.MapFrom(src => src.shortName))
             .ForMember(dest => dest.Root_company, opt => opt.MapFrom(src => src.root_company));
-            
-       CreateMap<EmitterDataResponse, EmitterEntity>()
-            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => 
+
+        CreateMap<EmitterDataResponse, EmitterEntity>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src =>
                 src.amount))
             .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.contractNumber))
             .ForMember(dest => dest.Location_Mt_Id, opt => opt.MapFrom(src => src.location_mt_id))
@@ -115,34 +118,35 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.NameConsumer, opt => opt.MapFrom(src => src.nameConsumer))
             .ForMember(dest => dest.IdConsumer, opt => opt.MapFrom(src => src.idConsumer))
             .ForMember(dest => dest.WasteSource_Id, opt => opt.MapFrom(src => src.WasteSource.id))
-            .ForMember(dest => dest.WasteSource_Address, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.WasteSource_Address, opt => opt.MapFrom(src =>
                 src.WasteSource.address))
-            .ForMember(dest => dest.WasteSource_Name, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.WasteSource_Name, opt => opt.MapFrom(src =>
                 src.WasteSource.name))
-            .ForMember(dest => dest.WasteSource_Category, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.WasteSource_Category, opt => opt.MapFrom(src =>
                 src.WasteSource.category.name))
             .ForMember(dest => dest.WasteSource_Normative, opt => opt.MapFrom(src => src.WasteSource.normative))
-            .ForMember(dest => dest.WasteSource_Ext_id, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.WasteSource_Ext_id, opt => opt.MapFrom(src =>
                 src.WasteSource.ext_id))
-            .ForMember(dest => dest.Containers_IDs, opt => opt.MapFrom(src => 
-                src.container != null 
-                    ? src.container.Select(c => c.id).ToList() 
+            .ForMember(dest => dest.Containers_IDs, opt => opt.MapFrom(src =>
+                src.container != null
+                    ? src.container.Select(c => c.id).ToList()
                     : null));
-            
-       CreateMap<ScheduleDataResponse, ScheduleEntity>()
-           .ForMember(dest => dest.IdAsuPro, opt => opt.MapFrom(src => src.id))
-           .ForMember(dest => dest.IdLocation, opt => opt.MapFrom(src => src.location.id))
-           .ForMember(dest => dest.Schedule, opt => opt.MapFrom(src => src.gr_w))
-           .ForMember(dest => dest.Dates, opt => opt.MapFrom(src => src.dates))
-           .ForMember(dest => dest.Ext_id, opt => opt.MapFrom(src => src.ext_id))
-           .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
-           .ForMember(dest => dest.Containers_IDs, opt => opt.MapFrom(src => 
-               src.containers != null 
-                   ? src.containers.Select(c => c.id).ToList() 
-                   : null))
-           .ForMember(dest => dest.IdEmitter, opt => opt.MapFrom(src => 
-               src.emitter != null ? src.emitter.WasteSource.id : (int?)null));
-        
+
+        CreateMap<ScheduleDataResponse, ScheduleEntity>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.IdAsuPro, opt => opt.MapFrom(src => src.id))
+            .ForMember(dest => dest.IdLocation, opt => opt.MapFrom(src => src.location.id))
+            .ForMember(dest => dest.Schedule, opt => opt.MapFrom(src => src.gr_w))
+            .ForMember(dest => dest.Dates, opt => opt.MapFrom(src => src.dates))
+            .ForMember(dest => dest.Ext_id, opt => opt.MapFrom(src => src.ext_id))
+            .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
+            .ForMember(dest => dest.Containers_IDs, opt => opt.MapFrom(src =>
+                src.containers != null
+                    ? src.containers.Select(c => c.id).ToList()
+                    : null))
+            .ForMember(dest => dest.IdEmitter, opt => opt.MapFrom(src =>
+                src.emitter != null ? src.emitter.WasteSource.id : (int?)null));
+
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
             .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.ext_id))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
@@ -150,7 +154,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
             .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.LocationDataResponse.address))
             .ForMember(dest => dest.exportSchedule, opt => opt.MapFrom(src => src.gr_w));
-        
+
         CreateMap<EntryDataResponse, EntryRequest>()
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.BtNumber))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
@@ -166,27 +170,27 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.creator, opt => opt.MapFrom(src => src.Author.Name ?? ""));
 
         CreateMap<EntryDataResponse, EntryEntity>()
-                    .ForMember(dest => dest.IsAsuPro, opt => opt.MapFrom(src => src.BtNumber))
-                    .ForMember(dest => dest.PlanDateRO, opt => opt.MapFrom(src => 
-                        src.PlanDateRO))
-                    .ForMember(dest => dest.Author, opt => opt.MapFrom(src => 
-                        src.Author != null ? src.Author.Name : null))
-                    .ForMember(dest => dest.IdLocation, opt => opt.MapFrom(src => src.location.id))
-                    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => 
-                        GetStatusString(src.status, src.statusString).Truncate(200)))
-                    .ForMember(dest => dest.Agreement, opt => opt.MapFrom(src => 
-                        src.agreement != null ? src.agreement.id.ToString() : null))
-                    .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => 
-                        src.comment))
-                    .ForMember(dest => dest.Volume, opt => opt.MapFrom(src => src.volume))
-                    .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => 
-                        src.Capacity != null ? src.Capacity.volume : null))
-                    .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.number))
-                    .ForMember(dest => dest.IdContainerType, opt => opt.MapFrom(src => 
-                        src.Capacity != null && src.Capacity.type != null 
-                            ? src.Capacity.type.id 
-                            : src.idContainerType));
-        
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.IsAsuPro, opt => opt.MapFrom(src => src.BtNumber))
+            .ForMember(dest => dest.PlanDateRO, opt => opt.MapFrom(src =>
+                src.PlanDateRO))
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src =>
+                src.Author != null ? src.Author.Name : null))
+            .ForMember(dest => dest.IdLocation, opt => opt.MapFrom(src => src.location.id))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.status))
+            .ForMember(dest => dest.Agreement, opt => opt.MapFrom(src =>
+                src.agreement != null ? src.agreement.id.ToString() : null))
+            .ForMember(dest => dest.Comment, opt => opt.MapFrom(src =>
+                src.comment))
+            .ForMember(dest => dest.Volume, opt => opt.MapFrom(src => src.volume))
+            .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src =>
+                src.Capacity != null ? src.Capacity.volume : null))
+            .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.number))
+            .ForMember(dest => dest.IdContainerType, opt => opt.MapFrom(src =>
+                src.Capacity != null && src.Capacity.type != null
+                    ? src.Capacity.type.id
+                    : src.idContainerType));
+
         CreateMap<EntryData, EntryMTRequest>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.GetStatusId(src.status)));
@@ -196,36 +200,28 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.photos, opt => opt.MapFrom(src => src.images));
 
         CreateMap<LocationData, LocationMTStatusRequest>()
-            .ForMember(dest => dest.status_id, opt => opt.MapFrom(src => StatusCoder.FromCorrectLocationStatus(src.status)));
+            .ForMember(dest => dest.status_id,
+                opt => opt.MapFrom(src => StatusCoder.FromCorrectLocationStatus(src.status)));
 
         CreateMap<AgreData, AgreRequest>()
-            .ForMember(dest => dest.comment_disp, opt => opt.MapFrom(src =>$"{src.username}: {src.comment}"));
+            .ForMember(dest => dest.comment_disp, opt => opt.MapFrom(src => $"{src.username}: {src.comment}"));
     }
 
-private static long SafeParseLong(string value)
-{
-    if (string.IsNullOrWhiteSpace(value)) return 0;
-    return long.TryParse(value, out var result) ? result : 0;
-}
+    private static long SafeParseLong(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return 0;
+        return long.TryParse(value, out var result) ? result : 0;
+    }
 
-private static int SafeParseInt(string value)
-{
-    if (string.IsNullOrWhiteSpace(value)) return 0;
-    return int.TryParse(value, out var result) ? result : 0;
-}
-    
+    private static int SafeParseInt(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return 0;
+        return int.TryParse(value, out var result) ? result : 0;
+    }
+
     private double SafeParseDouble(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) return 0;
         return double.TryParse(value, out double result) ? result : 0;
     }
-    
-    decimal TruncateDecimal(decimal value, int precision)
-    {
-        decimal step = (decimal)Math.Pow(10, precision);
-        decimal tmp = Math.Truncate(step * value);
-        return tmp / step;
-    }
-
-
 }

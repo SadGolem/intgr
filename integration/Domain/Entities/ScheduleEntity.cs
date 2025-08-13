@@ -12,4 +12,11 @@ public class ScheduleEntity : EntityBase
     [MaxLength(100)] public string? Ext_id;
     public int? IdEmitter { get; set; }
     public int? idContainerType { get; set; }
+    // Внешние ключи
+    public Guid EmitterId { get; set; }
+    public Guid LocationId { get; set; }
+
+    // Навигационные свойства
+    public EmitterEntity Emitter { get; set; }
+    public LocationEntity Location { get; set; }
 }

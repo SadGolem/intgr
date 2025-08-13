@@ -31,7 +31,6 @@ public class TokenService : ITokenService
                 password = settings.Password
             };
 
-            // Serialize to JSON and create HTTP content
             var jsonContent = new StringContent(
                 JsonSerializer.Serialize(requestBody),
                 Encoding.UTF8,
@@ -40,7 +39,7 @@ public class TokenService : ITokenService
 
             var response = await client.PostAsync(
                 settings.CallbackUrl,
-                jsonContent // Pass the HttpContent here
+                jsonContent
             );
 
             if (!response.IsSuccessStatusCode)

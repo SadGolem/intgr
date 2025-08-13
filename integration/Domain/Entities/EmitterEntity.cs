@@ -20,4 +20,5 @@ public class EmitterEntity : EntityBase
     public string TypeConsumer { get; set; }
     public string NameConsumer { get; set; }
     public string IdConsumer { get; set; }
+    public ICollection<ScheduleEntity> Schedules { get; set; } = new List<ScheduleEntity>();
 }

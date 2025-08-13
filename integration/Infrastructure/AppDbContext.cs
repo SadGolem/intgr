@@ -5,11 +5,11 @@ namespace integration.Infrastructure;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<LocationEntity> LocationRecords { get; set; }
-    public DbSet<LocationEntity> ClientsRecords { get; set; }
-    public DbSet<LocationEntity> EmitterRecords { get; set; }
-    public DbSet<LocationEntity> ScheduleRecords { get; set; }
-    public DbSet<LocationEntity> EntryRecords { get; set; }
+    public DbSet<LocationEntity> LocationEntity { get; set; }
+    public DbSet<ClientEntity> ClientEntity { get; set; }
+    public DbSet<EmitterEntity> EmitterEntity { get; set; }
+    public DbSet<ScheduleEntity> ScheduleEntity { get; set; }
+    public DbSet<EntryEntity> EntryEntity { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -18,10 +18,17 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<LocationEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.IdAsuPro).IsRequired();
             entity.Property(e => e.Status)
                 .HasConversion<string>()
                 .IsRequired();
-            entity.Property(e => e.IdAsuPro).IsRequired();
+            entity.HasOne(l => l.Client)
+                .WithMany(c => c.Locations)
+                .HasForeignKey(l => l.ClientIdAsuPro)
+                .HasPrincipalKey(c => c.IdAsuPro)  
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            
             entity.Property(e => e.Address).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
             entity.Property(e => e.ExpirationDate).IsRequired();
@@ -35,8 +42,9 @@ public class AppDbContext : DbContext
         
         modelBuilder.Entity<ClientEntity>(entity =>
         {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.IdAsuPro).IsRequired();
+            entity.HasKey(e => e.Id); 
+            entity.HasIndex(e => e.IdAsuPro)
+                .IsUnique(); 
             entity.Property(e => e.Doc_type).IsRequired();
             entity.Property(e => e.Type_ka).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
@@ -59,8 +67,17 @@ public class AppDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.IdAsuPro);
+            entity.HasOne(s => s.Emitter)
+                .WithMany(e => e.Schedules)
+                .HasForeignKey(s => s.EmitterId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(s => s.Location)
+                .WithMany(l => l.Schedules)
+                .HasForeignKey(s => s.LocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => e.EmitterId);
+            entity.HasIndex(e => e.LocationId);
             entity.Property(e => e.Schedule).IsRequired();
-            entity.Property(e => e.IdLocation).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
             entity.Property(e => e.ExpirationDate).IsRequired();
             entity.HasIndex(e => e.ExpirationDate)
