@@ -3,8 +3,6 @@ using integration.Context;
 using integration.Context.MT;
 using integration.Context.Request;
 using integration.Context.Request.MT;
-using integration.Domain.Entities;
-
 public class IntegrationMappingProfile : Profile
 {
     public IntegrationMappingProfile()
@@ -52,38 +50,6 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => 
                 (double)Math.Round((decimal)src.lon, 5, MidpointRounding.ToZero)
             ));
-
-        CreateMap<LocationDataResponse, LocationEntity>()
-            .ForMember(dest => dest.IdAsuPro, opt => opt.MapFrom(src => src.id))
-            .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
-                src.address != null
-                    ? src.address.Substring(0, Math.Min(src.address.Length, 500))
-                    : string.Empty))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
-                StatusCoder.ToCorrectLocationStatus(src.status.id, src.id) != null
-                    ? StatusCoder.ToCorrectLocationStatus(src.status.id, src.id)
-                    : "UNKNOWN"
-            ))
-            .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src =>
-                Math.Round(src.lat, 6)))
-            .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src =>
-                Math.Round(src.lon, 6)))
-            .ForMember(dest => dest.Comment, opt => opt.MapFrom(src =>
-                src.comment != null
-                    ? src.comment.Substring(0, Math.Min(src.comment.Length, 1000))
-                    : null))
-            .ForMember(dest => dest.IdParticipant, opt => opt.MapFrom(src =>
-                src.participant != null ? src.participant.id : (int?)null))
-            .ForMember(dest => dest.IdClient, opt => opt.MapFrom(src =>
-                src.client != null ? src.client.id : (int?)null))
-            .ForMember(dest => dest.AuthorUpdate, opt => opt.MapFrom(src =>
-                src.author_update != null
-                    ? src.author_update.Substring(0, Math.Min(src.author_update.Length, 100))
-                    : null))
-            .ForMember(dest => dest.ExtId, opt => opt.MapFrom(src =>
-                src.ext_id != null
-                    ? src.ext_id.Substring(0, Math.Min(src.ext_id.Length, 100))
-                    : null));
             
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
             .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.ext_id))

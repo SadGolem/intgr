@@ -30,6 +30,8 @@
 
   <ItemGroup>
     <Folder Include="Contracts\" />
+    <Folder Include="Domain\Entities\" />
+    <Folder Include="Infrastructure\" />
   </ItemGroup>
 
 </Project>
