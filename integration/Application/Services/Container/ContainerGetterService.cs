@@ -52,6 +52,7 @@ public class ContainerGetterService: ServiceGetterBase<Context.Container>,
         { 
             con.waste_site.containers = await Get(_aproConnect + con.waste_site.id, true);
         }
+        _logger.LogInformation(_contractPositionStorageService.Get().First().waste_site.containers.Count().ToString());
     }
 
     private async Task GetContainerType(Context.Container container)
