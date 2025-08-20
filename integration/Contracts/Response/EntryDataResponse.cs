@@ -13,10 +13,11 @@ public class EntryDataResponse: DataResponse
     public LocationDataResponse location { get; set; }
     [JsonPropertyName("status_id")]
     public int status { get; set; } 
-    [JsonPropertyName("agreement")]
-    public Agreement? agreement { get; set; } 
+
     [JsonPropertyName("comment")]
     public string? comment { get; set; } 
+    [JsonPropertyName("ext_id")]
+    public string? ext_id { get; set; }
     [JsonPropertyName("volume")]
     public float? volume { get; set; } 
     [JsonPropertyName("capacity")]
