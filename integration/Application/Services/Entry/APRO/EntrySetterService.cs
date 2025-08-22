@@ -21,16 +21,19 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
     private IEntryStorageService<EntryDataResponse> _storageService;
     private IMapper _mapper;
     private List<(EntryDataResponse, bool)> _entriesData;
-    
+
     public EntrySetterService(IHttpClientFactory httpClientFactory,
         ILogger<EntrySetterService> logger, IAuthorizer authorizer,
-        IOptions<AuthSettings> apiSettings, IEntryStorageService<EntryDataResponse> storageService, IMapper mapper) : base(httpClientFactory, logger, authorizer, apiSettings)
+        IOptions<AuthSettings> apiSettings, IEntryStorageService<EntryDataResponse> storageService,
+        IMapper mapper) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _authorizer = authorizer;
-        _apiClientSettingsCreate = apiSettings.Value.MTconnect.BaseUrl+apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpointCreate;
-        _apiClientSettingsUpdate = apiSettings.Value.MTconnect.BaseUrl+apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpointUpdate;
+        _apiClientSettingsCreate = apiSettings.Value.MTconnect.BaseUrl +
+                                   apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpointCreate;
+        _apiClientSettingsUpdate = apiSettings.Value.MTconnect.BaseUrl +
+                                   apiSettings.Value.MTconnect.ApiClientSettings.EntryEndpointUpdate;
         _storageService = storageService;
         _mapper = mapper;
     }
@@ -43,7 +46,7 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
 
     private async Task GetEntries()
     {
-        _entriesData  = _storageService.Get();
+        _entriesData = _storageService.Get();
     }
 
     private async Task PostOrPatch()
@@ -52,7 +55,8 @@ public class EntrySetterService : ServiceSetterBase<EntryDataResponse>, ISetterS
         {
             var responce = _mapper.Map<EntryDataResponse, EntryRequest>(entry.Item1);
             if (entry.Item2)
-                await Post(_httpClientFactory,_apiClientSettingsCreate, _mapper.Map<EntryDataResponse,EntryRequest>(entry.Item1), false);
+                await Post(_httpClientFactory, _apiClientSettingsCreate,
+                    _mapper.Map<EntryDataResponse, EntryRequest>(entry.Item1), false);
             else
             {
                 await Patch(_httpClientFactory, _apiClientSettingsUpdate,

@@ -55,10 +55,7 @@ public class EntryFromMTSetterService: ServiceSetterBase<EntryMTRequest>, ISette
                 
                 var requestBody = new 
                 {
-                    transition = new 
-                    {
-                        id = responce.status_id
-                    }
+                    transition = responce.status_id
                 };
                 
                 await Patch(

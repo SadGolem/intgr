@@ -10,7 +10,7 @@ public class EntryMTStorageService : IEntryStorageService<EntryMTDataResponse>
 
     public void Set(EntryMTDataResponse data, bool isNew)
     {
-        throw new NotImplementedException();
+        EntryListMT.Add((data, isNew));
     }
 
     public List<(EntryMTDataResponse, bool)> Get()

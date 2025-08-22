@@ -47,20 +47,20 @@ namespace integration
                 var integrationService = scope.ServiceProvider.GetRequiredService<IIntegrationService>();
                 var validationService = scope.ServiceProvider.GetRequiredService<IIntegrationValidationService>();
 
-                await GetEmployers(employerSync);
-                //await GetMTLEntryStatus(entrySync);
-                await GetMTAgre(agreSync);
+/**/            //await GetEmployers(employerSync);
+              await GetMTLEntryStatus(entrySync);
+              /*    await GetMTAgre(agreSync);
                 await GetLocation(locationSync);
                 await GetContractPosition(contractPositionSync);
                 await GetContract(contractSync);
                 await GetClient(clientSync);
                 await GetEmitter(emitterSync);
                 await GetSchedule(scheduleSync);
-                await SetStruct(converter);
+                await SetStruct(converter);*/
 
                 await StartEntry(entrySync); 
                 await CheckAndSendIntegrationToAPRO(storage, integrationService);
-                await GetMTLocationAndSendStatusAndPhotoToApro(locationSync);
+                await StartPhoto(locationSync);
 
                 await SendToEmail();
 
@@ -107,7 +107,7 @@ namespace integration
                 _logger.LogError(ex, "Error while syncing schedule.");
             }
         }
-        private async Task GetMTLocationAndSendStatusAndPhotoToApro(ILocationManagerService locationController)
+        private async Task StartPhoto(ILocationManagerService locationController)
         {
             try
             {
