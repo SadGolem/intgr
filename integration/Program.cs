@@ -29,7 +29,6 @@ using integration.Context.Request;
 using integration.Context.Request.MT;
 using integration.Context.Response;
 using integration.Factory.GET.MT;
-using integration.Infrastructure;
 using integration.Services.Agre;
 using integration.Services.Agre.Storage;
 using integration.Services.Container;
@@ -49,7 +48,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Добавление сервисов
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 builder.Services.AddLogging(logging => 
@@ -59,16 +57,13 @@ builder.Services.AddLogging(logging =>
     logging.SetMinimumLevel(LogLevel.Debug);
 });
 
-// Конфигурация
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
 
-// Регистрация DbContext - ИСПРАВЛЕННАЯ
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")),
     ServiceLifetime.Scoped);
 
-// Регистрация сервисов - ВСЕ СЕРВИСЫ РАБОТАЮЩИЕ С БД ДОЛЖНЫ БЫТЬ SCOPED
 
 builder.Services.AddScoped<IApiClientService, ApiClientService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -76,7 +71,6 @@ builder.Services.AddScoped<ITokenManagerService, TokenManagerService>();
 builder.Services.AddSingleton<IAuthorizer, Authorizer>();
 builder.Services.AddScoped<ILocationIdService, LocationIdService>();
 
-// Регистрация sync-сервисов
 // Регистрация sync-сервисов
 builder.Services.AddScoped<IAgreManagerService, AgreManagerService>();
 builder.Services.AddScoped<IClientManagerService, ClientManagerService>();
@@ -89,7 +83,7 @@ builder.Services.AddScoped<ILocationManagerService, LocationManagerService>();
 builder.Services.AddScoped<IScheduleManagerService, ScheduleManagerService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 
-// Storage services - ВСЕ Scoped
+// Storage services
 builder.Services.AddScoped<IAgreStorageService, AgreStorageService>();
 builder.Services.AddScoped<IEntryStorageService<EntryDataResponse>, EntryStorageService>();
 builder.Services.AddScoped<IEntryStorageService<EntryMTDataResponse>, EntryMTStorageService>();
