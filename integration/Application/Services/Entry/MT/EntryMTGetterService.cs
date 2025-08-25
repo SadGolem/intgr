@@ -122,7 +122,6 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
                 var filteredResponse = new EntryMTDataResponse
                 {
                     Message = response.Message,
-                    Timestamp = DateTime.UtcNow,
                     Count = fresh.Count,
                     Data = fresh
                 };
@@ -181,7 +180,6 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         var filteredResponse = new EntryMTDataResponse
         {
             Message = response.Message,
-            Timestamp = DateTime.UtcNow, // для совместимости модели, не участвует в логике
             Count = fresh.Count,
             Data = fresh
         };

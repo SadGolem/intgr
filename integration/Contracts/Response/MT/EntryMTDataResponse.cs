@@ -6,9 +6,6 @@ public class EntryMTDataResponse : DataResponse
     [JsonPropertyName("message")]
     public string Message { get; set; }
 
-    [JsonPropertyName("timestamp")]
-    public DateTime Timestamp { get; set; }
-
     [JsonPropertyName("count")]
     public int Count { get; set; }
 
