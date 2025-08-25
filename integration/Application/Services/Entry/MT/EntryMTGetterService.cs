@@ -6,7 +6,6 @@ using integration.Services.Interfaces;
 using integration.Services.Location;
 using Microsoft.Extensions.Options;
 
-// ... ваши using'и
 
 public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGetterService<EntryMTDataResponse>
 {
@@ -17,8 +16,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
     private readonly IEntryStorageService<EntryMTDataResponse> _storageService;
 
     private const int CHUNK_SIZE_MINUTES = 30;
-
-    // ✅ Гарантия одного запроса на старт процесса
+    
     private static bool _initialRequestDone = false;
 
     public EntryMTGetterService(
@@ -39,14 +37,12 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
 
     public async Task Get()
     {
-        // ✅ 1) Всегда сделать один запрос при старте процесса
         if (!_initialRequestDone)
         {
             await InitialFetchFromZero();
             _initialRequestDone = true;
         }
 
-        // ✅ 2) Дальше — ваша простая логика с чанками по 30 минут
         var lastUpdate = TimeManager.GetLastUpdateTime("entryMT");
         if (lastUpdate.Kind != DateTimeKind.Utc)
             lastUpdate = DateTime.SpecifyKind(lastUpdate, DateTimeKind.Utc).ToUniversalTime();
@@ -64,7 +60,6 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
         {
             now = DateTime.UtcNow;
 
-            // Стоп: если уже догнали последние 30 минут — ждём следующего запуска изнаружи
             if (lastUpdate >= now.AddMinutes(-CHUNK_SIZE_MINUTES))
                 break;
 
@@ -74,10 +69,19 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
             try
             {
                 _logger.LogInformation($"Processing time range: {lastUpdate:o} - {chunkEnd:o}");
-                await ProcessTimeChunk(lastUpdate, chunkEnd);
+                var maxProcessed = await ProcessTimeChunk(lastUpdate, chunkEnd);
 
-                TimeManager.SetLastUpdateTime("entryMT", chunkEnd);
-                lastUpdate = chunkEnd;
+                if (maxProcessed.HasValue)
+                {
+                    lastUpdate = EnsureUtc(maxProcessed.Value);
+                    TimeManager.SetLastUpdateTime("entryMT", lastUpdate);
+                }
+                else
+                {
+                    // ничего нового — НЕ двигаем lastUpdate, чтобы не пропустить поздние записи с этим же окном
+                    // на следующем запуске окно повторим (это безопасно из‑за per‑ID дедупликации)
+                    break;
+                }
             }
             catch (Exception ex)
             {
@@ -85,15 +89,7 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
                 await Task.Delay(5000);
             }
         }
-    }
 
-    private static DateTime EnsureUtc(DateTime dt)
-    {
-        // Если сервер отдаёт без Kind (Unspecified), считаем это UTC.
-        // Если у вас реально локальная зона сервера — замените на ConvertTimeToUtc(dt, вашаTZ).
-        return dt.Kind == DateTimeKind.Utc 
-            ? dt 
-            : DateTime.SpecifyKind(dt, DateTimeKind.Utc);
     }
 
     private async Task InitialFetchFromZero()
@@ -103,57 +99,116 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
 
         var response = await GetFullResponse<EntryMTDataResponse>(endpoint, false);
 
+        DateTime? maxTs = null;
+
         if (response?.Data != null && response.Data.Count > 0)
         {
-            // Проставляем Timestamp там, где он пуст, и нормализуем Kind=Utc
+            // нормализуем
             foreach (var e in response.Data)
             {
-                if (e.Timestamp == default)
-                    e.Timestamp = response.Timestamp;
-
+                if (e.Timestamp == default) continue;
                 e.Timestamp = EnsureUtc(e.Timestamp);
             }
 
-            _storageService.Set(response);
-            _logger.LogInformation("Initial fetch saved {count} entries.", response.Data.Count);
+            // фильтрация НА ПЕРВЫЙ ЗАПУСК по per-id (на случай повторного старта процесса)
+            var fresh = response.Data
+                .Where(e => e.Timestamp != default)
+                .Where(e => e.Timestamp > GetPerIdOffset(e.id))
+                .ToList();
+
+            if (fresh.Count > 0)
+            {
+                // сохраняем только новые/обновлённые
+                var filteredResponse = new EntryMTDataResponse
+                {
+                    Message = response.Message,
+                    Timestamp = DateTime.UtcNow,
+                    Count = fresh.Count,
+                    Data = fresh
+                };
+
+                _storageService.Set(filteredResponse);
+                _logger.LogInformation("Initial fetch saved {count} entries.", fresh.Count);
+
+                // пер‑ID фиксация
+                foreach (var e in fresh)
+                    SetPerIdOffset(e.id, e.Timestamp);
+
+                maxTs = fresh.Max(e => e.Timestamp);
+            }
+            else
+            {
+                _logger.LogInformation("Initial fetch has no fresh entries.");
+            }
         }
         else
         {
             _logger.LogInformation("Initial fetch returned no data.");
         }
 
-        // ✅ НОРМАЛИЗАЦИЯ ПЕРЕД Сохранением
-        var ts = response?.Timestamp != default ? response.Timestamp : DateTime.UtcNow;
-        var newLastUtc = EnsureUtc(ts);
-        TimeManager.SetLastUpdateTime("entryMT", newLastUtc); // больше не упадёт
+        // глобальный lastUpdate двигаем только если что‑то действительно обработали
+        if (maxTs.HasValue)
+            TimeManager.SetLastUpdateTime("entryMT", EnsureUtc(maxTs.Value));
+        else
+            TimeManager.SetLastUpdateTime("entryMT", EnsureUtc(DateTime.UtcNow));
     }
-    private async Task ProcessTimeChunk(DateTime startTime, DateTime endTime)
+
+
+    private async Task<DateTime?> ProcessTimeChunk(DateTime startTime, DateTime endTime)
     {
         var endpoint = BuildEmitterEndpoint(startTime);
         var response = await GetFullResponse<EntryMTDataResponse>(endpoint, false);
 
-        if (response?.Data == null) return;
+        if (response?.Data == null || response.Data.Count == 0)
+            return null;
 
-        foreach (var entry in response.Data.Where(e => e.Timestamp == default))
-            entry.Timestamp = response.Timestamp;
+        // нормализуем
+        foreach (var e in response.Data)
+            if (e.Timestamp != default)
+                e.Timestamp = EnsureUtc(e.Timestamp);
 
-        // Полузакрытый интервал [start, end) — без дублей на границе
-        var filteredEntries = response.Data
-            .Where(e => e.Timestamp >= startTime && e.Timestamp < endTime)
+        // 1) только новые по времени окна
+        // 2) и только те, что ещё НЕ попадали (пер‑ID watermark)
+        var fresh = response.Data
+            .Where(e => e.Timestamp != default)
+            .Where(e => e.Timestamp > startTime && e.Timestamp < endTime)
+            .Where(e => e.Timestamp > GetPerIdOffset(e.id))
             .ToList();
 
-        if (filteredEntries.Count == 0) return;
+        if (fresh.Count == 0)
+            return null;
 
         var filteredResponse = new EntryMTDataResponse
         {
             Message = response.Message,
-            Timestamp = response.Timestamp,
-            Count = filteredEntries.Count,
-            Data = filteredEntries
+            Timestamp = DateTime.UtcNow, // для совместимости модели, не участвует в логике
+            Count = fresh.Count,
+            Data = fresh
         };
 
         _storageService.Set(filteredResponse);
-        _logger.LogInformation($"Saved {filteredEntries.Count} entries");
+        _logger.LogInformation("Saved {count} fresh entries", fresh.Count);
+
+        // пер‑ID фиксация
+        foreach (var e in fresh)
+            SetPerIdOffset(e.id, e.Timestamp);
+
+        // вернём максимум фактически обработанных таймштампов
+        return fresh.Max(e => e.Timestamp);
+    }
+
+    private static DateTime EnsureUtc(DateTime dt) =>
+        dt.Kind == DateTimeKind.Utc ? dt : DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+
+    private static DateTime GetPerIdOffset(int id)
+    {
+        var t = TimeManager.GetLastUpdateTime($"entryMT:{id}");
+        return t == default ? DateTime.MinValue : EnsureUtc(t);
+    }
+
+    private static void SetPerIdOffset(int id, DateTime tsUtc)
+    {
+        TimeManager.SetLastUpdateTime($"entryMT:{id}", EnsureUtc(tsUtc));
     }
 
     private string BuildEmitterEndpoint(DateTime startTime)
