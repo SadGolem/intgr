@@ -78,8 +78,6 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
                 }
                 else
                 {
-                    // ничего нового — НЕ двигаем lastUpdate, чтобы не пропустить поздние записи с этим же окном
-                    // на следующем запуске окно повторим (это безопасно из‑за per‑ID дедупликации)
                     break;
                 }
             }
@@ -106,14 +104,14 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
             // нормализуем
             foreach (var e in response.Data)
             {
-                if (e.Timestamp == default) continue;
-                e.Timestamp = EnsureUtc(e.Timestamp);
+                if (e.timestamp == default) continue;
+                e.timestamp = EnsureUtc(e.timestamp);
             }
 
             // фильтрация НА ПЕРВЫЙ ЗАПУСК по per-id (на случай повторного старта процесса)
             var fresh = response.Data
-                .Where(e => e.Timestamp != default)
-                .Where(e => e.Timestamp > GetPerIdOffset(e.id))
+                .Where(e => e.timestamp != default)
+                .Where(e => e.timestamp > GetPerIdOffset(e.id))
                 .ToList();
 
             if (fresh.Count > 0)
@@ -131,9 +129,9 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
 
                 // пер‑ID фиксация
                 foreach (var e in fresh)
-                    SetPerIdOffset(e.id, e.Timestamp);
+                    SetPerIdOffset(e.id, e.timestamp);
 
-                maxTs = fresh.Max(e => e.Timestamp);
+                maxTs = fresh.Max(e => e.timestamp);
             }
             else
             {
@@ -163,15 +161,13 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
 
         // нормализуем
         foreach (var e in response.Data)
-            if (e.Timestamp != default)
-                e.Timestamp = EnsureUtc(e.Timestamp);
-
-        // 1) только новые по времени окна
-        // 2) и только те, что ещё НЕ попадали (пер‑ID watermark)
+            if (e.timestamp != default)
+                e.timestamp = EnsureUtc(e.timestamp);
+        
         var fresh = response.Data
-            .Where(e => e.Timestamp != default)
-            .Where(e => e.Timestamp > startTime && e.Timestamp < endTime)
-            .Where(e => e.Timestamp > GetPerIdOffset(e.id))
+            .Where(e => e.timestamp != default)
+            .Where(e => e.timestamp > startTime && e.timestamp < endTime)
+            .Where(e => e.timestamp > GetPerIdOffset(e.id))
             .ToList();
 
         if (fresh.Count == 0)
@@ -186,13 +182,11 @@ public class EntryMTGetterService : ServiceGetterBase<EntryMTDataResponse>, IGet
 
         _storageService.Set(filteredResponse);
         _logger.LogInformation("Saved {count} fresh entries", fresh.Count);
-
-        // пер‑ID фиксация
+        
         foreach (var e in fresh)
-            SetPerIdOffset(e.id, e.Timestamp);
-
-        // вернём максимум фактически обработанных таймштампов
-        return fresh.Max(e => e.Timestamp);
+            SetPerIdOffset(e.id, e.timestamp);
+        
+        return fresh.Max(e => e.timestamp);
     }
 
     private static DateTime EnsureUtc(DateTime dt) =>
