@@ -56,7 +56,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.emitter.container.Count))
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
-            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.LocationDataResponse.address))
+            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.emitter.WasteSource.address))
             .ForMember(dest => dest.exportSchedule, opt => opt.MapFrom(src => src.gr_w));
         
         CreateMap<EntryDataResponse, EntryRequest>()
