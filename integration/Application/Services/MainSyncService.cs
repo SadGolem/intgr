@@ -44,35 +44,33 @@ namespace integration
         {
             using var scope = _serviceProvider.CreateScope();
 
-            var tokenManager       = scope.ServiceProvider.GetRequiredService<ITokenManagerService>();
+            var tokenManager = scope.ServiceProvider.GetRequiredService<ITokenManagerService>();
             var contractPositionSync = scope.ServiceProvider.GetRequiredService<IContractPositionManagerService>();
-            var contractSync       = scope.ServiceProvider.GetRequiredService<IContractManagerService>();
-            var emitterSync        = scope.ServiceProvider.GetRequiredService<IEmitterManagerService>();
-            var employerSync       = scope.ServiceProvider.GetRequiredService<IEmployerManagerService>();
-            var entrySync          = scope.ServiceProvider.GetRequiredService<IEntryManagerService>();
-            var clientSync         = scope.ServiceProvider.GetRequiredService<IClientManagerService>();
-            var agreSync           = scope.ServiceProvider.GetRequiredService<IAgreManagerService>();
-            var locationSync       = scope.ServiceProvider.GetRequiredService<ILocationManagerService>();
-            var scheduleSync       = scope.ServiceProvider.GetRequiredService<IScheduleManagerService>();
-            var converter          = scope.ServiceProvider.GetRequiredService<IConverterToStorageService>();
-            var storage            = scope.ServiceProvider.GetRequiredService<IStorageService<IntegrationStruct>>();
+            var contractSync = scope.ServiceProvider.GetRequiredService<IContractManagerService>();
+            var emitterSync = scope.ServiceProvider.GetRequiredService<IEmitterManagerService>();
+            var employerSync = scope.ServiceProvider.GetRequiredService<IEmployerManagerService>();
+            var entrySync = scope.ServiceProvider.GetRequiredService<IEntryManagerService>();
+            var clientSync = scope.ServiceProvider.GetRequiredService<IClientManagerService>();
+            var agreSync = scope.ServiceProvider.GetRequiredService<IAgreManagerService>();
+            var locationSync = scope.ServiceProvider.GetRequiredService<ILocationManagerService>();
+            var scheduleSync = scope.ServiceProvider.GetRequiredService<IScheduleManagerService>();
+            var converter = scope.ServiceProvider.GetRequiredService<IConverterToStorageService>();
+            var storage = scope.ServiceProvider.GetRequiredService<IStorageService<IntegrationStruct>>();
             var integrationService = scope.ServiceProvider.GetRequiredService<IIntegrationService>();
-            var validationService  = scope.ServiceProvider.GetRequiredService<IIntegrationValidationService>();
+            var validationService = scope.ServiceProvider.GetRequiredService<IIntegrationValidationService>();
 
             // Токены
             await tokenManager.GetTokensAsync();
-
-            // Последовательность действий — оставил как у вас (раскомментируйте нужные шаги)
-            // await GetEmployers(employerSync, ct);
+            await GetEmployers(employerSync, ct);
             await GetMTLEntryStatus(entrySync, ct);
-            // await GetMTAgre(agreSync, ct);
-            // await GetLocation(locationSync, ct);
-            // await GetContractPosition(contractPositionSync, ct);
-            // await GetContract(contractSync, ct);
-            // await GetClient(clientSync, ct);
-            // await GetEmitter(emitterSync, ct);
-            // await GetSchedule(scheduleSync, ct);
-            // await SetStruct(converter, ct);
+            await GetMTAgre(agreSync, ct);
+            await GetLocation(locationSync, ct);
+            await GetContractPosition(contractPositionSync, ct);
+            await GetContract(contractSync, ct);
+            await GetClient(clientSync, ct);
+            await GetEmitter(emitterSync, ct);
+            await GetSchedule(scheduleSync, ct);
+            await SetStruct(converter, ct);
 
             await StartEntry(entrySync, ct);
             await CheckAndSendIntegrationToAPRO(storage, integrationService, ct);
