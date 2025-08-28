@@ -58,10 +58,10 @@ public class ScheduleProcessor : IIntegrationProcessor<ScheduleDataResponse>
                 
                 await UpdateAproEntity(entity.id, mtId.Value);
             }
-            else
+            /*else
             {
                 await _apiClientService.SendAsync(entityRequest, url, method);
-            }
+            }*/
         }
         catch (Exception ex)
         {

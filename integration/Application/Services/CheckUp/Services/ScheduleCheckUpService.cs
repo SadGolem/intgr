@@ -31,7 +31,8 @@ public class ScheduleCheckUpService: BaseCheckUpService,IScheduleCheckUpService
 
         if (schedule.containers == null)
         {
-            Message($"{idLocation} - in schedule containers not found", EmailMessageBuilder.ListType.getlocation);
+            Message($"{idLocation} - in schedule containers not" +
+                    $" found", EmailMessageBuilder.ListType.getlocation);
             return false;
         }
 

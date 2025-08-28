@@ -63,7 +63,8 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
             {
                 var schedule = schedules.First();
                 schedule.emitter = position.waste_source;
-                schedule.idContainerType = ContainerFinder.FindContainerId(schedule.containers.First().capacity.id,
+                if (schedule.idContainerType != null)
+                    schedule.idContainerType = ContainerFinder.FindContainerId(schedule.containers.First().capacity.id,
                     schedule.containers.First().type.id);
 
                 _scheduleStorage.Set(schedules);
