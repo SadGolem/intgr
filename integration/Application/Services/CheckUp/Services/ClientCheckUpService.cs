@@ -1,5 +1,6 @@
 ﻿using integration.Context;
 using integration.Structs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace integration.Services.CheckUp.Services;
 
@@ -7,8 +8,9 @@ public class ClientCheckUpService : BaseCheckUpService, IClientCheckUpService
 {
     public (bool, string) Check(IntegrationStruct str)
     {
+        
         List<ClientDataResponse> clientDatas = str.contragentList;
-
+        if (clientDatas.IsNullOrEmpty())  return (false, "Client is not found");
         foreach (var client in clientDatas)
         {
             if (!Check(client, str.location.id))
