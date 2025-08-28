@@ -121,7 +121,7 @@ namespace integration.Services.Location
         private bool? DetermineIfNew(LocationDataResponse location, DateTime lastUpdate)
         {
             if (STATUSNOTNEEDS.Contains(location.status.id)) return null;
-            if (location.datetime_create > lastUpdate)
+            if (location.status.id == 74)
             {
                 return true;
             }
