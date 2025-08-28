@@ -15,7 +15,7 @@ public class EmployerController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("sync")]
+    [HttpGet("get employers' emails")]
     public async Task<IActionResult> Sync()
     {
         try

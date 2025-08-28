@@ -27,6 +27,7 @@ public class ContractPositionController : ControllerBase, IController
         _serviceGetterContainer = serviceGetterContainer;
         _locationIdService = locationIdService;
     }
+    [HttpGet("get contract positions")]
     public async Task<IActionResult> Sync()
     {
         try
@@ -40,7 +41,8 @@ public class ContractPositionController : ControllerBase, IController
             return StatusCode(500, "Error during location sync.");
         }
     }
-    public async Task GetContractPositions()
+    
+    private async Task GetContractPositions()
     {
         try
         {

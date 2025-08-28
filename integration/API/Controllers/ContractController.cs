@@ -15,7 +15,7 @@ public class ContractController : BaseSyncController<ContractDataResponse>
         IGetterServiceFactory<ContractDataResponse> serviceGetter
       ) : base(logger, serviceGetter) {}
 
-    [HttpGet("syncEmitters")] // This endpoint can be used for manual triggers
+    [HttpGet("get contracts")] // This endpoint can be used for manual triggers
     public async Task<IActionResult> Sync()
     {
         return await base.Sync();

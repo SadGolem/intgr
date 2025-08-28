@@ -15,7 +15,7 @@ public class EmitterController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("sync")]
+    [HttpGet("get emitter")]
     public async Task<IActionResult> Sync()
     {
         try

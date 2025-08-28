@@ -47,7 +47,7 @@ using integration.Structs;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.UseUrls("http://localhost:5000");
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 builder.Services.AddLogging(logging => 
@@ -195,11 +195,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integration API V1");
+    c.RoutePrefix = string.Empty; // Swagger доступен сразу по адресу https://host/
+});
 // Применение миграций
 using (var scope = app.Services.CreateScope())
 {
