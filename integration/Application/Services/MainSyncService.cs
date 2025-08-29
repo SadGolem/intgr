@@ -59,7 +59,7 @@ namespace integration
             var integrationService = scope.ServiceProvider.GetRequiredService<IIntegrationService>();
             var validationService = scope.ServiceProvider.GetRequiredService<IIntegrationValidationService>();
 
-            // Токены
+
             await tokenManager.GetTokensAsync();
             await GetEmployers(employerSync, ct);
             await GetMTLEntryStatus(entrySync, ct);
@@ -74,7 +74,7 @@ namespace integration
 
             await StartEntry(entrySync, ct);
             await CheckAndSendIntegrationToAPRO(storage, integrationService, ct);
-            await StartPhoto(locationSync, ct);
+            //await StartPhoto(locationSync, ct);
 
             await SendToEmail();
             EmailMessageBuilder.ClearList();
