@@ -84,7 +84,7 @@ public class ClientGetterService : ServiceGetterBase<ClientDataResponse>, IGette
         {
             if (client.idAsuPro == pos.contract.client.idAsuPro)
             {
-                if (string.IsNullOrEmpty(pos.contract.contractType.name) || 
+                if (pos.contract.contractType == null || string.IsNullOrEmpty(pos.contract.contractType.name) || 
                     string.IsNullOrEmpty(pos.contract.client.consumerName))
                 {
                     //Message($"Contract id {pos.contract.id} and number {pos.contract.name} don't have a contract type.");

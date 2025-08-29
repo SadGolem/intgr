@@ -33,7 +33,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.consumerAddress, opt => opt.MapFrom(src => src.WasteSource.address))
             .ForMember(dest => dest.accountingType, opt => opt.MapFrom(src => src.WasteSource.normative))
             .ForMember(dest => dest.contractNumber, opt => opt.MapFrom(src => src.contractNumber))
-            .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location_mt_id))
+            .ForMember(d => d.idLocation,     o => o.MapFrom(s => ToIntOrNull(s.location_mt_id)))
             .ForMember(dest => dest.executorName, opt => opt.MapFrom(src => src.executorName))
             .ForMember(dest => dest.idContract, opt => opt.MapFrom(src => src.idContract))
             .ForMember(dest => dest.contractStatus, opt => opt.MapFrom(src => src.contractStatus))
@@ -56,7 +56,7 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
             .ForMember(dest => dest.amount, opt => opt.MapFrom(src => src.emitter.container.Count))
             .ForMember(dest => dest.idContainerType, opt => opt.MapFrom(src => src.idContainerType))
-            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.LocationDataResponse.address))
+            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.emitter.WasteSource.address))
             .ForMember(dest => dest.exportSchedule, opt => opt.MapFrom(src => src.gr_w));
         
         CreateMap<EntryDataResponse, EntryRequest>()
@@ -93,25 +93,12 @@ private static long SafeParseLong(string value)
     if (string.IsNullOrWhiteSpace(value)) return 0;
     return long.TryParse(value, out var result) ? result : 0;
 }
+private static int? ToIntOrNull(string? s) =>
+    !string.IsNullOrWhiteSpace(s) && int.TryParse(s, out var v) ? v : (int?)null;
 
 private static int SafeParseInt(string value)
 {
     if (string.IsNullOrWhiteSpace(value)) return 0;
     return int.TryParse(value, out var result) ? result : 0;
 }
-    
-    private double SafeParseDouble(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return 0;
-        return double.TryParse(value, out double result) ? result : 0;
-    }
-    
-    decimal TruncateDecimal(decimal value, int precision)
-    {
-        decimal step = (decimal)Math.Pow(10, precision);
-        decimal tmp = Math.Truncate(step * value);
-        return tmp / step;
-    }
-
-
 }

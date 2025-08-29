@@ -100,7 +100,7 @@ public class AgreMTGetterService : ServiceGetterBase<AgreMTDataResponse>,
         }
 
         /*var filteredAgres = responses.Data
-            .Where(a => a.Timestamp >= startTime && a.Timestamp <= endTime)
+            .Where(a => a.timestamp >= startTime && a.timestamp <= endTime)
             .ToList();
         allFilteredAgres.AddRange(filteredAgres);
 

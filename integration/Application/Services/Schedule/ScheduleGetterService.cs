@@ -63,7 +63,8 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
             {
                 var schedule = schedules.First();
                 schedule.emitter = position.waste_source;
-                schedule.idContainerType = ContainerFinder.FindContainerId(schedule.containers.First().capacity.id,
+                if (schedule.idContainerType != null)
+                    schedule.idContainerType = ContainerFinder.FindContainerId(schedule.containers.First().capacity.id,
                     schedule.containers.First().type.id);
 
                 _scheduleStorage.Set(schedules);
@@ -91,7 +92,7 @@ public class ScheduleGetterService : ServiceBase, IGetterService<ScheduleDataRes
     {
         return $"{_apiSettings.BaseUrl}wf__wastesitescheduleset__waste_site_schedule_set/" +
                $"?position={positionId}" +
-               "&query={id,waste_site{id,address},containers{id,type{id},capacity{id}},schedule,dates}";
+               "&query={id,waste_site{id,address},containers{id,type{id},capacity{id}},schedule,dates, ext_id}";
     }
 
     private async Task<List<ScheduleDataResponse>> DeserializeResponseAsync(HttpResponseMessage response)

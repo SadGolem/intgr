@@ -31,7 +31,7 @@ public class EntryController : ControllerBase
     }
 
     [HttpPost("syncMT")]
-    public async Task<IActionResult> SyncMT()
+    private async Task<IActionResult> SyncMT()
     {
         try
         {

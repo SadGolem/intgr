@@ -15,7 +15,7 @@ public class ClientController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("sync")]
+    [HttpGet("get contragent")]
     public async Task<IActionResult> Sync()
     {
         try

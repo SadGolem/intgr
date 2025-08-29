@@ -25,9 +25,9 @@ namespace integration.Context
         private static List<(int Key, string Value, bool isNew)> _statusLocation = new List<(int Key, string Value, bool isNew)>
         {
             ( 52, "Новая", true),
-            ( 74, "Заявка на проверку", false),
+            ( 74, "Новая", true),
             ( 167, "Проверенная", false),
-            ( 74, "Изменена", false), //не готово
+            //( 74, "Изменена", false), //не готово
             ( 167, "Инспекция", false),
             ( 14, "Действующая", false),
             ( 67, "Фактическая", false),

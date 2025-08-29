@@ -1,34 +1,128 @@
-# Common IntelliJ Platform excludes
-
-# User specific
-**/.idea/**/workspace.xml
-**/.idea/**/tasks.xml
-**/.idea/shelf/*
-**/.idea/dictionaries
-**/.idea/httpRequests/
-
-# Sensitive or high-churn files
-**/.idea/**/dataSources/
-**/.idea/**/dataSources.ids
-**/.idea/**/dataSources.xml
-**/.idea/**/dataSources.local.xml
-**/.idea/**/sqlDataSources.xml
-**/.idea/**/dynamic.xml
-
-# Rider
-# Rider auto-generates .iml files, and contentModel.xml
-**/.idea/**/*.iml
-**/.idea/**/contentModel.xml
-**/.idea/**/modules.xml
-
-*.suo
-*.user
-.vs/
-[Bb]in/
-[Oo]bj/
-_UpgradeReport_Files/
-[Pp]ackages/
-
+# -------- OS junk --------
+.DS_Store
 Thumbs.db
 Desktop.ini
-.DS_Store
+
+# -------- Rider / IntelliJ --------
+# Проще и безопаснее игнорить всю .idea целиком
+.idea/
+
+# Если хочешь хранить часть настроек в репо — вместо строки выше
+# раскомментируй набор ниже, но обычно это не нужно:
+# **/.idea/**/workspace.xml
+# **/.idea/**/tasks.xml
+# **/.idea/shelf/*
+# **/.idea/dictionaries
+# **/.idea/httpRequests/
+# **/.idea/**/dataSources/
+# **/.idea/**/dataSources.ids
+# **/.idea/**/dataSources.xml
+# **/.idea/**/dataSources.local.xml
+# **/.idea/**/sqlDataSources.xml
+# **/.idea/**/dynamic.xml
+# **/.idea/**/*.iml
+# **/.idea/**/contentModel.xml
+# **/.idea/**/modules.xml
+
+# -------- Visual Studio --------
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# -------- Build artifacts --------
+[Bb]in/
+[Oo]bj/
+out/
+Debug*/
+Release*/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Bb]uild/
+[Ll]ogs/
+[Tt]est[Rr]esults/
+*.stackdump
+
+# Папки публикации/упаковки
+publish/
+[Pp]ackages/
+*.nupkg
+*.snupkg
+*.nuspec
+.project.lock.json
+*.lock.json
+
+# -------- NuGet / Dotnet tools --------
+.nuget/
+# Если используешь local tool manifest — оставь dotnet-tools.json в репо
+# !.config/dotnet-tools.json
+
+# -------- Coverage / analysis / CI caches --------
+*.coverage
+*.coveragexml
+coverage/
+.coverage/
+.coverage/*.*
+.opencover.xml
+TestResult.xml
+.trx
+.vscode-test/
+BenchmarkDotNet.Artifacts/
+.sonarqube/
+.scannerwork/
+.stylecop/
+.reports/
+
+# -------- Resharper / NCrunch / Rider caches --------
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+*.ncrunchproject
+*.ncrunchsolution
+_NCrunch_*
+.nCrunchTemp_*
+.jetbrains/
+
+# -------- ASP.NET / Configs --------
+# Локальные конфиги и секреты
+appsettings.*.local.json
+appsettings.Local.json
+secrets.json
+# Пользовательские файлы IIS Express
+.vs/Config/
+*.vspscc
+*.vssscc
+
+# -------- Logs / temp --------
+*.log
+logs/
+*.pid
+*.seed
+*.tmp
+tmp/
+temp/
+
+# -------- Frontend (если есть) --------
+node_modules/
+dist/
+build/
+.npm/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# -------- Docker / Compose --------
+.docker/
+docker-compose.override.yml
+
+# -------- Misc --------
+_UpgradeReport_Files/
+*.PublishSettings
+*.orig
+*.rej
