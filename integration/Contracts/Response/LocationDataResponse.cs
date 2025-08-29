@@ -16,7 +16,6 @@ namespace integration.Context
         public bool IsNew => !string.IsNullOrEmpty(ext_id) && 
                              int.TryParse(ext_id, out int parsed) && 
                              parsed == 0;
-        [JsonPropertyName("client_entity")] public Participant? participant { get; set; }
         [JsonPropertyName("participant")] public Participant? client { get; set; }
         public string? author_update { get; set; }
         public class Participant()
