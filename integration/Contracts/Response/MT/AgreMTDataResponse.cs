@@ -8,7 +8,7 @@ public class AgreMTDataResponse
     public string? Message { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public DateTime Timestamp { get; set; }
+    public string Timestamp { get; set; }
 
     [JsonPropertyName("count")]
     public int Count { get; set; }
@@ -23,7 +23,7 @@ public class AgreData
     public string idLocation { get; set; }
 
     [JsonPropertyName("modified")]
-    public DateTime Timestamp { get; set; }
+    public string Timestamp { get; set; }
 
     [JsonPropertyName("comment")]
     public string comment { get; set; }
@@ -31,3 +31,4 @@ public class AgreData
     [JsonPropertyName("username")]
     public string username { get; set; }
 }
+

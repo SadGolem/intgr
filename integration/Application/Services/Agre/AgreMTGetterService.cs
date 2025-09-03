@@ -1,4 +1,5 @@
 ﻿using integration.Context.MT;
+using integration.Context.Request;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
 using integration.Services.Agre.Storage;
@@ -17,13 +18,15 @@ public class AgreMTGetterService : ServiceGetterBase<AgreMTDataResponse>,
     private readonly string _connectionStringGetLocation;
     private readonly IAgreStorageService _storage;
     private AgreMTDataResponse agre;
+    private IMessageBroker _messageBroker;
     private const int CHUNK_SIZE_MINUTES = 30;
 
     public AgreMTGetterService(IHttpClientFactory httpClientFactory,
         ILogger<AgreMTGetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
-        IAgreStorageService storage) : base(httpClientFactory, logger, authorizer, apiSettings)
+        IAgreStorageService storage,
+        IMessageBroker messageBroker) : base(httpClientFactory, logger, authorizer, apiSettings)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
@@ -32,6 +35,7 @@ public class AgreMTGetterService : ServiceGetterBase<AgreMTDataResponse>,
         _storage = storage;
         _connectionStringGetLocation = apiSettings.Value.APROconnect.BaseUrl
                                        + apiSettings.Value.APROconnect.ApiClientSettings.LocationGetEndpoint;
+        _messageBroker = messageBroker;
     }
 
     public async Task Get()
@@ -83,30 +87,19 @@ public class AgreMTGetterService : ServiceGetterBase<AgreMTDataResponse>,
         }
     }
 
-    private async Task ProcessTimeChunk(DateTime startTime, DateTime endTime)
+      private async Task ProcessTimeChunk(DateTime startTime, DateTime endTime)
     {
         var endpoint = BuildEmitterEndpoint(startTime);
         var responses = await GetFullResponse<AgreMTDataResponse>(endpoint, false);
+        if (responses?.Data == null || responses.Data.Count == 0) return;
 
-        if (responses == null) return;
-
-        /*var allFilteredAgres = new List<AgreData>();*/
-
-        if (responses?.Data == null) return;
-
+        // Проставим Timestamp там, где пусто
         foreach (var agre in responses.Data.Where(a => a.Timestamp == default))
-        {
             agre.Timestamp = responses.Timestamp;
-        }
 
-        /*var filteredAgres = responses.Data
-            .Where(a => a.timestamp >= startTime && a.timestamp <= endTime)
-            .ToList();
-        allFilteredAgres.AddRange(filteredAgres);
+        // Здесь будем копить успешно обработанные sourceKey
+        var processedSourceKeys = new List<string>(responses.Data.Count);
 
-        if (allFilteredAgres.Count == 0) return;*/
-
-        // Обрабатываем отфильтрованные записи
         foreach (var agre in responses.Data)
         {
             try
@@ -114,15 +107,37 @@ public class AgreMTGetterService : ServiceGetterBase<AgreMTDataResponse>,
                 var locationEndpoint = BuildLocationEndpoint(agre.idLocation);
                 var locResponse = await Get<Context.Location>(locationEndpoint, true);
 
-                _storage.Set((agre, Convert.ToInt32(locResponse.FirstOrDefault().id)));
+                _storage.Set((agre, Convert.ToInt32(locResponse.FirstOrDefault()?.id)));
+                processedSourceKeys.Add(agre.idLocation); // <— собираем sourceKey
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error processing agre with idLocation={agre.idLocation}");
+                _logger.LogError(ex, "Error processing agre with idLocation={IdLocation}", agre.idLocation);
             }
         }
 
-        _logger.LogInformation($"Processed {responses.Data.Count} agre records");
+        _logger.LogInformation("Processed {Count} agre records", responses.Data.Count);
+
+        // Отправляем ACK только если есть, что подтверждать
+        if (processedSourceKeys.Count > 0)
+        {
+            try
+            {
+                // Отправляем массив вида ["5","6","9"] в МТ
+                var ack = await _messageBroker.PublishAckAsync(processedSourceKeys);
+
+                // На стороне сервиса – просто логируем успешный ответ брокера
+                if (!string.IsNullOrWhiteSpace(ack.Message))
+                {
+                    _logger.LogInformation("ACK from MT: {Message}; ts={Ts:o}; data={Data}",
+                        ack.Message, ack.Timestamp, ack.Data);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to publish ACK for {Count} sourceKeys", processedSourceKeys.Count);
+            }
+        }
     }
 
     private string BuildEmitterEndpoint(DateTime startTime)

@@ -26,4 +26,5 @@ public class ApiClientSettings
         public string ContainersEndpoint{ get; set; }
         public string EmployersEndpoint{ get; set; }
         public string AgreEndpointGet{ get; set; }
+        public string AgreAckEndpoint{ get; set; }
 }

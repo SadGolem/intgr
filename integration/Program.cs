@@ -24,6 +24,7 @@ using integration.Services.Integration.Processors;
 using integration.Services.Token;
 using integration.Services.Token.Interfaces;
 using AutoMapper;
+using integration.Application.Services.Managers;
 using integration.Context.MT;
 using integration.Context.Request;
 using integration.Context.Request.MT;
@@ -72,6 +73,7 @@ builder.Services.AddSingleton<IAuthorizer, Authorizer>();
 builder.Services.AddScoped<ILocationIdService, LocationIdService>();
 
 // Регистрация sync-сервисов
+builder.Services.AddScoped<IMessageBroker, MtAckMessageBrokerService>();
 builder.Services.AddScoped<IAgreManagerService, AgreManagerService>();
 builder.Services.AddScoped<IClientManagerService, ClientManagerService>();
 builder.Services.AddScoped<IContractManagerService, ContractManagerService>();

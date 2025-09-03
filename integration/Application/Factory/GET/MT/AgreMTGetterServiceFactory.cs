@@ -1,4 +1,5 @@
 ﻿using integration.Context.MT;
+using integration.Context.Request;
 using integration.Factory.GET.Interfaces;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
@@ -17,23 +18,26 @@ public class AgreMTGetterServiceFactory: IGetterServiceFactory<AgreMTDataRespons
     private readonly IAuthorizer _authorizer;
     private readonly IOptions<AuthSettings> _configuration;
     private readonly IAgreStorageService _storage;
+    private readonly IMessageBroker _messageBroker;
 
     public AgreMTGetterServiceFactory(
         IHttpClientFactory httpClientFactory,
         ILogger<AgreMTGetterService> logger,
         IAuthorizer authorizer,
         IOptions<AuthSettings> configuration,
-        IAgreStorageService storage)
+        IAgreStorageService storage,
+        IMessageBroker messageBroker)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _authorizer = authorizer;
         _configuration = configuration;
         _storage = storage;
+        _messageBroker = messageBroker;
     }
 
     public IGetterService<AgreMTDataResponse> Create()
     {
-        return new AgreMTGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _storage);
+        return new AgreMTGetterService(_httpClientFactory, _logger, _authorizer, _configuration, _storage, _messageBroker);
     } 
 }

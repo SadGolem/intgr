@@ -2,6 +2,7 @@
 using System.Text.Json;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace integration.Services.Location;
@@ -39,7 +40,7 @@ public class ServiceSetterBase<T> : ServiceBase
             throw;
         }
     }
-    public async Task<string> Post(
+    public async Task<HttpResponseMessage> Post(
         IHttpClientFactory _httpClientFactory, 
         string _connect, 
         HttpContent content, 
@@ -49,8 +50,8 @@ public class ServiceSetterBase<T> : ServiceBase
         try
         {
             HttpResponseMessage response = await client.PostAsync(_connect, content);
-            response.EnsureSuccessStatusCode();  
-            return await response.Content.ReadAsStringAsync();
+            var responseStatus =  response.EnsureSuccessStatusCode();  
+            return responseStatus;
         }
         catch (HttpRequestException ex)
         {
@@ -62,6 +63,8 @@ public class ServiceSetterBase<T> : ServiceBase
             _logger.LogError(ex, $"Unexpected Exception while posting data");
             throw;
         }
+        
+        
     }
     //для теста!
     public async Task<string> PostPhoto(
