@@ -82,7 +82,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
     {
         try
         {
-            string comment = $"{entity.author_update}: {entity.comment}";
+            string comment = $"{entity.author?.name}: {entity.comment}";
             var request = new
             {
                 messageEmitterKey = entity.ext_id,
@@ -116,33 +116,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
 
         return "{}";
     }
-
-    private async Task HandleApiErrorAsync(string errorContent, int entityId)
-    {
-        try
-        {
-            var errorResponse = JObject.Parse(errorContent);
-            var errorMessage = errorResponse["errorMessage"]?.ToString();
-
-            if (errorMessage != null &&
-                errorMessage.Contains("Duplicate entry") &&
-                errorMessage.Contains("IDX_locations_adres"))
-            {
-                _logger.LogError($"Duplicate location address detected. Entity ID: {entityId}. Error: {errorMessage}");
-                Message($"Duplicate location address detected. Entity ID: {entityId}. Error: {errorMessage}");
-            }
-            else
-            {
-                _logger.LogError($"API error occurred. Entity ID: {entityId}. Error: {errorMessage}");
-                Message($"API error occurred. Entity ID: {entityId}. Error: {errorMessage}");
-            }
-        }
-        catch
-        {
-            _logger.LogError($"Unparsable error content. Entity ID: {entityId}. Raw content: {errorContent}");
-            throw;
-        }
-    }
+    
 
     private async Task UpdateAproEntity(int aproId, int mtId)
     {
@@ -162,13 +136,5 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
             _logger.LogError(ex, $"Error updating ASU PRO entity {aproId}");
             throw;
         }
-    }
-
-    public void Message(string message)
-    {
-        EmailMessageBuilder.PutInformation(
-            EmailMessageBuilder.ListType.getlocation,
-            message
-        );
     }
 }

@@ -18,25 +18,25 @@ public class LocationCheckUpService : ILocationCheckUpService
     {
         if (location == null)
         {
-            Message($"{location.id} - not found");
+            Message($"{location.id} - not found", location.author?.id);
             return false;
         }
 
         if (location.address == "")
         {
-            Message($"{location.id} - address not found");
+            Message($"{location.id} - address not found", location.author?.id);
             return false;
         }
         
         if (location.containers == null)
         {
-            Message($"{location.id} - containers not found");
+            Message($"{location.id} - containers not found", location.author?.id);
             return false;
         }
         
         if (location.containers.Count == 0)
         {
-            Message($"{location.id} - containers not found");
+            Message($"{location.id} - containers not found", location.author?.id);
             return false;
         }
 
@@ -44,7 +44,7 @@ public class LocationCheckUpService : ILocationCheckUpService
         {
             if (container.type == null || container.type?.id == 0)
             {
-                Message($"{location.id} - container id {container.id} type not correct");
+                Message($"{location.id} - container id {container.id} type not correct", location.author?.id);
                 return false;
             }
         }
@@ -52,11 +52,11 @@ public class LocationCheckUpService : ILocationCheckUpService
         return true;
     }
     
-    private void Message(string message)
+    private void Message(string message, int? id)
     {
-        EmailMessageBuilder.PutInformation(
+        EmailMessageBuilder.PutError(
             EmailMessageBuilder.ListType.getlocation, 
-            message
+            message, id
         );
     }
 }

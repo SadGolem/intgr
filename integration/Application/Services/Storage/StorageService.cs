@@ -48,9 +48,5 @@ public class StorageService : IIntegrationStructStorageService
     {
         integrationDataList.Clear();
     }
-
-    private void Message(string m)
-    {
-        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getall,m);
-    }
+    
 }

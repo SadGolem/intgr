@@ -62,7 +62,7 @@ public class IntegrationService : ServiceBase, IIntegrationService
             try
             {
                 await ProcessIntegrationData(integrationData);
-                Message($"{integrationData.location.id} SUCCESS");
+                MessageSuccesess($"{integrationData.location.id} SUCCESS", integrationData.location.id,integrationData.location.author?.id);
             }
             catch (Exception ex)
             {

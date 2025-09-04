@@ -68,7 +68,7 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
                     if (TryParseExistingMtId(ex.Message, out long existingMtId))
                     {
                         Message(
-                            $"Emitter already exists in MT. Updating local ID: {entity.WasteSource.id} -> {existingMtId}");
+                            $"Emitter already exists in MT. Updating local ID: {entity.WasteSource.id} -> {existingMtId}", null);
                 
                         return;
                     }
@@ -131,11 +131,11 @@ public class EmitterProcessor : BaseProcessor, IIntegrationProcessor<EmitterData
         }
     }
 
-    public void Message(string message)
+    public void Message(string message, int? id)
     {
-        EmailMessageBuilder.PutInformation(
+        EmailMessageBuilder.PutError(
             EmailMessageBuilder.ListType.getemitter,
-            message
+            message, id
         );
     }
 }

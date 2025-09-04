@@ -17,11 +17,20 @@ namespace integration.Context
                              int.TryParse(ext_id, out int parsed) && 
                              parsed == 0;
         [JsonPropertyName("participant")] public Participant? client { get; set; }
+        [JsonPropertyName("author_update")] public Author? author { get; set; }
+        [JsonIgnore]
         public string? author_update { get; set; }
+        [JsonIgnore]
+        public int? author_update_id { get; set; }
         public class Participant()
         {
             [JsonPropertyName("id")] public int id { get; set; }
             [JsonPropertyName("name")] public string name { get; set; }
+        }
+        public class Author()
+        {
+            [JsonPropertyName("id")] public int? id { get; set; }
+            [JsonPropertyName("name")] public string? name { get; set; }
         }
         
         [JsonIgnore]

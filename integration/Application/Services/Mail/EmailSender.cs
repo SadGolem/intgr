@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿/*
+using System.Net;
 using System.Net.Mail;
 using static EmailMessageBuilder;
 using System.Text;
@@ -43,10 +44,10 @@ public static class EmailSender
         }
     }
 
-    private static string BuildBodyEmail(ListType listType)
+    /*private static string BuildBodyEmail(ListType listType)
     {
         return EmailMessageBuilder.GetList(listType).ToString() ?? "";
-    }
+    }#1#
 
     public static async Task Send()
     {
@@ -58,7 +59,7 @@ public static class EmailSender
         foreach (ListType listType in Enum.GetValues(typeof(ListType)))
         {
             fullBody.Clear();
-            /*fullBody.AppendLine($"<h2>{listType}</h2>");*/
+            /*fullBody.AppendLine($"<h2>{listType}</h2>");#1#
             fullBody.Append("<pre>"); // Для лучшего отображения многострочных данных
             fullBody.Append(BuildBodyEmail(listType));
             fullBody.Append("</pre>");
@@ -74,3 +75,4 @@ public static class EmailSender
     }
 
 }
+*/

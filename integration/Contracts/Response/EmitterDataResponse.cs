@@ -21,6 +21,7 @@ namespace integration.Context
         public string typeConsumer { get; set; }
         public string nameConsumer { get; set; }
         public string idConsumer { get; set; }
+        public int? location_author_id { get; set; }
     }
 
     public class WasteSource {

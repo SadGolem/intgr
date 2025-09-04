@@ -10,4 +10,6 @@ public class EmployerDataResponse
     public string? name { get; set; } 
     [JsonPropertyName("email")]
     public string? email { get; set; }
+    [JsonPropertyName("position")]
+    public string? position { get; set; }
 }

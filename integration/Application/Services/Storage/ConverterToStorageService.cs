@@ -98,7 +98,6 @@ public class ConverterToStorageService : IConverterToStorageService
                 break;
             }
         }
-
         foreach (var contract in contracts)
         {
             if (context.contract.root_id == contract.root_id)
@@ -108,7 +107,9 @@ public class ConverterToStorageService : IConverterToStorageService
             }
         }
 
-        locationDatasResponse.author_update = contractDatas.First().assignee.name;
+       // locationDatasResponse.author_update = contractDatas.First().assignee.name;
+        //locationDatasResponse.author_update_id = contractDatas.First().assignee.id;
+        
     return new IntegrationStruct(idLocation, emitterDatas, clientDatas, scheduleDatas, contractDatas, locationDatasResponse);
     }
 }
