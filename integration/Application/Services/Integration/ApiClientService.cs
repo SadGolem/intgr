@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 namespace integration.Services.Integration;
 public interface IApiClientService
 {
-
         Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, string url, HttpMethod method)
             where TRequest : class
             where TResponse : class;
@@ -16,7 +15,7 @@ public interface IApiClientService
         
         Task<string> SendAndGetStringAsync<TRequest>(TRequest request, string url, HttpMethod method)
             where TRequest : class;
-    
+
 }
 public class ApiClientService : HttpServiceBase, IApiClientService
 {

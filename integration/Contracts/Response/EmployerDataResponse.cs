@@ -12,4 +12,11 @@ public class EmployerDataResponse
     public string? email { get; set; }
     [JsonPropertyName("position")]
     public string? position { get; set; }
+    [JsonPropertyName("user")]
+    public User? user { get; set; }
+    public class User
+    {
+        [JsonPropertyName("id")] 
+        public int id { get; set; }
+    }
 }

@@ -12,7 +12,7 @@ public class EmitterCheckUpService : BaseCheckUpService, IEmitterCheckUpService
         foreach (var emitter in emittersDatas)
         {
             if (!Check(emitter, str.location.id))
-                return new (false, $"{emitter} not founded");
+                return new (false, $"Эмиттер {emitter} не найден");
         }
         return (true, "");
     }
@@ -21,7 +21,7 @@ public class EmitterCheckUpService : BaseCheckUpService, IEmitterCheckUpService
     {
         if (emitter == null)
         {
-            Message($"{idLocation} - in emitter not found", EmailMessageBuilder.ListType.getlocation);
+            Message($"В площадке с номером {idLocation} - нет эмиттера", EmailMessageBuilder.ListType.getlocation);
             return false;
         }
         
@@ -33,19 +33,19 @@ public class EmitterCheckUpService : BaseCheckUpService, IEmitterCheckUpService
 
         if (emitter.participant_id == null)
         {
-            Message($"{idLocation} - in emitter client not found", EmailMessageBuilder.ListType.getlocation);
+            Message($"В площадке с номером {idLocation} - в эмиттере нет контрагента", EmailMessageBuilder.ListType.getlocation);
             return false;
         }
 
         if (emitter.WasteSource.address == null)
         {
-            Message($"{idLocation} - in emitter address not found", EmailMessageBuilder.ListType.getlocation);
+            Message($"В площадке с номером {idLocation} - в эмиттере отстутвует адрес", EmailMessageBuilder.ListType.getlocation);
             return false;
         }
 
         if (emitter.idContract == null)
         {
-            Message($"{idLocation} - in emitter idContract not found", EmailMessageBuilder.ListType.getlocation);
+            Message($"В площадке с номером {idLocation} - в эмиттере не найден договор", EmailMessageBuilder.ListType.getlocation);
             return false;
         }
 
