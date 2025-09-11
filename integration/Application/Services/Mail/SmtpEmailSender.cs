@@ -66,92 +66,104 @@ public static class EmailDispatcher
     public static async Task DispatchAsync(IEmployersStorageService employers, IEmailSender sender)
     {
         var staff = employers.Get() ?? new List<EmployerDataResponse>();
-        
+
+        // 1) Базовая фильтрация состава
         var filteredStaff = staff
-            .Where(e => e.position != "ГЕНЕРАЛЬНЫЙ ДИРЕКТОР")
+            .Where(e => !string.Equals(e.position, "ГЕНЕРАЛЬНЫЙ ДИРЕКТОР", StringComparison.InvariantCultureIgnoreCase))
             .ToList();
 
-        var emailById = filteredStaff
-            .Where(e => e.id > 0 && !string.IsNullOrWhiteSpace(e.email))
-            .GroupBy(e => e.id)
-            .ToDictionary(g => g.Key, g => g.First().email!);
+        // 2) Почта по user.id (НЕ по employee.id)
+        //    author_id == employee.user.id
+        var emailByUserId = filteredStaff
+            .Select(e => new { UserId = GetUserId(e), Email = e.email })
+            .Where(x => x.UserId.HasValue && !string.IsNullOrWhiteSpace(x.Email))
+            .GroupBy(x => x.UserId!.Value)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Email!).First());
 
-        // Получаем список email руководителей
+        // 3) Письма руководителям (оставляем как есть — по должности)
         var managersEmails = filteredStaff
-            .Where(e => !string.IsNullOrWhiteSpace(e.position) &&
-                        ManagerPositions.Contains(e.position!.Trim()) &&
-                        !string.IsNullOrWhiteSpace(e.email))
+            .Where(e => !string.IsNullOrWhiteSpace(e.position)
+                        && ManagerPositions.Contains(e.position!.Trim())
+                        && !string.IsNullOrWhiteSpace(e.email))
             .Select(e => e.email!)
-            .Distinct()
+            .Distinct(StringComparer.InvariantCultureIgnoreCase)
             .ToList();
 
+        // 4) Обход всех типов списков; ownerId трактуем как author_id (= user.id)
         foreach (ListType listType in Enum.GetValues(typeof(ListType)))
         {
-            var ownersWithErrors = GetOwnersWithErrors(listType);
-            var ownersWithSuccess = GetOwnersWithErrors(listType) 
-                .Union(emailById.Keys) 
+            var ownersWithErrors = GetOwnersWithErrors(listType); // множество author_id
+            var ownersWithSuccess = ownersWithErrors
+                .Union(emailByUserId.Keys) // все, кому потенциально можем писать
                 .ToHashSet();
-            
-            foreach (var ownerId in ownersWithSuccess)
+
+            foreach (var ownerUserId in ownersWithSuccess)
             {
-                var bodyErr = BuildOwnerErrorsHtml(listType, ownerId);
-                var bodyOk = BuildOwnerSuccessHtml(listType, ownerId);
-                
-                if (IsManager(ownerId, filteredStaff))
+                var bodyErr = BuildOwnerErrorsHtml(listType, ownerUserId);
+                var bodyOk  = BuildOwnerSuccessHtml(listType, ownerUserId);
+
+                if (IsManagerByUserId(ownerUserId, filteredStaff))
                 {
                     if (string.IsNullOrWhiteSpace(bodyErr) && string.IsNullOrWhiteSpace(bodyOk))
                         continue;
                 }
                 else
                 {
-                    if (!HasOwnerAccess(ownerId, filteredStaff))
+                    if (!HasOwnerAccessByUserId(ownerUserId, filteredStaff))
                         continue;
                 }
 
-                if (!emailById.TryGetValue(ownerId, out var toEmail))
+                if (!emailByUserId.TryGetValue(ownerUserId, out var toEmail))
                     continue;
 
                 var body = new StringBuilder();
                 if (!string.IsNullOrWhiteSpace(bodyErr)) body.AppendLine(bodyErr);
-                if (!string.IsNullOrWhiteSpace(bodyOk)) body.AppendLine(bodyOk);
-                
-                if (body.Length == 0)
-                    continue;
+                if (!string.IsNullOrWhiteSpace(bodyOk))  body.AppendLine(bodyOk);
+                if (body.Length == 0) continue;
 
                 var subject = $"{listType}";
                 await sender.SendAsync(new[] { toEmail }, subject, body.ToString());
             }
-            
+
+            // 5) Сводки руководителям
             if (managersEmails.Count > 0)
             {
                 var allErr = BuildAllErrorsHtml(listType);
-                var allOk = BuildAllSuccessHtml(listType);
-                
-                if (string.IsNullOrWhiteSpace(allErr) && string.IsNullOrWhiteSpace(allOk))
-                    continue;
+                var allOk  = BuildAllSuccessHtml(listType);
 
-                var body = new StringBuilder();
-                if (!string.IsNullOrWhiteSpace(allErr)) body.AppendLine(allErr);
-                if (!string.IsNullOrWhiteSpace(allOk)) body.AppendLine(allOk);
+                if (!string.IsNullOrWhiteSpace(allErr) || !string.IsNullOrWhiteSpace(allOk))
+                {
+                    var body = new StringBuilder();
+                    if (!string.IsNullOrWhiteSpace(allErr)) body.AppendLine(allErr);
+                    if (!string.IsNullOrWhiteSpace(allOk))  body.AppendLine(allOk);
 
-                var subject = $"{listType}";
-                await sender.SendAsync(managersEmails, subject, body.ToString());
+                    var subject = $"{listType}";
+                    await sender.SendAsync(managersEmails, subject, body.ToString());
+                }
             }
 
             Clear(listType);
         }
     }
-    
-    private static bool IsManager(int ownerId, List<EmployerDataResponse> staff)
+
+    /// <summary>
+    /// Безопасно получаем user.id из ответа сотрудника.
+    /// author_id == этот id
+    /// </summary>
+    private static int? GetUserId(EmployerDataResponse e)
+        => e?.user?.id;
+
+    private static bool IsManagerByUserId(int ownerUserId, List<EmployerDataResponse> staff)
     {
-        var employee = staff.FirstOrDefault(e => e.id == ownerId);
-        return employee != null && ManagerPositions.Contains(employee.position?.Trim());
-    }
-    
-    private static bool HasOwnerAccess(int ownerId, List<EmployerDataResponse> staff)
-    {
-        var employee = staff.FirstOrDefault(e => e.id == ownerId);
-        return employee != null && employee.id == ownerId; // author_update_id == ownerId
+        var employee = staff.FirstOrDefault(e => GetUserId(e) == ownerUserId);
+        return employee != null && ManagerPositions.Contains(employee.position?.Trim() ?? "");
     }
 
+    private static bool HasOwnerAccessByUserId(int ownerUserId, List<EmployerDataResponse> staff)
+    {
+        // Здесь можно расширить реальной моделью прав.
+        // Пока — есть сотрудник с таким user.id => доступ есть.
+        var employee = staff.FirstOrDefault(e => GetUserId(e) == ownerUserId);
+        return employee != null;
+    }
 }
