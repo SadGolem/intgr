@@ -2,5 +2,4 @@
 
 public interface IService
 {
-    public void Message(string ex);
 }

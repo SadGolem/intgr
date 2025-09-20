@@ -138,8 +138,8 @@ namespace integration.Context
             }
 
             // Если статус не найден
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation,
-                $"Reverse status not found: {status}");
+            EmailMessageBuilder.PutError(EmailMessageBuilder.ListType.getlocation,
+                $"Reverse status not found: {status}", null);
             return 0;
         }
 
@@ -276,8 +276,8 @@ namespace integration.Context
 
             if (results == "")
             {
-                EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation,
-                    "Status is not found idLocation - " + idLocation);
+                EmailMessageBuilder.PutError(EmailMessageBuilder.ListType.getlocation,
+                    "Status is not found idLocation - " + idLocation, null);
                 return "0";
             }
             return results; 

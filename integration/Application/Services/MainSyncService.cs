@@ -1,7 +1,10 @@
-﻿using integration.Services.Integration;
+﻿using integration.Application.Services.Mail;
+using integration.Services.Employers.Storage;
+using integration.Services.Integration;
 using integration.Services.Storage;
 using integration.Services.Storage.Interfaces;
 using integration.Structs;
+using Microsoft.Extensions.Options;
 
 namespace integration
 {
@@ -10,15 +13,20 @@ namespace integration
         private readonly ILogger<MainSyncService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHostApplicationLifetime _appLifetime;
-
+        private readonly IEmployersStorageService _employersStorage;
+        private readonly IOptions<SmtpOptions> _smtpOptions;
         public MainSyncService(
             ILogger<MainSyncService> logger,
             IServiceProvider serviceProvider,
-            IHostApplicationLifetime appLifetime)
+            IHostApplicationLifetime appLifetime,
+            IEmployersStorageService employersStorage,  
+            IOptions<SmtpOptions> smtpOptions)        
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _appLifetime = appLifetime;
+            _employersStorage = employersStorage;  
+            _smtpOptions = smtpOptions;            
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -77,7 +85,7 @@ namespace integration
             //await StartPhoto(locationSync, ct);
 
             await SendToEmail();
-            EmailMessageBuilder.ClearList();
+            EmailMessageBuilder.ClearAll();
         }
 
         // Ниже — те же методы, только пробрасываем CancellationToken (на будущее — полезно для корректной отмены)
@@ -88,7 +96,13 @@ namespace integration
             catch (Exception ex) { _logger.LogError(ex, "Error while syncing agre."); }
         }
 
-        private Task SendToEmail() => EmailSender.Send();
+        private async Task SendToEmail()
+        {
+            var sender = new SmtpEmailSender(_smtpOptions);
+            
+            await EmailDispatcher.DispatchAsync(_employersStorage, sender);
+        }
+
 
         private async Task GetSchedule(IScheduleManagerService scheduleController, CancellationToken ct)
         {

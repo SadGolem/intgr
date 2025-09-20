@@ -1,11 +1,10 @@
 ﻿using System.Net.Http.Headers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
-using integration.Services.Interfaces;
 using Microsoft.Extensions.Options;
 namespace integration.Services
 {
-    public abstract class ServiceBase : IService
+    public abstract class ServiceBase
     {
         protected readonly IHttpClientFactory _httpClientFactory;
         protected readonly ILogger<ServiceBase> _logger;
@@ -40,9 +39,13 @@ namespace integration.Services
             return client;
         }
 
-        public void Message(string ex)
+        public void Message(string ex, int? ownerID)
         {
-            EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
+            EmailMessageBuilder.PutError(EmailMessageBuilder.ListType.getlocation, ex, ownerID);
+        }
+        public void MessageSuccesess(string ex,int idloc,  int? ownerID)
+        {
+            EmailMessageBuilder.PutSuccess(EmailMessageBuilder.ListType.getlocation,idloc, ownerID);
         }
 
         private async Task<string> GetTokenAsync(AuthType authType)
@@ -62,6 +65,7 @@ namespace integration.Services
             }
             return await CreateAuthorizedClientAsync(AuthType.MT);
         }
+        
     }
 
     public enum AuthType

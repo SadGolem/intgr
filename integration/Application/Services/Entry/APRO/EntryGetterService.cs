@@ -88,7 +88,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
                 if (data.Capacity is null)
                 {
                     _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует соглашение", data.BtNumber);
-                    Message($"Entry id {data.BtNumber} is not has a capacity.");
+                    Message($"Entry id {data.BtNumber} is not has a capacity.", data.location.author?.id);
                     continue;
                 }
 
@@ -153,8 +153,8 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
         return $"{basePath}";
     }
 
-    void Message(string ex)
+    void Message(string ex, int id)
     {
-        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getentry, ex);
+        EmailMessageBuilder.PutError(EmailMessageBuilder.ListType.getentry, ex, id);
     }
 }

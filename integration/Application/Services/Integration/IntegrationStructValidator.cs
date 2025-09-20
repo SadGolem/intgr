@@ -39,7 +39,7 @@ public class IntegrationStructValidator
         var locationValid = _locationCheckUp.Check(str);
         if (!locationValid.Item1)
         {
-            await Message(clientValid.Item2, EmailMessageBuilder.ListType.getlocation);
+            await Message(clientValid.Item2, EmailMessageBuilder.ListType.getlocation, str.location.author?.id);
             return false;
         }
         
@@ -52,8 +52,8 @@ public class IntegrationStructValidator
         return true;
     }
     
-    public async Task Message(string ex, EmailMessageBuilder.ListType type)
+    public async Task Message(string ex, EmailMessageBuilder.ListType type, int? id)
     { 
-        EmailMessageBuilder.PutInformation(type, ex);
+        EmailMessageBuilder.PutError(type, ex, id);
     }
 }

@@ -32,7 +32,7 @@ namespace integration.Services.Location
             
             _aproConnect = new ConnectingStringApro(
                 _configuration,
-                "wf__waste_site__waste_site/?query={id,datetime_create,datetime_update,lon,lat,address,status{id},ext_id_2,participant{id,name}}"
+                "wf__waste_site__waste_site/?query={id,datetime_create,datetime_update,lon,lat,address,status{id},ext_id_2,participant{id,name}, author_update{id,name}}"
             );
 
             _jsonOptions = new JsonSerializerOptions
@@ -105,7 +105,7 @@ namespace integration.Services.Location
                     if (isNew.HasValue)
                     {
                         result.Add((location, isNew.Value));
-                        _locationIdService.SetLocationIds(location.id);
+                        _locationIdService.SetLocationIds(location.id, location.author?.id);
                     }
                 }
                 catch (Exception ex)
@@ -134,8 +134,6 @@ namespace integration.Services.Location
             return null;
         }
         
-
-        // Реализация неиспользуемых методов интерфейса
         public Task Get() => Task.CompletedTask;
     }
 }

@@ -18,25 +18,25 @@ public class LocationCheckUpService : ILocationCheckUpService
     {
         if (location == null)
         {
-            Message($"{location.id} - not found");
+            Message($"Площадка {location.id} - Не найдена", location.author?.id);
             return false;
         }
 
         if (location.address == "")
         {
-            Message($"{location.id} - address not found");
+            Message($"У площадки с номером {location.id} - Не указан адрес", location.author?.id);
             return false;
         }
         
         if (location.containers == null)
         {
-            Message($"{location.id} - containers not found");
+            Message($"У площадки с номером {location.id} - нет контейнера", location.author?.id);
             return false;
         }
         
         if (location.containers.Count == 0)
         {
-            Message($"{location.id} - containers not found");
+            Message($"У площадки с номером {location.id} - нет контейнера", location.author?.id);
             return false;
         }
 
@@ -44,7 +44,7 @@ public class LocationCheckUpService : ILocationCheckUpService
         {
             if (container.type == null || container.type?.id == 0)
             {
-                Message($"{location.id} - container id {container.id} type not correct");
+                Message($"У площадки с номером {location.id} - контейнер {container.id} с некорректным типом", location.author?.id);
                 return false;
             }
         }
@@ -52,11 +52,11 @@ public class LocationCheckUpService : ILocationCheckUpService
         return true;
     }
     
-    private void Message(string message)
+    private void Message(string message, int? id)
     {
-        EmailMessageBuilder.PutInformation(
+        EmailMessageBuilder.PutError(
             EmailMessageBuilder.ListType.getlocation, 
-            message
+            message, id
         );
     }
 }

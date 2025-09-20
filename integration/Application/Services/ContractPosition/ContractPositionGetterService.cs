@@ -14,6 +14,7 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
    // private IConverterToStorageService _converterToStorageService = converterToStorageService;
     private IContractPositionStorageService _contractPositionStorageService;
     private List<int> _locationIdSList = new List<int>();
+    private Dictionary<int, int> _locationAuthorUpdate = new Dictionary<int, int>();
     private ILocationIdService _locationIdService;
     private string _aproConnect;
     public ContractPositionGetterService(IHttpClientFactory httpClientFactory,
@@ -51,7 +52,7 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
         
         if (postionsList.Count == 0)
         {
-            Message($"Location id {id} is not has a contract position.\n");
+            Message($"Location id {id} is not has a contract position.\n", _locationIdService.GetAuthor(id));
             return;
         }
         
@@ -71,8 +72,8 @@ public class ContractPositionGetterService : ServiceGetterBase<ContractPositionD
     {
         _locationIdSList = _locationIdService?.GetLocationIds() ?? _locationIdSList;
     }
-    public void Message(string ex)
+    public void Message(string ex, int? id)
     {
-        EmailMessageBuilder.PutInformation(EmailMessageBuilder.ListType.getlocation, ex);
+        EmailMessageBuilder.PutError(EmailMessageBuilder.ListType.getlocation, ex, id);
     }
 }

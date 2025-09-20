@@ -24,6 +24,8 @@ using integration.Services.Integration.Processors;
 using integration.Services.Token;
 using integration.Services.Token.Interfaces;
 using AutoMapper;
+using integration.Application.Services.Mail;
+using integration.Application.Services.Managers;
 using integration.Context.MT;
 using integration.Context.Request;
 using integration.Context.Request.MT;
@@ -56,7 +58,11 @@ builder.Services.AddLogging(logging =>
     logging.AddDebug();
     logging.SetMinimumLevel(LogLevel.Debug);
 });
+builder.Configuration
+    .AddEnvironmentVariables()  
+    .AddUserSecrets<Program>(optional: true); 
 
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("APROconnect:ApiClientSettings"));
 
@@ -72,6 +78,7 @@ builder.Services.AddSingleton<IAuthorizer, Authorizer>();
 builder.Services.AddScoped<ILocationIdService, LocationIdService>();
 
 // Регистрация sync-сервисов
+builder.Services.AddScoped<IMessageBroker, MtAckMessageBrokerService>();
 builder.Services.AddScoped<IAgreManagerService, AgreManagerService>();
 builder.Services.AddScoped<IClientManagerService, ClientManagerService>();
 builder.Services.AddScoped<IContractManagerService, ContractManagerService>();
