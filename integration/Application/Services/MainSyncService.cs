@@ -84,7 +84,7 @@ namespace integration
             await CheckAndSendIntegrationToAPRO(storage, integrationService, ct);
             //await StartPhoto(locationSync, ct);
 
-            await SendToEmail();
+            //await SendToEmail();
             EmailMessageBuilder.ClearAll();
         }
 

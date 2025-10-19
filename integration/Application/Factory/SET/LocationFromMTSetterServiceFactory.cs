@@ -19,6 +19,9 @@ public class LocationFromMTSetterServiceFactory : ISetterServiceFactory<Location
     private readonly IOptions<AuthSettings> _apiSettings;
     private readonly IMapper _mapper;
     private ILocationMTStatusStorageService _storageService;
+    private IStatusTransitionPlanner _planner;
+    private ILocationStatusReader _statusReader;
+    
     
     public LocationFromMTSetterServiceFactory(
         IHttpClientFactory httpClientFactory,
@@ -26,7 +29,9 @@ public class LocationFromMTSetterServiceFactory : ISetterServiceFactory<Location
         IAuthorizer authorizer,
         IOptions<AuthSettings> apiSettings,
         IMapper mapper,
-        ILocationMTStatusStorageService storageService)
+        ILocationMTStatusStorageService storageService,
+        IStatusTransitionPlanner planner,
+        ILocationStatusReader statusReader)
     {
         _httpClientFactory = httpClientFactory;
         _logger = logger;
@@ -34,9 +39,11 @@ public class LocationFromMTSetterServiceFactory : ISetterServiceFactory<Location
         _apiSettings = apiSettings;
         _mapper = mapper;
         _storageService = storageService;
+        _planner = planner;
+        _statusReader = statusReader;
     }
     public ISetterService<LocationMTDataResponse> Create()
     {
-        return new LocationFromMTSetterService(_httpClientFactory, _logger, _authorizer, _apiSettings, _mapper, _storageService);
+        return new LocationFromMTSetterService(_httpClientFactory, _logger, _authorizer, _apiSettings, _mapper, _storageService, _planner, _statusReader);
     }
 }

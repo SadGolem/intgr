@@ -27,4 +27,5 @@ public class ApiClientSettings
         public string EmployersEndpoint{ get; set; }
         public string AgreEndpointGet{ get; set; }
         public string AgreAckEndpoint{ get; set; }
+        public string LocationGETStatus{ get; set; }
 }

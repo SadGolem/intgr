@@ -22,6 +22,7 @@ namespace integration.Context
         public string? author_update { get; set; }
         [JsonIgnore]
         public int? author_update_id { get; set; }
+        public string? current_status { get; set; }
         public class Participant()
         {
             [JsonPropertyName("id")] public int id { get; set; }

@@ -16,4 +16,5 @@ public class LocationData
     [JsonPropertyName("id")] public int idLocMT { get; set; }
     [JsonPropertyName("modified")] public DateTime Timestamp { get; set; } 
     [JsonPropertyName("status")] public string status { get; set; } = string.Empty;
+    [JsonPropertyName("status_id")] public string current_status { get; set; } = string.Empty;
 }

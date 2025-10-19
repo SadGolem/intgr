@@ -132,6 +132,7 @@ builder.Services.AddTransient<ISetterServiceFactory<EntryMTRequest>, EntryFromMT
 builder.Services.AddTransient<ISetterService<EntryMTRequest>, EntryFromMTSetterService>();
 builder.Services.AddTransient<ISetterServiceFactory<LocationMTPhotoDataResponse>, LocationFromMTPhotoSetterServiceFactory>();
 builder.Services.AddTransient<ISetterService<LocationMTPhotoDataResponse>, LocationFromMTPhotoSetterService>();
+builder.Services.AddTransient<ILocationStatusReader, LocationStatusReader>();
 
 // Сервисы валидации и проверок
 builder.Services.AddScoped<ILocationValidator, LocationValidator>();
@@ -170,8 +171,11 @@ builder.Services.AddScoped<ICheckUpFactory<ScheduleDataResponse>, ScheduleCheckU
 builder.Services.AddScoped<ICheckUpService<ScheduleDataResponse>, ScheduleCheckUpService>();
 builder.Services.AddScoped<ICheckUpFactory<LocationDataResponse>, LocationCheckUpFactory>();
 builder.Services.AddScoped<ICheckUpService<LocationDataResponse>, LocationCheckUpService>();
+// using integration.Services.Location;  // проверь namespace
+// Регистрация планировщика (одна инстанция достаточно — он stateless)
+builder.Services.AddSingleton<IStatusTransitionPlanner, LocationStatusTransitionPlanner>();
 
-// Фоновый сервис с правильной обработкой Scoped-зависимостей - ИСПРАВЛЕННЫЙ
+
 builder.Services.AddHostedService<MainSyncService>();
 
 // Автоматическая регистрация контроллеров

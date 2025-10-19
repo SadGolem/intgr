@@ -14,6 +14,7 @@ public class EmitterCheckUpService : BaseCheckUpService, IEmitterCheckUpService
             if (!Check(emitter, str.location.id))
                 return new (false, $"Эмиттер {emitter} не найден");
         }
+        
         return (true, "");
     }
 
