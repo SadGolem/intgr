@@ -11,31 +11,32 @@ namespace integration
     public class MainSyncService : BackgroundService
     {
         private readonly ILogger<MainSyncService> _logger;
-        private readonly IServiceProvider _serviceProvider;
         private readonly IHostApplicationLifetime _appLifetime;
-        private readonly IEmployersStorageService _employersStorage;
         private readonly IOptions<SmtpOptions> _smtpOptions;
+        private readonly IServiceScopeFactory _scopeFactory;
+
         public MainSyncService(
             ILogger<MainSyncService> logger,
-            IServiceProvider serviceProvider,
             IHostApplicationLifetime appLifetime,
-            IEmployersStorageService employersStorage,  
-            IOptions<SmtpOptions> smtpOptions)        
+            IOptions<SmtpOptions> smtpOptions,
+            IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
-            _serviceProvider = serviceProvider;
             _appLifetime = appLifetime;
-            _employersStorage = employersStorage;  
-            _smtpOptions = smtpOptions;            
+            _smtpOptions = smtpOptions;
+            _scopeFactory = scopeFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("DataSyncService started (single-run).");
-
             try
             {
-                await DoWorkOnce(stoppingToken);
+                using var scope = _scopeFactory.CreateScope();
+                var sp = scope.ServiceProvider;
+
+                await DoWorkOnce(sp, stoppingToken);
+
                 _logger.LogInformation("DataSyncService finished all tasks. Shutting down...");
             }
             catch (Exception ex)
@@ -48,25 +49,24 @@ namespace integration
             }
         }
 
-        private async Task DoWorkOnce(CancellationToken ct)
+        private async Task DoWorkOnce(IServiceProvider sp, CancellationToken ct)
         {
-            using var scope = _serviceProvider.CreateScope();
+            var tokenManager = sp.GetRequiredService<ITokenManagerService>();
 
-            var tokenManager = scope.ServiceProvider.GetRequiredService<ITokenManagerService>();
-            var contractPositionSync = scope.ServiceProvider.GetRequiredService<IContractPositionManagerService>();
-            var contractSync = scope.ServiceProvider.GetRequiredService<IContractManagerService>();
-            var emitterSync = scope.ServiceProvider.GetRequiredService<IEmitterManagerService>();
-            var employerSync = scope.ServiceProvider.GetRequiredService<IEmployerManagerService>();
-            var entrySync = scope.ServiceProvider.GetRequiredService<IEntryManagerService>();
-            var clientSync = scope.ServiceProvider.GetRequiredService<IClientManagerService>();
-            var agreSync = scope.ServiceProvider.GetRequiredService<IAgreManagerService>();
-            var locationSync = scope.ServiceProvider.GetRequiredService<ILocationManagerService>();
-            var scheduleSync = scope.ServiceProvider.GetRequiredService<IScheduleManagerService>();
-            var converter = scope.ServiceProvider.GetRequiredService<IConverterToStorageService>();
-            var storage = scope.ServiceProvider.GetRequiredService<IStorageService<IntegrationStruct>>();
-            var integrationService = scope.ServiceProvider.GetRequiredService<IIntegrationService>();
-            var validationService = scope.ServiceProvider.GetRequiredService<IIntegrationValidationService>();
-
+            var employersStorage = sp.GetRequiredService<IEmployersStorageService>();
+            var contractPositionSync = sp.GetRequiredService<IContractPositionManagerService>();
+            var contractSync = sp.GetRequiredService<IContractManagerService>();
+            var emitterSync = sp.GetRequiredService<IEmitterManagerService>();
+            var employerSync = sp.GetRequiredService<IEmployerManagerService>();
+            var entrySync = sp.GetRequiredService<IEntryManagerService>();
+            var clientSync = sp.GetRequiredService<IClientManagerService>();
+            var agreSync = sp.GetRequiredService<IAgreManagerService>();
+            var locationSync = sp.GetRequiredService<ILocationManagerService>();
+            var scheduleSync = sp.GetRequiredService<IScheduleManagerService>();
+            var converter = sp.GetRequiredService<IConverterToStorageService>();
+            var storage = sp.GetRequiredService<IStorageService<IntegrationStruct>>();
+            var integrationService = sp.GetRequiredService<IIntegrationService>();
+            var validationService = sp.GetRequiredService<IIntegrationValidationService>();
 
             await tokenManager.GetTokensAsync();
             await GetEmployers(employerSync, ct);
@@ -84,7 +84,7 @@ namespace integration
             await CheckAndSendIntegrationToAPRO(storage, integrationService, ct);
             //await StartPhoto(locationSync, ct);
 
-            //await SendToEmail();
+            //await SendToEmail(employersStorage);
             EmailMessageBuilder.ClearAll();
         }
 
@@ -96,11 +96,11 @@ namespace integration
             catch (Exception ex) { _logger.LogError(ex, "Error while syncing agre."); }
         }
 
-        private async Task SendToEmail()
+        private async Task SendToEmail(IEmployersStorageService employersStorage)
         {
             var sender = new SmtpEmailSender(_smtpOptions);
             
-            await EmailDispatcher.DispatchAsync(_employersStorage, sender);
+            await EmailDispatcher.DispatchAsync(employersStorage, sender);
         }
 
 
