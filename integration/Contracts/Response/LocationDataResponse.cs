@@ -11,29 +11,39 @@ namespace integration.Context
         [JsonPropertyName("address")] public string address { get; set; }
         [JsonPropertyName("ext_id_2")] public string? ext_id { get; set; }
         [JsonPropertyName("comment")] public string? comment { get; set; }
-        
+
         [JsonIgnore]
-        public bool IsNew => !string.IsNullOrEmpty(ext_id) && 
-                             int.TryParse(ext_id, out int parsed) && 
+        public bool IsNew => !string.IsNullOrEmpty(ext_id) &&
+                             int.TryParse(ext_id, out int parsed) &&
                              parsed == 0;
-        [JsonPropertyName("participant")] public Participant? client { get; set; }
-        [JsonPropertyName("author_update")] public Author? author { get; set; }
-        [JsonIgnore]
-        public string? author_update { get; set; }
-        [JsonIgnore]
-        public int? author_update_id { get; set; }
-        public class Participant()
-        {
-            [JsonPropertyName("id")] public int id { get; set; }
-            [JsonPropertyName("name")] public string name { get; set; }
-        }
-        public class Author()
-        {
-            [JsonPropertyName("id")] public int? id { get; set; }
-            [JsonPropertyName("name")] public string? name { get; set; }
-        }
-        
+        /*   [JsonPropertyName("participant")] public Participant? client { get; set; }
+           [JsonPropertyName("author_update")] public Author? author { get; set; }
+           [JsonIgnore]
+           public string? author_update { get; set; }
+           [JsonIgnore]
+           public int? author_update_id { get; set; }
+           public class Participant()
+           {
+               [JsonPropertyName("id")] public int id { get; set; }
+               [JsonPropertyName("name")] public string name { get; set; }
+           }
+           public class Author()
+           {
+               [JsonPropertyName("id")] public int? id { get; set; }
+               [JsonPropertyName("name")] public string? name { get; set; }
+           }*/
+
         [JsonIgnore]
         public List<Container> containers;
+
+        [JsonPropertyName("uploaded_files")] public Author? author { get; set; } // uploaded_files = Author Выполнена замена чтобы в дальнейшем использовать  Author
+        public class Author()
+        {            
+            [JsonPropertyName("author")] public Uploaded_files? uploaded_files { get; set; }// author = uploaded_files Выполнена замена чтобы в дальнейшем использовать  Author
+            public class Uploaded_files()
+            {
+                [JsonPropertyName("id")] public int? id { get; set; }
+            }
+        }
     }
 }
