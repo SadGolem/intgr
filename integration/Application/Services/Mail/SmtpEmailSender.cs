@@ -71,7 +71,7 @@ public static class EmailDispatcher
         var filteredStaff = staff
             .Where(e => !string.Equals(e.position, "ГЕНЕРАЛЬНЫЙ ДИРЕКТОР", StringComparison.InvariantCultureIgnoreCase))
             .ToList();
-
+        
         // 2) Почта по user.id (НЕ по employee.id)
         //    author_id == employee.user.id
         var emailByUserId = filteredStaff
@@ -88,6 +88,12 @@ public static class EmailDispatcher
             .Select(e => e.email!)
             .Distinct(StringComparer.InvariantCultureIgnoreCase)
             .ToList();
+
+        // Антоневич Устанавление почты для рассылки на ОРиСИС
+        if (!managersEmails.Contains("orsis@kuzro.ru", StringComparer.InvariantCultureIgnoreCase))
+        {
+            managersEmails.Add("orsis@kuzro.ru");
+        }
 
         // 4) Обход всех типов списков; ownerId трактуем как author_id (= user.id)
         foreach (ListType listType in Enum.GetValues(typeof(ListType)))
