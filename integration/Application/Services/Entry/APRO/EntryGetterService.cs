@@ -88,7 +88,7 @@ public class EntryGetterService : ServiceGetterBase<EntryDataResponse>, IGetterS
                 if (data.Capacity is null)
                 {
                     _logger.LogInformation("Пропуск записи {BtNumber}: отсутствует соглашение", data.BtNumber);
-                    Message($"Entry id {data.BtNumber} is not has a capacity.", data.location.author?.id);
+                    Message($"Entry id {data.BtNumber} is not has a capacity.", data.location.author?.uploaded_files?.id);
                     continue;
                 }
 

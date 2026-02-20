@@ -60,7 +60,7 @@ public static class EmailDispatcher
     private static readonly HashSet<string> ManagerPositions =
         new(StringComparer.InvariantCultureIgnoreCase)
         {
-            "Главный специалист"
+            "Главный специалист", "Начальник отдела"
         };
 
     public static async Task DispatchAsync(IEmployersStorageService employers, IEmailSender sender)
@@ -71,7 +71,7 @@ public static class EmailDispatcher
         var filteredStaff = staff
             .Where(e => !string.Equals(e.position, "ГЕНЕРАЛЬНЫЙ ДИРЕКТОР", StringComparison.InvariantCultureIgnoreCase))
             .ToList();
-        
+
         // 2) Почта по user.id (НЕ по employee.id)
         //    author_id == employee.user.id
         var emailByUserId = filteredStaff
@@ -89,24 +89,10 @@ public static class EmailDispatcher
             .Distinct(StringComparer.InvariantCultureIgnoreCase)
             .ToList();
 
-<<<<<<< HEAD
         // Антоневич Устанавление почты для рассылки на ОРиСИС
         if (!managersEmails.Contains("orsis@kuzro.ru", StringComparer.InvariantCultureIgnoreCase))
         {
             managersEmails.Add("orsis@kuzro.ru");
-=======
-        var currentUserEmail = emailByUserId.GetValueOrDefault(currentUserId);
-        var currentUser = filteredStaff.FirstOrDefault(e => GetUserId(e) == currentUserId);
-
-        var boss = filteredStaff.FirstOrDefault(e =>
-            e.position?.Equals("Начальник отдела", StringComparison.InvariantCultureIgnoreCase) == true);
-        var bossEmail = boss?.email;
-
-        if (!emailByUserId.TryGetValue(currentUserId, out var currentUserEmail))
-        {
-            Console.WriteLine($"Не найден email для пользователя ID: {currentUserId}");
-            return;
->>>>>>> 68a854cd1b5798cf735db97acb75cedcf4296dda
         }
 
         // 4) Обход всех типов списков; ownerId трактуем как author_id (= user.id)
@@ -143,35 +129,6 @@ public static class EmailDispatcher
 
                 var subject = $"{listType}";
                 await sender.SendAsync(new[] { toEmail }, subject, body.ToString());
-            }
-
-            if (currentUserEmail != null)
-            {
-                var bodyErrCurrentUser = BuildOwnerErrorsHtml(listType, currentUserId);
-                var bodyOkCurrentUser = BuildOwnerSuccessHtml(listType, currentUserId);
-
-                if (!string.IsNullOrWhiteSpace(bodyErrCurrentUser) || !string.IsNullOrWhiteSpace(bodyOkCurrentUser))
-                {
-                    var recipients = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-
-                    // Добавляем текущего пользователя
-                    recipients.Add(currentUserEmail);
-
-                    // Добавляем его начальника, если он есть и это не тот же человек
-                    if (!string.IsNullOrEmpty(bossEmail) &&
-                        !bossEmail.Equals(currentUserEmail, StringComparer.InvariantCultureIgnoreCase))
-                    {
-                        recipients.Add(bossEmail);
-                    }
-
-                    var body = new StringBuilder();
-                    body.AppendLine($"<h2>Отчет по операциям пользователя: {currentUser?.user?.name ?? "Неизвестно"}</h2>");
-                    if (!string.IsNullOrWhiteSpace(bodyErrCurrentUser)) body.AppendLine(bodyErrCurrentUser);
-                    if (!string.IsNullOrWhiteSpace(bodyOkCurrentUser)) body.AppendLine(bodyOkCurrentUser);
-
-                    var subject = $"{listType}";
-                    await sender.SendAsync(recipients, subject, body.ToString());
-                }
             }
 
             // 5) Сводки руководителям

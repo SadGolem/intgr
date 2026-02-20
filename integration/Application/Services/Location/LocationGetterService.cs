@@ -1,10 +1,11 @@
 ﻿using integration.Context;
-using integration.Services.Interfaces;
-using System.Text.Json;
 using integration.Helpers;
 using integration.Helpers.Auth;
 using integration.Helpers.Interfaces;
+using integration.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Text.Json;
+using static integration.Context.LocationDataResponse.Author;
 
 namespace integration.Services.Location
 {
@@ -105,7 +106,7 @@ namespace integration.Services.Location
                     if (isNew.HasValue)
                     {
                         result.Add((location, isNew.Value));
-                        _locationIdService.SetLocationIds(location.id, location.author?.id);
+                        _locationIdService.SetLocationIds(location.id, location.author?.uploaded_files?.id);
                     }
                 }
                 catch (Exception ex)

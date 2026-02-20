@@ -82,7 +82,7 @@ public class LocationProcessor : BaseProcessor, IIntegrationProcessor<LocationDa
     {
         try
         {
-            string comment = $"{entity.author?.name}: {entity.comment}";
+            string comment = $"{entity.author?.uploaded_files?.name}: {entity.comment}";
             var request = new
             {
                 messageEmitterKey = entity.ext_id,

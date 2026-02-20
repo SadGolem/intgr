@@ -44,13 +44,14 @@ public class IntegrationMappingProfile : Profile
             .ForMember(dest => dest.idAsuPro, opt => opt.MapFrom(src => src.id))
             .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
             .ForMember(dest => dest.status, opt => opt.MapFrom(src => (StatusCoder.ToCorrectLocationStatus(src.status.id, src.id))))
-            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.latitude, opt => opt.MapFrom(src =>
                 (double)Math.Round((decimal)src.lat, 5, MidpointRounding.ToZero)
             ))
-            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.longitude, opt => opt.MapFrom(src =>
                 (double)Math.Round((decimal)src.lon, 5, MidpointRounding.ToZero)
             ));
-            
+
+
         CreateMap<ScheduleDataResponse, ScheduleRequest>()
             .ForMember(dest => dest.idWasteGenerator, opt => opt.MapFrom(src => src.emitter.WasteSource.ext_id))
             .ForMember(dest => dest.idLocation, opt => opt.MapFrom(src => src.location.id))
